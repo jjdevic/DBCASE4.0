@@ -1,0 +1,21 @@
+{
+  "name": "light",
+  "colors": {
+    "background": [250,250,250],
+    "main": [200,200,200],
+    "entity": [255,203,82],
+    "atribute": [77,215,250],
+    "relation": [250,86,77],
+    "paragraph": [90,90,90],
+    "lines": [50,50,50],
+    "fontColor": [0,0,0],
+    "toolBar": [240,240,240],
+    "labelFontColorDark": [50,50,50],
+    "labelFontColorLight": [250,250,250],
+    "blueFont": [29,81,94],
+    "control": [255,255,255],
+    "codeBackground": [47, 47, 47],
+    "SelectionBackground": [110,110,110],
+    "menuDesplegable": [240,240,240],
+  }
+}

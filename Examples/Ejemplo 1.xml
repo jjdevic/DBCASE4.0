@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Inf_dbcase>
+    <EntityList proximoID="11">
+        <Entity EntityId="1">
+            <Name>Sucursal</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>1</Attrib>
+                <Attrib>2</Attrib>
+                <Attrib>3</Attrib>
+                <Attrib>4</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>2</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>107,188</Position>
+        </Entity>
+        <Entity EntityId="2">
+            <Name>Coche</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>5</Attrib>
+                <Attrib>6</Attrib>
+                <Attrib>7</Attrib>
+                <Attrib>8</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>5</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>96,437</Position>
+        </Entity>
+        <Entity EntityId="3">
+            <Name>Persona</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>9</Attrib>
+                <Attrib>10</Attrib>
+                <Attrib>11</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>9</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>579,187</Position>
+        </Entity>
+        <Entity EntityId="4">
+            <Name>Profesor</Name>
+            <Weak>false</Weak>
+            <AttribList/>
+            <PrimaryKeyList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>483,411</Position>
+        </Entity>
+        <Entity EntityId="5">
+            <Name>Alumno</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>14</Attrib>
+            </AttribList>
+            <PrimaryKeyList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>786,411</Position>
+        </Entity>
+        <Entity EntityId="10">
+            <Name>Sesión</Name>
+            <Weak>true</Weak>
+            <AttribList>
+                <Attrib>18</Attrib>
+                <Attrib>19</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>18</PrimaryKey>
+                <PrimaryKey>19</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>623,621</Position>
+        </Entity>
+    </EntityList>
+    <RelationList proximoID="23">
+        <Relation idRelacion="9">
+            <Name>IsA</Name>
+            <Type>IsA</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(3,0,0,null)</EntityAndArity>
+                <EntityAndArity>(4,0,0,null)</EntityAndArity>
+                <EntityAndArity>(5,0,0,null)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <Position>568,312</Position>
+        </Relation>
+        <Relation idRelacion="13">
+            <Name>contacto</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(3,0,1,)</EntityAndArity>
+                <EntityAndArity>(1,1,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>308,161</Position>
+        </Relation>
+        <Relation idRelacion="15">
+            <Name>vinculado</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(2,1,n,)</EntityAndArity>
+                <EntityAndArity>(4,0,1,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>304,414</Position>
+        </Relation>
+        <Relation idRelacion="16">
+            <Name>pertenece</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(2,1,2,)</EntityAndArity>
+                <EntityAndArity>(1,0,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>85,314</Position>
+        </Relation>
+        <Relation idRelacion="17">
+            <Name>practicaCon</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(4,0,5,)</EntityAndArity>
+                <EntityAndArity>(5,1,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>636,458</Position>
+        </Relation>
+        <Relation idRelacion="21">
+            <Name>asignada</Name>
+            <Type>Debil</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(10,1,n,)</EntityAndArity>
+                <EntityAndArity>(4,0,1,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>473,542</Position>
+        </Relation>
+        <Relation idRelacion="22">
+            <Name>reserva</Name>
+            <Type>Debil</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(10,1,n,)</EntityAndArity>
+                <EntityAndArity>(5,0,1,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>782,591</Position>
+        </Relation>
+    </RelationList>
+    <AttributeList proximoID="20">
+        <Attribute AttributeId="1">
+            <Name>Telefono</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>206,50</Position>
+        </Attribute>
+        <Attribute AttributeId="2">
+            <Name>Num</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>198,253</Position>
+        </Attribute>
+        <Attribute AttributeId="3">
+            <Name>Dirección</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>-3,120</Position>
+        </Attribute>
+        <Attribute AttributeId="4">
+            <Name>Ciudad</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>97,74</Position>
+        </Attribute>
+        <Attribute AttributeId="5">
+            <Name>Matrícula</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>11,500</Position>
+        </Attribute>
+        <Attribute AttributeId="6">
+            <Name>Modelo</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>207,543</Position>
+        </Attribute>
+        <Attribute AttributeId="7">
+            <Name>Año</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>261,492</Position>
+        </Attribute>
+        <Attribute AttributeId="8">
+            <Name>Daños</Name>
+            <Dom>CHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>true</Multivalued>
+            <AssertionList/>
+            <Position>81,576</Position>
+        </Attribute>
+        <Attribute AttributeId="9">
+            <Name>DNI</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>448,57</Position>
+        </Attribute>
+        <Attribute AttributeId="10">
+            <Name>Nombre</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>585,41</Position>
+        </Attribute>
+        <Attribute AttributeId="11">
+            <Name>Apellidos</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>740,79</Position>
+        </Attribute>
+        <Attribute AttributeId="14">
+            <Name>Importe</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>762,305</Position>
+        </Attribute>
+        <Attribute AttributeId="18">
+            <Name>Fecha</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>536,713</Position>
+        </Attribute>
+        <Attribute AttributeId="19">
+            <Name>Hora</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>697,711</Position>
+        </Attribute>
+    </AttributeList>
+    <DomainList proximoID="1"/>
+    <AggregationList proximoID="1"/>
+</Inf_dbcase>

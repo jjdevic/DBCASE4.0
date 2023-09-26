@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Inf_dbcase>
+    <EntityList proximoID="5">
+        <Entity EntityId="1">
+            <Name>compositores</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>1</Attrib>
+                <Attrib>2</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>1</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>177,147</Position>
+        </Entity>
+        <Entity EntityId="2">
+            <Name>CDs</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>3</Attrib>
+                <Attrib>4</Attrib>
+                <Attrib>5</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>3</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>470,355</Position>
+        </Entity>
+        <Entity EntityId="4">
+            <Name>canciones</Name>
+            <Weak>true</Weak>
+            <AttribList>
+                <Attrib>8</Attrib>
+                <Attrib>10</Attrib>
+            </AttribList>
+            <PrimaryKeyList>
+                <PrimaryKey>8</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>143,381</Position>
+        </Entity>
+    </EntityList>
+    <RelationList proximoID="5">
+        <Relation idRelacion="3">
+            <Name>en</Name>
+            <Type>Debil</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(2,0,1,)</EntityAndArity>
+                <EntityAndArity>(4,1,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>306,441</Position>
+        </Relation>
+        <Relation idRelacion="4">
+            <Name>autor</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(1,0,n,)</EntityAndArity>
+                <EntityAndArity>(4,0,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>154,254</Position>
+        </Relation>
+    </RelationList>
+    <AttributeList proximoID="11">
+        <Attribute AttributeId="1">
+            <Name>DNI</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>144,71</Position>
+        </Attribute>
+        <Attribute AttributeId="2">
+            <Name>nombre</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>362,176</Position>
+        </Attribute>
+        <Attribute AttributeId="3">
+            <Name>numSerie</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>474,495</Position>
+        </Attribute>
+        <Attribute AttributeId="4">
+            <Name>título</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>557,231</Position>
+        </Attribute>
+        <Attribute AttributeId="5">
+            <Name>intérprete</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>592,368</Position>
+        </Attribute>
+        <Attribute AttributeId="8">
+            <Name>título</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>69,470</Position>
+        </Attribute>
+        <Attribute AttributeId="10">
+            <Name>duración</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>186,496</Position>
+        </Attribute>
+    </AttributeList>
+    <DomainList proximoID="1"/>
+    <AggregationList proximoID="1"/>
+</Inf_dbcase>

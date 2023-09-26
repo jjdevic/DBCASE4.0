@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Inf_dbcase>
+    <EntityList proximoID="3">
+        <Entity EntityId="1">
+            <Name>Persona</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>1</Attrib>
+                <Attrib>3</Attrib>
+            </AttribList>
+            <RelatnList>
+                <Relatn>1</Relatn>
+            </RelatnList>
+            <PrimaryKeyList>
+                <PrimaryKey>1</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>175,123</Position>
+        </Entity>
+        <Entity EntityId="2">
+            <Name>Mascota</Name>
+            <Weak>false</Weak>
+            <AttribList>
+                <Attrib>2</Attrib>
+                <Attrib>4</Attrib>
+            </AttribList>
+            <RelatnList/>
+            <PrimaryKeyList>
+                <PrimaryKey>2</PrimaryKey>
+            </PrimaryKeyList>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>296,370</Position>
+        </Entity>
+    </EntityList>
+    <RelationList proximoID="2">
+        <Relation idRelacion="1">
+            <Name>Tener</Name>
+            <Type>Normal</Type>
+            <EntityAndArityList>
+                <EntityAndArity>(1,0,1,)</EntityAndArity>
+                <EntityAndArity>(2,0,n,)</EntityAndArity>
+            </EntityAndArityList>
+            <AttribList/>
+            <AssertionList/>
+            <UniqueList/>
+            <Position>126,300</Position>
+        </Relation>
+    </RelationList>
+    <AttributeList proximoID="5">
+        <Attribute AttributeId="1">
+            <Name>id</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>175,43</Position>
+        </Attribute>
+        <Attribute AttributeId="2">
+            <Name>Nombre</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>361,276</Position>
+        </Attribute>
+        <Attribute AttributeId="3">
+            <Name>Nombre</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>true</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>335,98</Position>
+        </Attribute>
+        <Attribute AttributeId="4">
+            <Name>Especie</Name>
+            <Dom>VARCHAR(10)</Dom>
+            <Composed>false</Composed>
+            <NotNull>false</NotNull>
+            <Unique>false</Unique>
+            <ComponentList/>
+            <Multivalued>false</Multivalued>
+            <AssertionList/>
+            <Position>449,362</Position>
+        </Attribute>
+    </AttributeList>
+    <DomainList proximoID="1"/>
+    <AggregationList proximoID="2">
+        <Aggregation idAgregacion="1">
+            <Name>Casa</Name>
+            <RelatnList>
+                <Relatn>1</Relatn>
+            </RelatnList>
+            <AttribList/>
+        </Aggregation>
+    </AggregationList>
+</Inf_dbcase>
