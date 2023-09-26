@@ -1,23 +1,16 @@
 package vista.frames;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
 import controlador.Controlador;
 import controlador.TC;
 import vista.imagenes.ImagePath;
 import vista.lenguaje.Lenguaje;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class GUI_Recientes extends Parent_GUI{

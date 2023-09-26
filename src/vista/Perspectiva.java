@@ -1,21 +1,8 @@
 package vista;
 
-import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.geom.AffineTransform;
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-
-import vista.componentes.GUIPanels.ImagePanel;
 
 
 /*

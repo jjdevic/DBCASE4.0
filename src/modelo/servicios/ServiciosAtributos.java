@@ -1,19 +1,14 @@
 package modelo.servicios;
 
-import java.awt.geom.Point2D;
-import java.util.Vector;
-
 import controlador.Controlador;
 import controlador.TC;
-import modelo.transfers.Transfer;
-import modelo.transfers.TransferAgregacion;
-import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferEntidad;
-import modelo.transfers.TransferRelacion;
+import modelo.transfers.*;
 import persistencia.DAOAgregaciones;
 import persistencia.DAOAtributos;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
+
+import java.util.Vector;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ServiciosAtributos {

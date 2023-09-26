@@ -1,6 +1,6 @@
 package vista.tema;
 
-import java.awt.Color;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class myColor extends Color{

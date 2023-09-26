@@ -1,25 +1,18 @@
 package vista.frames;
 
+import controlador.Controlador;
+import controlador.TC;
+import modelo.transfers.*;
+import vista.componentes.MyComboBoxRenderer;
+import vista.imagenes.ImagePath;
+import vista.lenguaje.Lenguaje;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
-import controlador.Controlador;
-import controlador.TC;
-import modelo.transfers.Transfer;
-import modelo.transfers.TransferAgregacion;
-import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferEntidad;
-import modelo.transfers.TransferRelacion;
-import vista.componentes.MyComboBoxRenderer;
-import vista.imagenes.ImagePath;
-import vista.lenguaje.Lenguaje;
 
 @SuppressWarnings("serial")
 public class GUI_Eliminar extends Parent_GUI{

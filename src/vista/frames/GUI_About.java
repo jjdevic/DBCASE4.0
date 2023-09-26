@@ -1,18 +1,12 @@
 package vista.frames;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
 import vista.componentes.GUIPanels.ReportPanel;
 import vista.imagenes.ImagePath;
 import vista.lenguaje.Lenguaje;
 import vista.tema.Theme;
+
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class GUI_About extends JFrame{

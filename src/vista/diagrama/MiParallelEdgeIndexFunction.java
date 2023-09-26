@@ -1,16 +1,11 @@
 package vista.diagrama;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeIndexFunction;
 import edu.uci.ics.jung.graph.util.Pair;
-import modelo.transfers.Transfer;
+
+import java.util.*;
 
 /**
  * A class which creates and maintains indices for parallel edges.

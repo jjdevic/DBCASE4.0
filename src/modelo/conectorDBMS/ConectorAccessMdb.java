@@ -1,16 +1,11 @@
 package modelo.conectorDBMS;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import vista.lenguaje.Lenguaje;
+
+import javax.swing.*;
+import java.io.*;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
-
-import vista.lenguaje.Lenguaje;
 
 public class ConectorAccessMdb extends ConectorAccessOdbc {
 

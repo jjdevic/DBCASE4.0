@@ -1,5 +1,16 @@
 package modelo.servicios;
 
+import controlador.Controlador;
+import controlador.TC;
+import modelo.conectorDBMS.ConectorDBMS;
+import modelo.conectorDBMS.FactoriaConectores;
+import modelo.transfers.*;
+import persistencia.*;
+import vista.componentes.MyFileChooser;
+import vista.lenguaje.Lenguaje;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,26 +19,6 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import controlador.Controlador;
-import controlador.TC;
-import modelo.conectorDBMS.ConectorDBMS;
-import modelo.conectorDBMS.FactoriaConectores;
-import modelo.transfers.TransferAgregacion;
-import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferConexion;
-import modelo.transfers.TransferDominio;
-import modelo.transfers.TransferEntidad;
-import modelo.transfers.TransferRelacion;
-import persistencia.DAOAgregaciones;
-import persistencia.DAOAtributos;
-import persistencia.DAODominios;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
-import persistencia.EntidadYAridad;
-import vista.componentes.MyFileChooser;
-import vista.lenguaje.Lenguaje;
 
 @SuppressWarnings({"unchecked","rawtypes"})
 public class GeneradorEsquema {

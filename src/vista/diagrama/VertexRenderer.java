@@ -1,15 +1,5 @@
 package vista.diagrama;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import javax.swing.JComponent;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.util.Context;
 import edu.uci.ics.jung.graph.Graph;
@@ -22,6 +12,11 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.tema.Theme;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 /**
  * A renderer that will fill vertex shapes with a GradientPaint
