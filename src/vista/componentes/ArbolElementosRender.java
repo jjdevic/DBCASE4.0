@@ -1,21 +1,16 @@
 package vista.componentes;
 
-import java.awt.Component;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.NodoEntidad;
-import vista.iconos.attributeIcon;
-import vista.iconos.entityChildIcon;
-import vista.iconos.entityIcon;
-import vista.iconos.isaIcon;
-import vista.iconos.relationIcon;
-import vista.iconos.subAttributeIcon;
+import vista.iconos.*;
 import vista.tema.Theme;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 /*
  * Clase para representar el arbol de elementos del panel de informacion
  * */

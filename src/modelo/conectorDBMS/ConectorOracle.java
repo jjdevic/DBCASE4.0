@@ -1,16 +1,12 @@
 package modelo.conectorDBMS;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Vector;
-
 import modelo.servicios.Enumerado;
 import modelo.servicios.Tabla;
 import modelo.transfers.TipoDominio;
 import vista.lenguaje.Lenguaje;
+
+import java.sql.*;
+import java.util.Vector;
 
 /**
  * Conecta la aplicación con un gestor de bases de datos Oracle

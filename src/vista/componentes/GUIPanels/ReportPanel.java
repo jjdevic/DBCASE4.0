@@ -1,9 +1,8 @@
 package vista.componentes.GUIPanels;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
 import vista.tema.Theme;
+
+import javax.swing.*;
 /*
  * 
  * Es un JTextPanel con estilo personalizado

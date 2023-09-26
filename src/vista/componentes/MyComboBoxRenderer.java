@@ -1,10 +1,10 @@
 package vista.componentes;
 
-import java.awt.Component;
-import javax.swing.JList;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-
 import vista.tema.Theme;
+
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class MyComboBoxRenderer extends BasicComboBoxRenderer{

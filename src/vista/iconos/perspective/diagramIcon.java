@@ -1,15 +1,11 @@
 package vista.iconos.perspective;
 
-import java.awt.BasicStroke;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Line2D;
-import java.awt.geom.RoundRectangle2D;
-
 import vista.iconos.icon;
 import vista.tema.Theme;
+
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.RoundRectangle2D;
 
 public class diagramIcon extends icon{
 	public diagramIcon(boolean selected) {

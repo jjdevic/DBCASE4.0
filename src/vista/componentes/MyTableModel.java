@@ -1,9 +1,9 @@
 package vista.componentes;
 
-import java.util.ArrayList;
-import javax.swing.table.AbstractTableModel;
-
 import vista.lenguaje.Lenguaje;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class MyTableModel extends AbstractTableModel{

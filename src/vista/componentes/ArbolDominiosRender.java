@@ -1,10 +1,11 @@
 package vista.componentes;
 
-import java.awt.Component;
-import javax.swing.JTree;
+import vista.tema.Theme;
+
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import vista.tema.Theme;
+import java.awt.*;
 /*
  * Clase para representar el arbol de dominios del panel de informacion
  * */

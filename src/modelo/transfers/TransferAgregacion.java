@@ -1,6 +1,6 @@
 package modelo.transfers;
 
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Vector;
 

@@ -1,15 +1,5 @@
 package vista.componentes.GUIPanels;
 
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.Random;
-import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
@@ -17,15 +7,17 @@ import persistencia.DAOAgregaciones;
 import persistencia.DAOAtributos;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
-import vista.componentes.MyMenu;
-import vista.iconos.IconLabel;
-import vista.iconos.attributeIcon;
-import vista.iconos.deleteIcon;
-import vista.iconos.entityIcon;
-import vista.iconos.isaIcon;
-import vista.iconos.relationIcon;
+import vista.iconos.*;
 import vista.lenguaje.Lenguaje;
 import vista.tema.Theme;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.Random;
+import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class addTransfersPanel extends JPanel{

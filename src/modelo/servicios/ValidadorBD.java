@@ -1,20 +1,12 @@
 package modelo.servicios;
 
-import java.util.Vector;
 import controlador.Controlador;
 import controlador.TC;
-import modelo.transfers.TipoDominio;
-import modelo.transfers.Transfer;
-import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferDominio;
-import modelo.transfers.TransferEntidad;
-import modelo.transfers.TransferRelacion;
-import persistencia.DAOAtributos;
-import persistencia.DAODominios;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
-import persistencia.EntidadYAridad;
+import modelo.transfers.*;
+import persistencia.*;
 import vista.lenguaje.Lenguaje;
+
+import java.util.Vector;
 
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ValidadorBD extends GeneradorEsquema{

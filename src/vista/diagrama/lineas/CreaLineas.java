@@ -1,47 +1,22 @@
 package vista.diagrama.lineas;
 
-import java.awt.Dimension;
-/*
- * Copyright (c) 2005, the JUNG Project and the Regents of the University of
- * California All rights reserved.
- *
- * This software is open-source under the BSD license; see either "license.txt"
- * or http://jung.sourceforge.net/license.txt for a description.
- *
- * Created on Aug 23, 2005
- */
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.swing.JComponent;
-
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.util.Context;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.util.EdgeIndexFunction;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.RenderContext;
-import edu.uci.ics.jung.visualization.decorators.EdgeShape;
-import edu.uci.ics.jung.visualization.decorators.EdgeShape.IndexedRendering;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
-import edu.uci.ics.jung.visualization.transform.LensTransformer;
-import edu.uci.ics.jung.visualization.transform.MutableTransformer;
 import edu.uci.ics.jung.visualization.transform.shape.GraphicsDecorator;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
 import vista.tema.Theme;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class CreaLineas<V,E> implements Renderer.Edge<V, E> {

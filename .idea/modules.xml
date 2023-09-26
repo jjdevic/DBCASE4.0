@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DBCase2.iml" filepath="$PROJECT_DIR$/DBCase2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DBCase.iml" filepath="$PROJECT_DIR$/DBCase.iml" />
     </modules>
   </component>
 </project>

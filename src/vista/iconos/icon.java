@@ -1,6 +1,6 @@
 package vista.iconos;
 
-import javax.swing.Icon;
+import javax.swing.*;
 
 public abstract class icon implements Icon{
 	

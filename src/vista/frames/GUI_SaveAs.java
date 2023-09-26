@@ -1,25 +1,22 @@
 package vista.frames;
 
-import java.awt.BorderLayout;
+import controlador.Controlador;
+import controlador.TC;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import vista.componentes.MyFileChooser;
+import vista.imagenes.ImagePath;
+import vista.lenguaje.Lenguaje;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import controlador.Controlador;
-import controlador.TC;
-import vista.componentes.MyFileChooser;
-import vista.imagenes.ImagePath;
-import vista.lenguaje.Lenguaje;
 
 
 @SuppressWarnings("serial")

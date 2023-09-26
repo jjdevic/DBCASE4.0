@@ -1,43 +1,6 @@
 package vista.componentes;
 
 
-import java.awt.Color;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.LinearGradientPaint;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.IOException;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.event.MenuListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
@@ -52,6 +15,17 @@ import vista.iconos.perspective.codeIcon;
 import vista.iconos.perspective.diagramIcon;
 import vista.lenguaje.Lenguaje;
 import vista.tema.Theme;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
+import java.util.Vector;
 
 
 // ICONOS: https://icon-icons.com/es/
