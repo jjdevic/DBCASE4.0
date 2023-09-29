@@ -2,11 +2,11 @@ package vista.tema;
 
 import java.awt.Font;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,15 +33,18 @@ public class Theme {
 		themes = new ArrayList<String>();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-		String absolutePath = Objects.requireNonNull(classLoader.getResource("themes")).getPath();
-		listFilesForFolder(new File(absolutePath));
+        themes.add(LIGHT.split("themes/")[1].split(".json")[0]);
+        themes.add(DARK.split("themes/")[1].split(".json")[0]);
 	}
-	
+
+	/*
 	private static void listFilesForFolder(final File folder) {
-	    for (final File fileEntry : Objects.requireNonNull(folder.listFiles()))
+		for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
 	    	if (fileEntry.isDirectory()) listFilesForFolder(fileEntry);
-	        else  themes.add(fileEntry.getName().split(".json")[0]); 
+	        else  themes.add(fileEntry.getName().split(".json")[0]);
+		}
 	}
+	*/
 
 	public static void loadDefaultTheme(){
 		current = Theme.DEFAULT;

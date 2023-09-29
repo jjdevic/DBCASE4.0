@@ -405,7 +405,7 @@ public class DAOEntidades {
 	}
 
 	private void guardaDoc() {
-		OutputFormat formato = new OutputFormat(doc, "UTF-8", true);
+		OutputFormat formato = new OutputFormat(doc.toString(), "UTF-8", true);
 		StringWriter s = new StringWriter();
 		XMLSerializer ser = new XMLSerializer(s, formato);
 		try {
@@ -419,13 +419,12 @@ public class DAOEntidades {
 		/*debido a que la funcion FileWriter da un error de acceso
 		 * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
 		boolean centinela=true;
-		while (centinela==true){
+		while (centinela){
 			try {
 				f = new FileWriter(this.path);
 				centinela =false;
-			} catch (IOException e) {
-				centinela=true;
-			}
+			} catch (IOException ignored) {
+            }
 		}
 		this.path = this.path.replace(" ", "%20");
 		ser = new XMLSerializer(f, formato);
