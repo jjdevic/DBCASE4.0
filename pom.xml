@@ -138,7 +138,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version> <!-- Asegúrate de usar la versión más reciente -->
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -149,7 +149,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>controlador.Controlador</mainClass> <!-- Clase principal de tu aplicación -->
+                                    <mainClass>controlador.Controlador</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -158,19 +158,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version> <!-- Versión actualizada del plugin -->
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>controlador.Controlador</mainClass> <!-- Reemplaza con el nombre completo de tu clase principal -->
-                        </manifest>
-                    </archive>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
