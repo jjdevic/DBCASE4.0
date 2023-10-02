@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.DBCase4.0</groupId>
     <artifactId>DBCase</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>4.0</version>
     <packaging>jar</packaging>
 
     <properties>
