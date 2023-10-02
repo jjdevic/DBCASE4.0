@@ -2,14 +2,29 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="czt" />
+      <option name="name" value="czt" />
+      <option name="url" value="http://czt.sourceforge.net/maven/repository/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="spring" />
       <option name="name" value="spring" />
       <option name="url" value="https://repo.spring.io/ui/native/plugins-release/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="http://czt.sourceforge.net/maven/repository/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spring" />
+      <option name="name" value="spring" />
+      <option name="url" value="http://czt.sourceforge.net/maven/repository/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="maven" />
