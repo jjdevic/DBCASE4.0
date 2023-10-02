@@ -1,6 +1,7 @@
 package controlador;
 
 
+import com.sleepycat.je.tree.IN;
 import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
@@ -21,6 +22,10 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.Vector;
+
+import static vista.utils.Otros.DIRECTORY;
+import static vista.utils.Otros.INCIDENCES;
+import static vista.utils.Otros.PROJECTS;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {
@@ -171,13 +176,16 @@ public class Controlador {
                 }
                 break;
             }
-        //creamos la carpeta projects si no existe
-        File directory = new File(System.getProperty("user.dir") + "/projects");
-        if (!directory.exists()) directory.mkdir();
+        File directory = new File(System.getProperty("user.dir") + DIRECTORY);
+        if (directory.mkdir()) {
+            //creamos la carpeta projects si no existe
+            File projects = new File(System.getProperty("user.dir") + DIRECTORY + PROJECTS);
+            if (!projects.exists()) projects.mkdir();
 
-        //Creamos la carpeta incidences si no existe
-        File incidences = new File(System.getProperty("user.dir") + "/incidences");
-        if (!incidences.exists()) incidences.mkdir();
+            //Creamos la carpeta incidences si no existe
+            File incidences = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
+            if (!incidences.exists()) incidences.mkdir();
+        }
 
         // Obtenemos configuración inicial (si la hay)
         ConfiguradorInicial conf = new ConfiguradorInicial();
@@ -444,9 +452,9 @@ public class Controlador {
                     }
                 });
                 setCambios(false);
-                File temp = new File(System.getProperty("user.dir") + "/projects/temp");
+                File temp = new File(System.getProperty("user.dir") + DIRECTORY + PROJECTS + "/temp");
                 this.setFileguardar(temp);
-                File directory = new File(System.getProperty("user.dir") + "/deshacer");
+                File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                 if (directory.exists()) {
                     for (File file : Objects.requireNonNull(directory.listFiles())) {
                         if (!file.isDirectory()) {
@@ -478,7 +486,7 @@ public class Controlador {
                     }
                 });
                 setCambios(false);
-                File directory = new File(System.getProperty("user.dir") + "/deshacer");
+                File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                 if (directory.exists()) {
                     for (File file : Objects.requireNonNull(directory.listFiles())) {
                         if (!file.isDirectory()) {
@@ -548,7 +556,7 @@ public class Controlador {
                 setCambios(false);
                 this.tiempoGuardado = System.currentTimeMillis() / 1000;
                 if (this.fileguardar.getPath() != (String) datos) {
-                    File directory = new File(System.getProperty("user.dir") + "/deshacer");
+                    File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                     if (directory.exists()) {
                         for (File file : Objects.requireNonNull(directory.listFiles())) {
                             if (!file.isDirectory()) {
@@ -573,7 +581,7 @@ public class Controlador {
                 setCambios(false);
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
                 if (this.fileguardar.getPath() != (String) datos) {
-                    File directory = new File(System.getProperty("user.dir") + "/deshacer");
+                    File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                     if (directory.exists()) {
                         for (File file : Objects.requireNonNull(directory.listFiles())) {
                             if (!file.isDirectory()) {
@@ -594,6 +602,7 @@ public class Controlador {
                 String guardarPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
                 FileCopy(tempPath, guardarPath);
+
                 this.getTheGUIWorkSpace().setInactiva();
                 setCambios(false);
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
@@ -1760,8 +1769,8 @@ public class Controlador {
             case GUI_Principal_DESHACER2: {
                 String str = fileguardar.getPath().replace(".xml", "");
                 String ruta = "";
-                if (str.contains("projects"))
-                    ruta = str.replace("projects", "deshacer") + Integer.toString(this.contFicherosDeshacer - 2) + ".xml";
+                if (str.contains(DIRECTORY + PROJECTS))
+                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer - 2) + ".xml";
                 else if (str.contains("Examples"))
                     ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer - 2) + ".xml";
                 if (this.contFicherosDeshacer > 1)
@@ -1778,8 +1787,8 @@ public class Controlador {
                 String str = fileguardar.getPath().replace(".xml", "");
                 String ruta = "";
 
-                if (str.contains("projects"))
-                    ruta = str.replace("projects", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+                if (str.contains(DIRECTORY + PROJECTS))
+                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
                 else if (str.contains("Examples"))
                     ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
 
@@ -4527,8 +4536,8 @@ public class Controlador {
     private void guardarDeshacer() {
         String str = fileguardar.getPath().replace(".xml", "");
         String ruta = "";
-        if (str.contains("projects"))
-            ruta = str.replace("projects", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+        if (str.contains(DIRECTORY + PROJECTS))
+            ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
         else if (str.contains("Examples"))
             ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
         boolean existe = existe(ruta);
@@ -4606,7 +4615,7 @@ public class Controlador {
             in.close();
             out.close();
         } catch (IOException e) {
-            System.err.println(e);
+            //TODO mirar esto
         }
     }
 

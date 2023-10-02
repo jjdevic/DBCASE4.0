@@ -4,6 +4,7 @@ import vista.Lenguaje;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -61,15 +62,13 @@ public class ConectorAccessMdb extends ConectorAccessOdbc {
             // OutputStream out = new FileOutputStream(f2,true);
 
             // For Overwrite the file.
-            OutputStream out = new FileOutputStream(f2);
+            OutputStream out = Files.newOutputStream(f2.toPath());
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
             in.close();
             out.close();
             return true;
-        } catch (FileNotFoundException ex) {
-            return false;
         } catch (IOException e) {
             return false;
         }
