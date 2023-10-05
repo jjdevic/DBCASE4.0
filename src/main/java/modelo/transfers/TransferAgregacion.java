@@ -16,6 +16,8 @@ public class TransferAgregacion extends Transfer {
     private int volumen;//?
     private int frecuencia;//?
     private int offsetAttr = 0;//?
+    
+    //TODO Cambiar posicion por un vector de cuatro posiciones, para delimitar el rectángulo de la agregación
 
     public void CopiarAgregacion(TransferAgregacion agreg) {
         // TODO Auto-generated method stub

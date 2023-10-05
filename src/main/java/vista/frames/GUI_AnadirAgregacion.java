@@ -3,8 +3,12 @@ package vista.frames;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferAgregacion;
+import modelo.transfers.TransferAtributo;
+import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
+import vista.utils.AgregacionHelper;
 import vista.utils.ImagesPath;
 
 import javax.swing.*;
@@ -12,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Point2D;
 import java.util.Vector;
 
 public class GUI_AnadirAgregacion extends Parent_GUI {
@@ -78,6 +83,8 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
         pane.add(botonInsertar);
         botonInsertar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+            	
+            	//TODO Cambiar relacion a agregacion en la llamada
                 botonInsertarActionPerformed(relacion, cajaNombre.getText());
                 pane.dispose();
             }
@@ -113,6 +120,10 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
 
     private void botonInsertarActionPerformed(Transfer t, String nombre) {
         Vector<Object> v = new Vector<Object>();
+        
+        AgregacionHelper helper = new AgregacionHelper();
+        Vector<Point2D> completePosition = helper.calculateAggregationPosition((TransferAgregacion) t);
+        
         v.add(t);
         v.add(nombre);
         controlador.mensajeDesde_GUI(TC.GUIInsertarAgregacion, v);
