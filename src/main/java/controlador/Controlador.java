@@ -1,7 +1,6 @@
 package controlador;
 
 
-import com.sleepycat.je.tree.IN;
 import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
@@ -23,12 +22,14 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.Vector;
 
-import static vista.utils.Otros.DIRECTORY;
-import static vista.utils.Otros.INCIDENCES;
-import static vista.utils.Otros.PROJECTS;
+import static vista.utils.Otros.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {
+    //Recientes
+    private static final ArchivosRecientes archivosRecent = new ArchivosRecientes();
+    private static int valorZoom;
+    private static Stack<Document> pilaDeshacer;
     // GUIs
     private GUIPrincipal theGUIPrincipal;
     private GUI_SaveAs theGUIWorkSpace;
@@ -75,13 +76,10 @@ public class Controlador {
     private GUI_ModificarDominio theGUIModificarElementosDominio;
     //About
     private GUI_About about;
-    //Recientes
-    private static ArchivosRecientes archivosRecent = new ArchivosRecientes();
     //report
     private GUI_Report report;
     //manual
     private GUI_Zoom zoom;
-    private static int valorZoom;
     //manual
     private GUI_Manual manual;
     //galeria
@@ -94,7 +92,6 @@ public class Controlador {
     private GeneradorEsquema theServiciosSistema;
     private ServiciosReporte theServiciosReporte;
     private ServiciosAgregaciones theServiciosAgregaciones;
-
     //Otros
     private String path;
     private Vector<TransferAtributo> listaAtributos;
@@ -109,9 +106,8 @@ public class Controlador {
     private File filetemp;
     private File fileguardar;
     private GUI_Pregunta panelOpciones;
-    private Theme theme;
+    private final Theme theme;
     private int modoVista;
-    private static Stack<Document> pilaDeshacer;
     private Vector<TransferEntidad> listaEntidades;
     private Vector<TransferRelacion> listaRelaciones;
 
@@ -299,8 +295,6 @@ public class Controlador {
                     }
                     controlador.guardarDeshacer();
                 }
-
-
             }
         });
     }
@@ -327,6 +321,58 @@ public class Controlador {
                     Lenguaje.text(Lenguaje.ERROR_CREATING_FILE) + "\n" + ruta,
                     Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
             return false;
+        }
+    }
+
+    private static void quicksort(Vector<String> a) {
+        quicksort(a, 0, a.size() - 1);
+    }
+
+    // quicksort a[left] to a[right]
+    private static void quicksort(Vector<String> a, int left, int right) {
+        if (right <= left) return;
+        int i = partition(a, left, right);
+        quicksort(a, left, i - 1);
+        quicksort(a, i + 1, right);
+    }
+
+    // partition a[left] to a[right], assumes left < right
+    private static int partition(Vector<String> a, int left, int right) {
+        int i = left - 1;
+        int j = right;
+        while (true) {
+            while ((a.get(++i).compareToIgnoreCase(a.get(right)) < 0))      // find item on left to swap
+                ;                               // a[right] acts as sentinel
+            while ((a.get(right).compareToIgnoreCase(a.get(--j)) < 0))      // find item on right to swap
+                if (j == left) break;           // don't go out-of-bounds
+            if (i >= j) break;                  // check if pointers cross
+            exch(a, i, j);                      // swap two elements into place
+        }
+        exch(a, i, right);                      // swap with partition element
+        return i;
+    }
+
+    private static void exch(Vector<String> a, int i, int j) {
+        //exchanges++;
+        String swap = a.get(i);
+        a.set(i, a.get(j));
+        a.set(j, swap);
+    }
+
+    public static void FileCopy(String sourceFile, String destinationFile) {
+        try {
+            File inFile = new File(sourceFile);
+            File outFile = new File(destinationFile);
+
+            FileInputStream in = new FileInputStream(inFile);
+            FileOutputStream out = new FileOutputStream(outFile);
+
+            int c;
+            while ((c = in.read()) != -1) out.write(c);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            //TODO mirar esto
         }
     }
 
@@ -555,7 +601,7 @@ public class Controlador {
                 this.getTheGUIWorkSpace().setInactiva();
                 setCambios(false);
                 this.tiempoGuardado = System.currentTimeMillis() / 1000;
-                if (this.fileguardar.getPath() != (String) datos) {
+                if (this.fileguardar.getPath() != datos) {
                     File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                     if (directory.exists()) {
                         for (File file : Objects.requireNonNull(directory.listFiles())) {
@@ -580,7 +626,7 @@ public class Controlador {
                 this.getTheGUIWorkSpace().setInactiva();
                 setCambios(false);
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
-                if (this.fileguardar.getPath() != (String) datos) {
+                if (this.fileguardar.getPath() != datos) {
                     File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
                     if (directory.exists()) {
                         for (File file : Objects.requireNonNull(directory.listFiles())) {
@@ -608,7 +654,6 @@ public class Controlador {
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
                 break;
             }
-
             case GUI_WorkSpace_ERROR_CreacionFicherosXML: {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INITIAL_ERROR) + "\n" +
                         Lenguaje.text(Lenguaje.OF_XMLFILES) + "\n" + this.getPath(), Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
@@ -619,10 +664,8 @@ public class Controlador {
         }// Switch
     }
 
-
     // Mensajes que manda el Panel de Diseño al Controlador
     public void mensajeDesde_PanelDiseno(TC mensaje, Object datos) {
-
         long tiempoActual = System.currentTimeMillis() / 1000;
         long ti = (tiempoActual - this.tiempoGuardado);
         //System.out.println(ti);// lo que ha transcurrido en segundos desde la ultima ve que se guardo
@@ -727,7 +770,7 @@ public class Controlador {
                 int intAux = (int) v.get(2);
                 int respuesta = 0;
                 if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar == true) {
+                if (preguntar) {
                     String tieneAtributos = "";
                     if (!te.getListaAtributos().isEmpty())
                         tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
@@ -741,14 +784,14 @@ public class Controlador {
                 //Si quiere borrar la entidad
                 /*Se entrará con preguntar a false si se viene de eliminar una relación débil
                  * (para borrar también la entidad y sus atributos)*/
-                if ((respuesta == 0) || (preguntar == false)) {
+                if ((respuesta == 0) || (!preguntar)) {
                     // Eliminamos sus atributos
                     Vector lista_atributos = te.getListaAtributos();
                     int conta = 0;
                     TransferAtributo ta = new TransferAtributo(this);
                     while (lista_atributos != null && conta < lista_atributos.size()) {
                         String idAtributo = (String) lista_atributos.get(conta);
-                        ta.setIdAtributo(Integer.valueOf(idAtributo));
+                        ta.setIdAtributo(Integer.parseInt(idAtributo));
                         this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
                         conta++;
                     }
@@ -839,7 +882,7 @@ public class Controlador {
                 boolean preguntar = (Boolean) v.get(1);
                 int respuesta = 0;
                 if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar == true) {
+                if (preguntar) {
                     String eliminarSubatributos = "";
                     if (!ta.getListaComponentes().isEmpty())
                         eliminarSubatributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
@@ -944,7 +987,6 @@ public class Controlador {
                                 this.getTheServiciosRelaciones().aridadEntidadUnoUno(v);
                             }
                             i++;
-
                         }
                     }
                     if (respuesta1 == 0 && respuesta2 != 1) {
@@ -954,7 +996,7 @@ public class Controlador {
                         TransferAtributo ta = new TransferAtributo(this);
                         while (cont < lista_atributos.size()) {
                             String idAtributo = (String) lista_atributos.get(cont);
-                            ta.setIdAtributo(Integer.valueOf(idAtributo));
+                            ta.setIdAtributo(Integer.parseInt(idAtributo));
                             this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
                             cont++;
                         }
@@ -1003,7 +1045,7 @@ public class Controlador {
                         TransferAtributo tah = new TransferAtributo(this);
                         while (cont < lista_atributos.size()) {
                             String idAtributo = (String) lista_atributos.get(cont);
-                            tah.setIdAtributo(Integer.valueOf(idAtributo));
+                            tah.setIdAtributo(Integer.parseInt(idAtributo));
                             this.getTheServiciosAtributos().eliminarAtributo(tah, 1);
                             cont++;
                         }
@@ -1154,14 +1196,13 @@ public class Controlador {
                     i++;
                 }
                 if (encontrado) {
+                    Vector v = new Vector();
                     if (esEntidad) {
-                        Vector v = new Vector();
                         v.add(te);
                         v.add(ta);
                         v.add(antiguoNombre);
                         this.getTheServiciosEntidades().renombraUnique(v);
                     } else {//esRelacion
-                        Vector v = new Vector();
                         v.add(tr);
                         v.add(ta);
                         v.add(antiguoNombre);
@@ -1255,7 +1296,7 @@ public class Controlador {
                 boolean preguntar = (Boolean) v.get(1);
                 int respuesta = 0;
                 if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar == true) {
+                if (preguntar) {
                     respuesta = panelOpciones.setActiva(
                             Lenguaje.text(Lenguaje.ISA_RELATION_DELETE) + "\n" +
                                     Lenguaje.text(Lenguaje.WISH_CONTINUE),
@@ -1287,19 +1328,19 @@ public class Controlador {
                 Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
                 Vector<TransferEntidad> vte = new Vector<TransferEntidad>();
 
-                for (int i = 0; i < vtaAux.size(); ++i) {
-                    int id = Integer.valueOf((String) vtaAux.get(i));
-                    for (int j = 0; j < this.listaAtributos.size(); ++j) {
-                        if (id == this.listaAtributos.get(j).getIdAtributo()) vta.add(this.listaAtributos.get(j));
+                for (Object aux : vtaAux) {
+                    int id = Integer.parseInt((String) aux);
+                    for (TransferAtributo listaAtributo : this.listaAtributos) {
+                        if (id == listaAtributo.getIdAtributo()) vta.add(listaAtributo);
                     }
                 }
 
                 //this.antiguosAtributosRel = vta;
 
-                for (int i = 0; i < veya.size(); ++i) {
-                    int id = veya.get(i).getEntidad();
-                    for (int j = 0; j < this.listaEntidades.size(); ++j) {
-                        if (id == this.listaEntidades.get(j).getIdEntidad()) vte.add(this.listaEntidades.get(j));
+                for (EntidadYAridad entidadYAridad : veya) {
+                    int id = entidadYAridad.getEntidad();
+                    for (TransferEntidad listaEntidade : this.listaEntidades) {
+                        if (id == listaEntidade.getIdEntidad()) vte.add(listaEntidade);
                     }
                 }
 
@@ -1309,7 +1350,7 @@ public class Controlador {
                 boolean preguntar = (Boolean) v.get(1);
                 int respuesta = 0;
                 if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar == true) {
+                if (preguntar) {
                     String tieneAtributos = "";
                     if (!tr.getListaAtributos().isEmpty())
                         tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
@@ -1332,7 +1373,7 @@ public class Controlador {
                     TransferAtributo ta = new TransferAtributo(this);
                     while (conta < lista_atributos.size()) {
                         String idAtributo = (String) lista_atributos.get(conta);
-                        ta.setIdAtributo(Integer.valueOf(idAtributo));
+                        ta.setIdAtributo(Integer.parseInt(idAtributo));
                         this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
                         conta++;
                     }
@@ -1430,9 +1471,9 @@ public class Controlador {
                         if (ta.getDominio().equals(dominioEliminado)) {
                             Vector<Object> v = new Vector();
                             v.add(ta);
-                            String valorB = new String();
+                            String valorB;
                             if (valorBase.name().equals("TEXT") || valorBase.name().equals("VARCHAR"))
-                                valorB = valorBase.toString() + "(20)";
+                                valorB = valorBase + "(20)";
                             else valorB = valorBase.toString();
 
                             v.add(valorB);
@@ -1493,7 +1534,7 @@ public class Controlador {
                     TransferEntidad nueva = new TransferEntidad();
                     Point2D punto = (Point2D) datos;
                     nueva.setPosicion(punto);
-                    nueva.setNombre(te.getNombre() + Integer.toString(p));
+                    nueva.setNombre(te.getNombre() + p);
                     nueva.setDebil(te.isDebil());
                     nueva.setListaAtributos(new Vector());
                     nueva.setListaRelaciones(new Vector());
@@ -1501,38 +1542,39 @@ public class Controlador {
                     nueva.setListaRestricciones(new Vector());
                     nueva.setListaUniques(new Vector());
                     this.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, nueva);
-				/*Vector<TransferAtributo> atributos = te.getListaAtributos();
-				for (int i = 0; i < atributos.size(); ++i) {
-					for (int j = 0; j < this.listaAtributos.size(); ++j) {
-						//System.out.println(atributos.get(i));
-						//System.out.println(this.listaAtributos.get(j).getIdAtributo());
-						if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
-							Vector<Object> v = new Vector<Object>();
-							v.add(nueva);
-							TransferAtributo TA = this.listaAtributos.get(j);
-							TransferAtributo nuevoTA = new TransferAtributo(this);
-							double x = nueva.getPosicion().getX();
-							double y = nueva.getPosicion().getY();
-							nuevoTA.setPosicion(new Point2D.Double(x,y));
-							nuevoTA.setClavePrimaria(TA.getClavePrimaria());
-							nuevoTA.setCompuesto(TA.getCompuesto());
-							nuevoTA.setDominio(TA.getDominio());
-							nuevoTA.setFrecuencia(TA.getFrecuencia());
-							nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
-							nuevoTA.setListaComponentes(TA.getListaComponentes());
-							nuevoTA.setListaRestricciones(TA.getListaComponentes());
-							nuevoTA.setMultivalorado(TA.getMultivalorado());
-							nuevoTA.setNombre(TA.getNombre());
-							nuevoTA.setNotnull(TA.getNotnull());
-							nuevoTA.setUnique(TA.getUnique());
-							nuevoTA.setVolumen(TA.getVolumen());
-							v.add(nuevoTA);
-							v.add("10");
-							mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
-						}
-					}
 
-				}*/
+                    /*Vector<TransferAtributo> atributos = te.getListaAtributos();
+				        for (int i = 0; i < atributos.size(); ++i) {
+					        for (int j = 0; j < this.listaAtributos.size(); ++j) {
+                            //System.out.println(atributos.get(i));
+                            //System.out.println(this.listaAtributos.get(j).getIdAtributo());
+                            if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
+                                Vector<Object> v = new Vector<Object>();
+                                v.add(nueva);
+                                TransferAtributo TA = this.listaAtributos.get(j);
+                                TransferAtributo nuevoTA = new TransferAtributo(this);
+                                double x = nueva.getPosicion().getX();
+                                double y = nueva.getPosicion().getY();
+                                nuevoTA.setPosicion(new Point2D.Double(x,y));
+                                nuevoTA.setClavePrimaria(TA.getClavePrimaria());
+                                nuevoTA.setCompuesto(TA.getCompuesto());
+                                nuevoTA.setDominio(TA.getDominio());
+                                nuevoTA.setFrecuencia(TA.getFrecuencia());
+                                nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
+                                nuevoTA.setListaComponentes(TA.getListaComponentes());
+                                nuevoTA.setListaRestricciones(TA.getListaComponentes());
+                                nuevoTA.setMultivalorado(TA.getMultivalorado());
+                                nuevoTA.setNombre(TA.getNombre());
+                                nuevoTA.setNotnull(TA.getNotnull());
+                                nuevoTA.setUnique(TA.getUnique());
+                                nuevoTA.setVolumen(TA.getVolumen());
+                                v.add(nuevoTA);
+                                v.add("10");
+                                mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
+						    }
+					    }
+				    }*/
+
                     //nueva.setListaClavesPrimarias(te.getListaClavesPrimarias());
                     nueva.setListaRestricciones(te.getListaRestricciones());
                     nueva.setListaUniques(te.getListaUniques());
@@ -1554,7 +1596,7 @@ public class Controlador {
                         this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarRelacionIsA, tr.getPosicion());
                     } else {
 
-                        nueva.setNombre(tr.getNombre() + Integer.toString(p));
+                        nueva.setNombre(tr.getNombre() + p);
                         nueva.setCheckQuitarFlechas(tr.getCheckQuitarFlechas());
                         nueva.setListaEntidadesYAridades(new Vector<EntidadYAridad>());
                         nueva.setFrecuencia(tr.getFrecuencia());
@@ -1572,106 +1614,103 @@ public class Controlador {
                         nueva.setListaAtributos(new Vector());
                         this.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, nueva);
                         Vector<TransferAtributo> atributos = tr.getListaAtributos();
-					/*for (int i = 0; i < atributos.size(); ++i) {
-						for (int j = 0; j < this.listaAtributos.size(); ++j) {
-							//System.out.println(atributos.get(i));
-							//System.out.println(this.listaAtributos.get(j).getIdAtributo());
-							if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
-								Vector<Object> v = new Vector<Object>();
-								v.add(nueva);
-								TransferAtributo TA = this.listaAtributos.get(j);
-								TransferAtributo nuevoTA = new TransferAtributo(this);
-								double x = nueva.getPosicion().getX();
-								double y = nueva.getPosicion().getY();
-								nuevoTA.setPosicion(new Point2D.Double(x,y));
-								nuevoTA.setClavePrimaria(TA.getClavePrimaria());
-								nuevoTA.setCompuesto(TA.getCompuesto());
-								nuevoTA.setDominio(TA.getDominio());
-								nuevoTA.setFrecuencia(TA.getFrecuencia());
-								nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
-								nuevoTA.setListaComponentes(TA.getListaComponentes());
-								nuevoTA.setListaRestricciones(TA.getListaComponentes());
-								nuevoTA.setMultivalorado(TA.getMultivalorado());
-								nuevoTA.setNombre(TA.getNombre());
-								nuevoTA.setNotnull(TA.getNotnull());
-								nuevoTA.setUnique(TA.getUnique());
-								nuevoTA.setVolumen(TA.getVolumen());
-								v.add(nuevoTA);
-								v.add("10");
-								mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
-							}
-						}
 
-					}*/
+                        /*for (int i = 0; i < atributos.size(); ++i) {
+                            for (int j = 0; j < this.listaAtributos.size(); ++j) {
+                                //System.out.println(atributos.get(i));
+                                //System.out.println(this.listaAtributos.get(j).getIdAtributo());
+                                if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
+                                    Vector<Object> v = new Vector<Object>();
+                                    v.add(nueva);
+                                    TransferAtributo TA = this.listaAtributos.get(j);
+                                    TransferAtributo nuevoTA = new TransferAtributo(this);
+                                    double x = nueva.getPosicion().getX();
+                                    double y = nueva.getPosicion().getY();
+                                    nuevoTA.setPosicion(new Point2D.Double(x,y));
+                                    nuevoTA.setClavePrimaria(TA.getClavePrimaria());
+                                    nuevoTA.setCompuesto(TA.getCompuesto());
+                                    nuevoTA.setDominio(TA.getDominio());
+                                    nuevoTA.setFrecuencia(TA.getFrecuencia());
+                                    nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
+                                    nuevoTA.setListaComponentes(TA.getListaComponentes());
+                                    nuevoTA.setListaRestricciones(TA.getListaComponentes());
+                                    nuevoTA.setMultivalorado(TA.getMultivalorado());
+                                    nuevoTA.setNombre(TA.getNombre());
+                                    nuevoTA.setNotnull(TA.getNotnull());
+                                    nuevoTA.setUnique(TA.getUnique());
+                                    nuevoTA.setVolumen(TA.getVolumen());
+                                    v.add(nuevoTA);
+                                    v.add("10");
+                                    mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
+                                }
+                            }
+                        }*/
+
                         tr.setPegado(p + 1);
                         ActualizaArbol(tr);
-
                     }
                 }
 
                 if (this.copiado instanceof TransferAtributo) {
                     return;
-				/*TransferAtributo ta = (TransferAtributo) copiado;
-				int p = ta.getPegado();
-				TransferAtributo nuevo = new TransferAtributo(this);
-				Point2D punto = (Point2D) datos;
-				nuevo.setPosicion(punto);
-				//obtenemos a que elemento pertenece
-				Transfer elem_mod = this.getTheServiciosAtributos().eliminaRefererenciasAlAtributo(ta);
-				nuevo.setClavePrimaria(ta.getClavePrimaria());
-				nuevo.setCompuesto(ta.getCompuesto());
-				nuevo.setDominio(ta.getDominio());
-				nuevo.setNombre(ta.getNombre() + Integer.toString(p));
-				nuevo.setIdAtributo(ta.getIdAtributo() + 10);
-				nuevo.setMultivalorado(ta.getMultivalorado());
-				nuevo.setNotnull(ta.getNotnull());
-				nuevo.setUnique(ta.getUnique());
-				nuevo.setSubatributo(ta.isSubatributo());
-				nuevo.setVolumen(ta.getVolumen());
-				nuevo.setListaComponentes(ta.getListaComponentes());
-				nuevo.setFrecuencia(ta.getFrecuencia());
-				nuevo.setListaRestricciones(ta.getListaRestricciones());
-				double x = elem_mod.getPosicion().getX();
-				double y = elem_mod.getPosicion().getY();
-				nuevo.setPosicion(new Point2D.Double(x,y));
+                    /*TransferAtributo ta = (TransferAtributo) copiado;
+                    int p = ta.getPegado();
+                    TransferAtributo nuevo = new TransferAtributo(this);
+                    Point2D punto = (Point2D) datos;
+                    nuevo.setPosicion(punto);
+                    //obtenemos a que elemento pertenece
+                    Transfer elem_mod = this.getTheServiciosAtributos().eliminaRefererenciasAlAtributo(ta);
+                    nuevo.setClavePrimaria(ta.getClavePrimaria());
+                    nuevo.setCompuesto(ta.getCompuesto());
+                    nuevo.setDominio(ta.getDominio());
+                    nuevo.setNombre(ta.getNombre() + Integer.toString(p));
+                    nuevo.setIdAtributo(ta.getIdAtributo() + 10);
+                    nuevo.setMultivalorado(ta.getMultivalorado());
+                    nuevo.setNotnull(ta.getNotnull());
+                    nuevo.setUnique(ta.getUnique());
+                    nuevo.setSubatributo(ta.isSubatributo());
+                    nuevo.setVolumen(ta.getVolumen());
+                    nuevo.setListaComponentes(ta.getListaComponentes());
+                    nuevo.setFrecuencia(ta.getFrecuencia());
+                    nuevo.setListaRestricciones(ta.getListaRestricciones());
+                    double x = elem_mod.getPosicion().getX();
+                    double y = elem_mod.getPosicion().getY();
+                    nuevo.setPosicion(new Point2D.Double(x,y));
 
-				if(elem_mod instanceof TransferEntidad) {
-					Vector<Object> v = new Vector<Object>();
-					v.add(elem_mod);
-					v.add(nuevo);
-					v.add("10");
-					mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
-				}
+                    if(elem_mod instanceof TransferEntidad) {
+                        Vector<Object> v = new Vector<Object>();
+                        v.add(elem_mod);
+                        v.add(nuevo);
+                        v.add("10");
+                        mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
+                    }
 
-				else if(elem_mod instanceof TransferRelacion) {
-					Vector<Object> v = new Vector<Object>();
-					v.add(elem_mod);
-					v.add(nuevo);
-					v.add("10");
-					mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
-				}
+                    else if(elem_mod instanceof TransferRelacion) {
+                        Vector<Object> v = new Vector<Object>();
+                        v.add(elem_mod);
+                        v.add(nuevo);
+                        v.add("10");
+                        mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
+                    }
 
-				else if(elem_mod instanceof TransferAtributo) {
-					Vector<Object> v = new Vector<Object>();
-					v.add(elem_mod);
-					v.add(nuevo);
-					v.add("10");
-					mensajeDesde_GUI(TC.GUIAnadirSubAtributoAtributo_Click_BotonAnadir, v);
-				}
+                    else if(elem_mod instanceof TransferAtributo) {
+                        Vector<Object> v = new Vector<Object>();
+                        v.add(elem_mod);
+                        v.add(nuevo);
+                        v.add("10");
+                        mensajeDesde_GUI(TC.GUIAnadirSubAtributoAtributo_Click_BotonAnadir, v);
+                    }
 
-				ta.setPegado(p + 1);
-				ActualizaArbol(ta);
-				*/
+                    ta.setPegado(p + 1);
+                    ActualizaArbol(ta);
+                    */
                 }
-
                 break;
             }
-
             default:
                 break;
         } // switch
     }
-
 
     private GUI_RenombrarAgregacion getTheGUIRenombrarAgregacion() {
         // TODO Auto-generated method stub
@@ -1770,9 +1809,9 @@ public class Controlador {
                 String str = fileguardar.getPath().replace(".xml", "");
                 String ruta = "";
                 if (str.contains(DIRECTORY + PROJECTS))
-                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer - 2) + ".xml";
+                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + (this.contFicherosDeshacer - 2) + ".xml";
                 else if (str.contains("Examples"))
-                    ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer - 2) + ".xml";
+                    ruta = str.replace("Examples", "deshacer") + (this.contFicherosDeshacer - 2) + ".xml";
                 if (this.contFicherosDeshacer > 1)
                     this.mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Click_Abrir_Deshacer, ruta);
                 else return;
@@ -1788,11 +1827,11 @@ public class Controlador {
                 String ruta = "";
 
                 if (str.contains(DIRECTORY + PROJECTS))
-                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+                    ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + this.contFicherosDeshacer + ".xml";
                 else if (str.contains("Examples"))
-                    ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+                    ruta = str.replace("Examples", "deshacer") + this.contFicherosDeshacer + ".xml";
 
-                if (this.contFicherosDeshacer == this.limiteFicherosDeshacer || this.auxDeshacer == true) return;
+                if (this.contFicherosDeshacer == this.limiteFicherosDeshacer || this.auxDeshacer) return;
                 this.mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Click_Abrir_Deshacer, ruta);
                 ++this.contFicherosDeshacer;
                 setCambios(true);
@@ -1992,20 +2031,18 @@ public class Controlador {
                     DAORelaciones daoRelaciones = new DAORelaciones(this.getPath());
                     Vector<TransferRelacion> listaR = daoRelaciones.ListaDeRelaciones();
 
-                    for (int i = 0; i < listaE.size(); ++i) {
-                        TransferEntidad transferE = listaE.get(i);
+                    for (TransferEntidad transferE : listaE) {
                         Vector<String> listaA = transferE.getListaAtributos();
-                        for (int j = 0; j < listaA.size(); ++j) {
-                            if (listaA.get(j).equals(Integer.toString(ta.getIdAtributo()))) {
+                        for (String s : listaA) {
+                            if (s.equals(Integer.toString(ta.getIdAtributo()))) {
                                 nombrePadre = transferE.getNombre();
                             }
                         }
                     }
-                    for (int i = 0; i < listaR.size(); ++i) {
-                        TransferRelacion transferR = listaR.get(i);
+                    for (TransferRelacion transferR : listaR) {
                         Vector<String> listaA = transferR.getListaAtributos();
-                        for (int j = 0; j < listaA.size(); ++j) {
-                            if (listaA.get(j).equals(Integer.toString(ta.getIdAtributo()))) {
+                        for (String s : listaA) {
+                            if (s.equals(Integer.toString(ta.getIdAtributo()))) {
                                 nombrePadre = transferR.getNombre();
                             }
                         }
@@ -2244,11 +2281,11 @@ public class Controlador {
                 Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
                 TransferEntidad te = new TransferEntidad();
                 boolean encontrado = false;
-                for (int i = 0; i < entidades.size(); ++i) {
-                    Vector<String> atributos = entidades.get(i).getListaAtributos();
-                    for (int j = 0; j < atributos.size(); j++) {
-                        if (atributos.get(j).equals(Integer.toString(ta.getIdAtributo()))) {
-                            te = entidades.get(i);
+                for (TransferEntidad entidade : entidades) {
+                    Vector<String> atributos = entidade.getListaAtributos();
+                    for (String atributo : atributos) {
+                        if (atributo.equals(Integer.toString(ta.getIdAtributo()))) {
+                            te = entidade;
                             encontrado = true;
                         }
                     }
@@ -2284,7 +2321,7 @@ public class Controlador {
                 String nuevoNombre = (String) v.get(1);
                 boolean debilitar = (boolean) v.get(2);
                 //Si se ha modificado su nombre la renombramos
-                if (te.getNombre() != nuevoNombre) {
+                if (!Objects.equals(te.getNombre(), nuevoNombre)) {
                     Vector<Object> v1 = new Vector<Object>();
                     v1.add(te);
                     v1.add(nuevoNombre);
@@ -2332,11 +2369,10 @@ public class Controlador {
                     DAORelaciones dao = new DAORelaciones(this.getPath());
                     Vector<TransferRelacion> lista_relaciones = dao.ListaDeRelaciones();
                     //this.getTheServiciosRelaciones().restablecerDebilidadRelaciones();
-                    for (int i = 0; i < lista_relaciones.size(); ++i) {
-                        TransferRelacion tr = lista_relaciones.get(i);
+                    for (TransferRelacion tr : lista_relaciones) {
                         Vector<EntidadYAridad> eya = tr.getListaEntidadesYAridades();
-                        for (int j = 0; j < eya.size(); ++j) {
-                            if (eya.get(j).getEntidad() == te.getIdEntidad() && tr.getTipo().equals("Debil"))
+                        for (EntidadYAridad entidadYAridad : eya) {
+                            if (entidadYAridad.getEntidad() == te.getIdEntidad() && tr.getTipo().equals("Debil"))
                                 this.getTheServiciosRelaciones().debilitarRelacion(tr);
                         }
                     }
@@ -2361,21 +2397,21 @@ public class Controlador {
             case GUIAnadirAtributoEntidad_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
                 this.getTheServiciosEntidades().anadirAtributo(vectorTransfers);
-                ActualizaArbol((Transfer) vectorTransfers.get(1));
+                ActualizaArbol(vectorTransfers.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
             }
             case GUIAnadirAtributoAgregacion_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
                 this.getTheServiciosAgregaciones().anadirAtributo(vectorTransfers);
-                ActualizaArbol((Transfer) vectorTransfers.get(1));
+                ActualizaArbol(vectorTransfers.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
             }
             case GUIAnadirAtributoRelacion_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
                 this.getTheServiciosRelaciones().anadirAtributo(vectorTransfers);
-                ActualizaArbol((Transfer) vectorTransfers.get(1));
+                ActualizaArbol(vectorTransfers.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
             }
@@ -2520,7 +2556,7 @@ public class Controlador {
             case GUIAnadirSubAtributoAtributo_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
                 this.getTheServiciosAtributos().anadirAtributo(vectorTransfers);
-                ActualizaArbol((Transfer) vectorTransfers.get(1));
+                ActualizaArbol(vectorTransfers.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
             }
@@ -2574,7 +2610,7 @@ public class Controlador {
             case GUIEstablecerEntidadPadre_ClickBotonAceptar: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
                 this.getTheServiciosRelaciones().establecerEntidadPadreEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol((Transfer) relacionIsAyEntidadPadre.get(0));
+                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
             }
@@ -2582,32 +2618,28 @@ public class Controlador {
                 TransferRelacion tr = (TransferRelacion) datos;
                 //this.idPadreAntigua = tr.getEntidadYAridad(0).getEntidad();
                 Vector<EntidadYAridad> eyaV = tr.getListaEntidadesYAridades();
-                EntidadYAridad eya = (EntidadYAridad) eyaV.get(0);
+                EntidadYAridad eya = eyaV.get(0);
                 int idPadre = eya.getEntidad();
                 TransferEntidad te = new TransferEntidad();
-                for (int i = 0; i < this.listaEntidades.size(); ++i) {
-                    if (idPadre == this.listaEntidades.get(i).getIdEntidad())
-                        this.padreAntiguo = this.listaEntidades.get(i);
+                for (TransferEntidad listaEntidade : this.listaEntidades) {
+                    if (idPadre == listaEntidade.getIdEntidad())
+                        this.padreAntiguo = listaEntidade;
                 }
 
                 //obtenemos las hijas
                 Vector<TransferEntidad> th = new Vector<TransferEntidad>();
                 Vector<EntidadYAridad> hijas = new Vector<EntidadYAridad>();
                 for (int i = 1; i < eyaV.size(); i++) {
-                    EntidadYAridad eyaH = (EntidadYAridad) eyaV.get(i);
+                    EntidadYAridad eyaH = eyaV.get(i);
                     hijas.add(eyaH);
                 }
-
-                for (int i = 0; i < hijas.size(); ++i) {
-                    EntidadYAridad e = (EntidadYAridad) hijas.get(i);
+                for (EntidadYAridad e : hijas) {
                     int idHija = e.getEntidad();
                     for (int j = 0; j < this.listaEntidades.size(); ++j) {
                         if (idHija == this.listaEntidades.get(j).getIdEntidad()) th.add(this.listaEntidades.get(j));
                     }
                 }
-
                 this.hijosAntiguo = th;
-
 
                 this.getTheServiciosRelaciones().quitarEntidadPadreEnRelacionIsA(tr);
                 ActualizaArbol(tr);
@@ -2621,7 +2653,7 @@ public class Controlador {
             case GUIAnadirEntidadHija_ClickBotonAnadir: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
                 this.getTheServiciosRelaciones().anadirEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol((Transfer) relacionIsAyEntidadPadre.get(0));
+                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
             }
@@ -2632,7 +2664,7 @@ public class Controlador {
             case GUIQuitarEntidadHija_ClickBotonQuitar: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
                 this.getTheServiciosRelaciones().quitarEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol((Transfer) relacionIsAyEntidadPadre.get(0));
+                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
             }
@@ -2665,8 +2697,8 @@ public class Controlador {
                 boolean relDebil = tr.getTipo().equals("Debil");
                 boolean entDebil = te.isDebil();
                 boolean relTieneEntDebil = false;
-                for (int i = 0; i < vectorTupla.size(); i++) {
-                    int entidad = vectorTupla.get(i).getEntidad();
+                for (EntidadYAridad entidadYAridad : vectorTupla) {
+                    int entidad = entidadYAridad.getEntidad();
                     if (this.getTheServiciosEntidades().esDebil(entidad)) {
                         relTieneEntDebil = true;
                         break;
@@ -2789,24 +2821,20 @@ public class Controlador {
         } // Switch
     }
 
-
     private void borrarSiguientesDeshacer() {
         File directory = new File(System.getProperty("user.dir") + "/deshacer");
         if (directory.exists()) {
             for (File file : Objects.requireNonNull(directory.listFiles())) {
                 if (!file.isDirectory()) {
                     String str = file.getAbsolutePath();
-
                     file.delete();
                 }
             }
         }
     }
 
-
     // Mensajes que mandan los Servicios de Entidades al Controlador
     public void mensajeDesde_SE(TC mensaje, Object datos) {
-
         int intAux = 2;
         if (mensaje == TC.SE_EliminarEntidad_HECHO) {
             Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion de la relacion venga de eliminar entidad debil
@@ -2827,14 +2855,12 @@ public class Controlador {
                 this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
                 this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
 
-
         switch (mensaje) {
-
             /*
              * Listar entidades
              */
@@ -2855,45 +2881,38 @@ public class Controlador {
              * Insercion de entidades
              */
             case SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
             case SE_InsertarRelacion_ERROR_NombreDeEntidadYaExisteComoAgregacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
             case SE_InsertarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_InsertarEntidad_ERROR_DAO: {
                 this.getTheGUIInsertarEntidad().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_InsertarEntidad_HECHO: {
@@ -2911,41 +2930,26 @@ public class Controlador {
              * Renombrar entidades
              */
             case SE_RenombrarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_ERROR_DAOEntidades: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_ERROR_DAORelaciones: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
                 setCambios(true);
@@ -2958,13 +2962,10 @@ public class Controlador {
              * Debilitar/Fortalecer una entidad
              */
             case SE_DebilitarEntidad_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_DebilitarEntidad_HECHO: {
-
-
                 TransferEntidad te = (TransferEntidad) datos;
                 setCambios(true);
                 ActualizaArbol(te);
@@ -2975,46 +2976,33 @@ public class Controlador {
              * Añadir atributo a una relacion
              */
             case SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_AnadirAtributoAEntidad_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE3), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_AnadirAtributoAEntidad_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_AnadirAtributoAEntidad_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SE_AnadirAtributoAEntidad_ERROR_DAOEntidades: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SE_AnadirAtributoAEntidad_HECHO: {
-
-
                 Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAEntidad, v);
@@ -3022,10 +3010,12 @@ public class Controlador {
                 //meter un if para cuando ya este
                 TransferAtributo ta = (TransferAtributo) v.get(1);
                 boolean esta = false;
-                for (int i = 0; i < this.listaAtributos.size(); ++i) {
-                    if (ta.getIdAtributo() == this.listaAtributos.get(i).getIdAtributo()) esta = true;
+                for (TransferAtributo listaAtributo : this.listaAtributos) {
+                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
+                        esta = true;
+                        break;
+                    }
                 }
-
                 if (!esta) this.listaAtributos.add(ta);
                 break;
             }
@@ -3034,16 +3024,10 @@ public class Controlador {
              */
             case SE_EliminarEntidad_ERROR_DAOEntidades: {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
                 break;
             }
             case SE_EliminarEntidad_HECHO: {
-
-
-                ((Vector) datos).get(0);
                 setCambios(true);
-                ((Vector) datos).get(1);
-
                 ActualizaArbol(null);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarEntidad, datos);
                 break;
@@ -3059,14 +3043,12 @@ public class Controlador {
                 break;
             }
             case SE_MoverPosicionEntidad_HECHO: {
-
-
                 setCambios(true);
                 TransferEntidad te = (TransferEntidad) datos;
                 this.posAux = te.getPosicion();
-                for (int i = 0; i < this.listaEntidades.size(); ++i) {
-                    if (te.getNombre() == this.listaEntidades.get(i).getNombre()) {
-                        posAux = this.listaEntidades.get(i).getPosicion();
+                for (TransferEntidad listaEntidade : this.listaEntidades) {
+                    if (Objects.equals(te.getNombre(), listaEntidade.getNombre())) {
+                        posAux = listaEntidade.getPosicion();
                     }
                 }
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverEntidad_HECHO, te);
@@ -3076,35 +3058,24 @@ public class Controlador {
              * Restricciones a entidad
              */
             case SE_AnadirRestriccionAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionEntidad, te);
                 //this.getTheGUIAnadirRestriccionAEntidad().setInactiva();
                 break;
             }
             case SE_QuitarRestriccionAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionEntidad, te);
                 break;
             }
             case SE_setRestriccionesAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesEntidad, te);
                 break;
             }
@@ -3112,33 +3083,23 @@ public class Controlador {
              * Restricciones a entidad
              */
             case SE_AnadirUniqueAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
                 TransferEntidad clon_entidad = te.clonar();
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirUniqueEntidad, clon_entidad);
                 //this.getTheGUIAnadirRestriccionAEntidad().setInactiva();
                 break;
             }
             case SE_QuitarUniqueAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
                 TransferEntidad clon_entidad = te.clonar();
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarUniqueEntidad, clon_entidad);
                 break;
             }
             case SE_setUniquesAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(1);
                 TransferEntidad clon_entidad = te.clonar();
@@ -3148,8 +3109,6 @@ public class Controlador {
                 break;
             }
             case SE_setUniqueUnitarioAEntidad_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
                 TransferEntidad clon_entidad = te.clonar();
@@ -3161,24 +3120,21 @@ public class Controlador {
                 break;
         } // switch
     }
+    //Utilidades
 
     // Mensajes que mandan los Servicios de Dominios al Controlador
     public void mensajeDesde_SD(TC mensaje, Object datos) {
-
-
         if (mensaje == TC.SD_InsertarDominio_HECHO || mensaje == TC.SD_RenombrarDominio_HECHO || mensaje == TC.SD_EliminarDominio_HECHO) {
             //this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;
 
-
             this.guardarDeshacer();
-
             this.auxDeshacer = true;
             if (this.getContFicherosDeshacer() == 1)
                 this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
                 this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
@@ -3202,36 +3158,28 @@ public class Controlador {
              * Insercion de dominios
              */
             case SD_InsertarDominio_ERROR_NombreDeDominioEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_InsertarDominio_ERROR_NombreDeDominioYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_InsertarDominio_ERROR_DAO: {
                 this.getTheGUIInsertarDominio().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_InsertarDominio_ERROR_ValorNoValido: {
                 Vector v = (Vector) datos;
-                v.get(0);
                 String error = (String) v.get(1);
                 JOptionPane.showMessageDialog(null, error, Lenguaje.text(Lenguaje.ERROR), 0);
-
                 break;
             }
             case SD_InsertarDominio_HECHO: {
-
-
                 this.getTheGUIInsertarDominio().setInactiva();
                 TransferDominio td = (TransferDominio) datos;
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarDominio, td);
                 break;
             }
@@ -3240,35 +3188,20 @@ public class Controlador {
              * Renombrar dominios
              */
             case SD_RenombrarDominio_ERROR_NombreDeDominioEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_RenombrarDominio_ERROR_NombreDeDominioYaExiste: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_RenombrarDominio_ERROR_DAODominios: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_RenombrarDominio_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferDominio td = (TransferDominio) v.get(0);
-                v.get(1);
-                v.get(2);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarDominio, td);
@@ -3279,13 +3212,10 @@ public class Controlador {
              * Elimimacion de un dominio
              */
             case SD_EliminarDominio_ERROR_DAODominios: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_EliminarDominio_HECHO: {
-
-
                 setCambios(true);
                 TransferDominio td = (TransferDominio) ((Vector) datos).get(0);
 
@@ -3296,8 +3226,6 @@ public class Controlador {
              * Modificar dominios
              */
             case SD_ModificarTipoBaseDominio_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferDominio td = (TransferDominio) v.get(0);
@@ -3306,23 +3234,14 @@ public class Controlador {
                 break;
             }
             case SD_ModificarTipoBaseDominio_ERROR_DAODominios: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_ModificarTipoBaseDominio_ERROR_TipoBaseDominioEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_TYPE_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_TYPE_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_ModificarElementosDominio_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferDominio td = (TransferDominio) v.get(0);
@@ -3332,24 +3251,15 @@ public class Controlador {
                 break;
             }
             case SD_ModificarElementosDominio_ERROR_DAODominios: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_VALUES), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_VALUES), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SD_ModificarElementosDominio_ERROR_ValorNoValido: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_VALUE), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_VALUE), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             default:
@@ -3380,22 +3290,19 @@ public class Controlador {
             //this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;
 
-
             this.guardarDeshacer();
-
             this.auxDeshacer = true;
             if (this.getContFicherosDeshacer() == 1)
                 this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
                 this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
 
 
         switch (mensaje) {
-
             case SA_ListarAtributos_HECHO: {
                 // Ponemos la lista de atributos actualizada a las GUIs que lo necesitan
                 this.getTheGUIPrincipal().setListaAtributos((Vector) datos);
@@ -3406,7 +3313,7 @@ public class Controlador {
              * Eliminacion de atributos
              */
             case SA_EliminarAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EliminarAtributo_HECHO: {
@@ -3423,29 +3330,18 @@ public class Controlador {
              * Renombrar atributo
              */
             case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_RenombrarAtributo_ERROR_DAOAtributos: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_RenombrarAtributo_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
@@ -3466,42 +3362,32 @@ public class Controlador {
              * Editar dominio atributo
              */
             case SA_EditarDominioAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarDominioAtributo_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarDominioAtributo_HECHO: {
-
-
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarDominioAtributo, ta);
                 this.getTheGUIEditarDominioAtributo().setInactiva();
-
                 break;
             }
             /*
              * Editar caracter compuesto de atributo
              */
             case SA_EditarCompuestoAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarCompuestoAtributo_HECHO: {
-
-
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 ta.getNombre();
@@ -3514,13 +3400,10 @@ public class Controlador {
              * Editar caracter multivalorado de atributo
              */
             case SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarMultivaloradoAtributo_HECHO: {
-
-
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 ActualizaArbol(ta);
@@ -3529,13 +3412,10 @@ public class Controlador {
             }
 
             case SA_EditarNotNullAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarNotNullAtributo_HECHO: {
-
-
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarNotNullAtributo, ta);
@@ -3551,8 +3431,6 @@ public class Controlador {
                 break;
             }
             case SA_EditarUniqueAtributo_HECHO: {
-
-
                 setCambios(true);
                 Vector<Object> ve = (Vector<Object>) datos;
                 TransferAtributo ta = (TransferAtributo) ve.get(0);
@@ -3565,67 +3443,44 @@ public class Controlador {
              * Añadir un subatributo a un atributo
              */
             case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio: {
-                Vector v = (Vector) datos;
-                v.get(0);
-
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_SUBATTR_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_SUBATTR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_AnadirSubAtributoAtributo_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirSubAtributoAAtributo, v);
                 this.getTheGUIAnadirSubAtributoAtributo().setInactiva();
 
                 TransferAtributo ta = (TransferAtributo) v.get(1);
                 boolean esta = false;
-                for (int i = 0; i < this.listaAtributos.size(); ++i) {
-                    if (ta.getIdAtributo() == this.listaAtributos.get(i).getIdAtributo()) esta = true;
+                for (TransferAtributo listaAtributo : this.listaAtributos) {
+                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
+                        esta = true;
+                        break;
+                    }
                 }
-
                 if (!esta) this.listaAtributos.add(ta);
                 break;
             }
@@ -3633,19 +3488,12 @@ public class Controlador {
              * Editar atributo como clave primaria de una entidad
              */
             case SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades: {
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarClavePrimariaAtributo_HECHO: {
-
-
                 setCambios(true);
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(0);
-                vt.get(1);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarClavePrimariaAtributo, vt);
                 break;
             }
@@ -3653,35 +3501,25 @@ public class Controlador {
              * Restricciones a Atributo
              */
             case SA_AnadirRestriccionAAtributo_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferAtributo te = (TransferAtributo) v.get(0);
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionAtributo, te);
                 //this.getTheGUIAnadirRestriccionAAtributo().setInactiva();
                 break;
             }
             case SA_QuitarRestriccionAAtributo_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferAtributo te = (TransferAtributo) v.get(0);
-                v.get(1);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionAtributo, te);
                 break;
             }
             case SA_setRestriccionesAAtributo_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferAtributo te = (TransferAtributo) v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesAtributo, te);
                 break;
             }
@@ -3690,14 +3528,11 @@ public class Controlador {
              */
             case SA_MoverPosicionAtributo_ERROR_DAOAtributos: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_ERROR, ta);
                 break;
             }
             case SA_MoverPosicionAtributo_HECHO: {
-
-
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_HECHO, ta);
@@ -3710,12 +3545,9 @@ public class Controlador {
 
     //mensajes que manda el ServivioAgregaciones al controlador
     public void mensajeDesde_AG(TC mensaje, Object datos) {
-
         if (mensaje == TC.SAG_RenombrarAgregacion_HECHO || mensaje == TC.SAG_InsertarAgregacion_HECHO || mensaje == TC.SAG_AnadirAtributoAAgregacion_HECHO || mensaje == TC.SAG_EliminarAgregacion_HECHO) {
             //this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;
-
-
             this.guardarDeshacer();
 
             this.auxDeshacer = true;
@@ -3723,36 +3555,34 @@ public class Controlador {
                 this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
                 this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
-
         }
 
         switch (mensaje) {
-
             case SAG_InsertarAgregacion_ERROR_NombreVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AG_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SAG_InsertarAgregacion_ERROR_NombreDeYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SAG_InsertarAgregacion_ERROR_NombreDeEntYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SAG_InsertarAgregacion_ERROR_NombreDeRelYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SAG_InsertarAgregacion_ERROR_DAO: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.AGGREGATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.AGGREGATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SAG_RenombrarAgregacion_ERROR_NombreVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
@@ -3773,17 +3603,12 @@ public class Controlador {
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferAgregacion tr = (TransferAgregacion) v.get(0);
-                v.get(1);
-                v.get(2);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarAgregacion, tr);
                 break;
             }
 
             case SAG_AnadirAtributoAAgregacion_HECHO: {
                 Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAAgregacion, v);
@@ -3792,18 +3617,18 @@ public class Controlador {
                 //meter un if para cuando ya este
                 TransferAtributo ta = (TransferAtributo) v.get(1);
                 boolean esta = false;
-                for (int i = 0; i < this.listaAtributos.size(); ++i) {
-                    if (ta.getIdAtributo() == this.listaAtributos.get(i).getIdAtributo()) esta = true;
+                for (TransferAtributo listaAtributo : this.listaAtributos) {
+                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
+                        esta = true;
+                        break;
+                    }
                 }
-
                 if (!esta) this.listaAtributos.add(ta);
                 break;
             }
 
             case SAG_EliminarAgregacion_HECHO: {
-
                 TransferAgregacion tagre = (TransferAgregacion) datos;
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarAgregacion, tagre);
                 ActualizaArbol(null);
                 break;
@@ -3838,23 +3663,19 @@ public class Controlador {
         if (mensaje == TC.SR_MoverPosicionRelacion_HECHO || mensaje == TC.SR_InsertarRelacion_HECHO || mensaje == TC.SR_EliminarRelacion_HECHO || mensaje == TC.SR_RenombrarRelacion_HECHO || mensaje == TC.SR_AnadirAtributoARelacion_HECHO || mensaje == TC.SR_EstablecerEntidadPadre_HECHO || mensaje == TC.SR_QuitarEntidadPadre_HECHO || mensaje == TC.SR_AnadirEntidadHija_HECHO || mensaje == TC.SR_QuitarEntidadHija_HECHO || mensaje == TC.SR_EliminarRelacionIsA_HECHO || (mensaje == TC.SR_EliminarRelacionNormal_HECHO && intAux == 0) || mensaje == TC.SR_InsertarRelacionIsA_HECHO || mensaje == TC.SR_AnadirEntidadARelacion_HECHO || mensaje == TC.SR_QuitarEntidadARelacion_HECHO || mensaje == TC.SR_EditarCardinalidadEntidad_HECHO) {
             //this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;
-
-
             this.guardarDeshacer();
-
             this.auxDeshacer = true;
             if (this.getContFicherosDeshacer() == 1)
                 this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
                 this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
 
 
         switch (mensaje) {
-
             case SR_ListarRelaciones_HECHO: {
                 this.getTheGUIPrincipal().setListaRelaciones((Vector) datos);
                 this.setListaRelaciones((Vector) datos);
@@ -3864,123 +3685,88 @@ public class Controlador {
              * Insercion de Relaciones
              */
             case SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExisteComoEntidad: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExisteComoAgregacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_InsertarRelacion_ERROR_NombreDelRolYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ROL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ROL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
             case SR_InsertarRelacion_ERROR_NombreDeRolNecesario: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.NECESARY_ROL), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.NECESARY_ROL), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
             case SR_InsertarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIInsertarRelacion().setInactiva();
-
                 break;
             }
             case SR_InsertarRelacion_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIInsertarRelacion().setInactiva();
                 Vector<Object> v = (Vector<Object>) datos;
                 TransferRelacion te = (TransferRelacion) v.get(0);
                 //this.listaRelaciones.add(te);//ojo
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
-
                 break;
             }
             /*
              * Eliminacion de una relacion
              */
             case SR_EliminarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
             /*creo q esta no se usa nunca*/
             case SR_EliminarRelacion_HECHO: {
-
-
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacion, tr);
-
                 break;
             }
 
             // Renombrar relacion
             case SR_RenombrarRelacion_ERROR_NombreDeRelacionEsVacio: {
-                Vector v = (Vector) datos;
-                v.get(2);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_RenombrarRelacion_ERROR_NombreDeRelacionYaExiste: {
-                Vector v = (Vector) datos;
-                v.get(1);
-                v.get(2);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_RenombrarRelacion_ERROR_NombreDeRelacionYaExisteComoEntidad: {
                 this.getTheGUIRenombrarRelacion().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIRenombrarRelacion().setActiva();
-
-
                 break;
             }
             case SR_RenombrarRelacion_ERROR_DAORelaciones: {
-                Vector v = (Vector) datos;
-                v.get(1);
-                v.get(2);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_RenombrarRelacion_ERROR_DAOEntidades: {
-                Vector v = (Vector) datos;
-                v.get(1);
-                v.get(2);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_RenombrarRelacion_HECHO: {
-
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
-                v.get(1);
-                v.get(2);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarRelacion, tr);
                 this.getTheGUIRenombrarRelacion().setInactiva();
                 break;
@@ -3989,12 +3775,10 @@ public class Controlador {
              * Debilitar una relacion
              */
             case SR_DebilitarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_DebilitarRelacion_HECHO: {
-
-
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_DebilitarRelacion, tr);
@@ -4005,35 +3789,24 @@ public class Controlador {
              * Restricciones a Relacion
              */
             case SR_AnadirRestriccionARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion te = (TransferRelacion) v.get(0);
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionRelacion, te);
                 //this.getTheGUIAnadirRestriccionAAtributo().setInactiva();
                 break;
             }
             case SR_QuitarRestriccionARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion te = (TransferRelacion) v.get(0);
-                v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionRelacion, te);
                 break;
             }
             case SR_setRestriccionesARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion te = (TransferRelacion) v.get(1);
                 setCambios(true);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesRelacion, te);
                 break;
             }
@@ -4043,14 +3816,11 @@ public class Controlador {
              */
             case SR_MoverPosicionRelacion_ERROR_DAORelaciones: {
                 TransferRelacion tr = (TransferRelacion) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverRelacion_ERROR, tr);
                 break;
             }
             case SR_MoverPosicionRelacion_HECHO: {
-
-
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverRelacion_HECHO, tr);
@@ -4061,68 +3831,45 @@ public class Controlador {
              * Añadir atributo a una relacion
              */
             case SR_AnadirAtributoARelacion_ERROR_NombreDeAtributoVacio: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirAtributoARelacion_ERROR_NombreDeAtributoYaExiste: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME_REL), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME_REL), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirAtributoARelacion_ERROR_TamanoNoEsEntero: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirAtributoARelacion_ERROR_TamanoEsNegativo: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirAtributoARelacion_ERROR_DAOAtributos: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SR_AnadirAtributoARelacion_ERROR_DAORelaciones: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SR_AnadirAtributoARelacion_HECHO: {
-
-
                 setCambios(true);
                 Vector<Transfer> v = (Vector<Transfer>) datos;
-                v.get(0);
-                v.get(1);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoARelacion, v);
                 this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 //meter un if para cuando ya este
                 TransferAtributo ta = (TransferAtributo) v.get(1);
                 boolean esta = false;
-                for (int i = 0; i < this.listaAtributos.size(); ++i) {
-                    if (ta.getIdAtributo() == this.listaAtributos.get(i).getIdAtributo()) esta = true;
+                for (TransferAtributo listaAtributo : this.listaAtributos) {
+                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
+                        esta = true;
+                        break;
+                    }
                 }
 
                 if (!esta) this.listaAtributos.add(ta);
@@ -4135,18 +3882,13 @@ public class Controlador {
             case SR_EstablecerEntidadPadre_ERROR_DAORelaciones: {
                 this.getTheGUIEstablecerEntidadPadre().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EstablecerEntidadPadre_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIEstablecerEntidadPadre().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EstablecerEntidadPadre, vt);
                 break;
             }
@@ -4154,18 +3896,14 @@ public class Controlador {
              * Quitar la entidad padre en una relacion IsA
              */
             case SR_QuitarEntidadPadre_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIQuitarEntidadPadre().setInactiva();
-
                 break;
             }
             case SR_QuitarEntidadPadre_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIQuitarEntidadPadre().setInactiva();
                 TransferRelacion tr = (TransferRelacion) datos;
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadPadre, tr);
                 break;
             }
@@ -4175,19 +3913,13 @@ public class Controlador {
             case SR_AnadirEntidadHija_ERROR_DAORelaciones: {
                 this.getTheGUIEstablecerEntidadPadre().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadHija_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIAnadirEntidadHija().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadHija, vt);
                 break;
             }
@@ -4195,21 +3927,15 @@ public class Controlador {
              * Quitar una entidad hija en una relacion IsA
              */
             case SR_QuitarEntidadHija_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 this.getTheGUIQuitarEntidadHija().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-
                 break;
             }
             case SR_QuitarEntidadHija_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIQuitarEntidadHija().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(1);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadHija, vt);
                 break;
             }
@@ -4217,16 +3943,12 @@ public class Controlador {
              * Eliminar una relacion IsA
              */
             case SR_EliminarRelacionIsA_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EliminarRelacionIsA_HECHO: {
-
-
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacionIsA, tr);
                 ActualizaArbol(null);
                 break;
@@ -4235,13 +3957,10 @@ public class Controlador {
              * Eliminar una relacion Normal
              */
             case SR_EliminarRelacionNormal_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EliminarRelacionNormal_HECHO: {
-
-
                 setCambios(true);
                 Vector<Object> v = (Vector<Object>) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
@@ -4254,13 +3973,10 @@ public class Controlador {
              * Insertar una relacion IsA
              */
             case SR_InsertarRelacionIsA_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_InsertarRelacionIsA_HECHO: {
-
-
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.antiguaIsA = tr;
@@ -4273,61 +3989,33 @@ public class Controlador {
              */
             case SR_AnadirEntidadARelacion_ERROR_InicioNoEsEnteroOn: {
                 Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_ERROR_InicioEsNegativo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_ERROR_FinalNoEsEnteroOn: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_ERROR_FinalEsNegativo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_ERROR_InicioMayorQueFinal: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_ERROR_DAORelaciones: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
-                v.get(1);
-                v.get(2);
-                v.get(3);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadARelacion, v);
                 this.getTheGUIAnadirEntidadARelacion().setInactiva();
                 break;
@@ -4338,21 +4026,13 @@ public class Controlador {
             case SR_QuitarEntidadARelacion_ERROR_DAORelaciones: {
                 this.getTheGUIQuitarEntidadARelacion().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(0);
-                vt.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_QuitarEntidadARelacion_HECHO: {
-
-
                 setCambios(true);
                 this.getTheGUIQuitarEntidadARelacion().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
-                vt.get(0);
-                vt.get(1);
-
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadARelacion, vt);
                 break;
             }
@@ -4360,71 +4040,38 @@ public class Controlador {
              * Editar la aridad de una entidad en una relacion
              */
             case SR_EditarCardinalidadEntidad_ERROR_InicioNoEsEnteroOn: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_ERROR_InicioEsNegativo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_ERROR_FinalNoEsEnteroOn: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_ERROR_FinalEsNegativo: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_ERROR_InicioMayorQueFinal: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_ERROR_DAORelaciones: {
-                Vector v = (Vector) datos;
-                v.get(0);
-                v.get(1);
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
+                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
-                v.get(1);
-                v.get(2);
-                v.get(3);
-                v.get(4);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarCardinalidadEntidad, v);
                 this.getTheGUIEditarCardinalidadEntidad().setInactiva();
                 break;
-
             }
 
             case SR_AridadEntidadUnoUno_HECHO: {
-
-
                 setCambios(true);
                 Vector v = (Vector) datos;
 
@@ -4432,12 +4079,9 @@ public class Controlador {
                 break;
             } // switch
             case SR_AnadirUniqueARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
                 TransferRelacion clon_relacion = tr.clonar();
-                v.get(1);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirUniqueRelacion, clon_relacion);
@@ -4445,12 +4089,9 @@ public class Controlador {
                 break;
             }
             case SR_QuitarUniqueARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
                 TransferRelacion clon_relacion = tr.clonar();
-                v.get(1);
                 setCambios(true);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarUniqueRelacion, clon_relacion);
@@ -4458,8 +4099,6 @@ public class Controlador {
             }
 
             case SR_setUniquesARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(1);
                 TransferRelacion clon_relacion = tr.clonar();
@@ -4469,8 +4108,6 @@ public class Controlador {
                 break;
             }
             case SR_setUniqueUnitarioARelacion_HECHO: {
-
-
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
                 TransferRelacion clon_relacion = tr.clonar();
@@ -4479,12 +4116,10 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniqueUnitarioRelacion, clon_relacion);
                 break;
             }
-
             default:
                 break;
         }
     }
-
 
     // Mensajes que mandan los Servicios del Sistema al Controlador
     @SuppressWarnings("incomplete-switch")
@@ -4518,7 +4153,6 @@ public class Controlador {
             }
         }// switch
     }
-    //Utilidades
 
     private void guardarBackup() {
         String ruta = "";
@@ -4537,9 +4171,9 @@ public class Controlador {
         String str = fileguardar.getPath().replace(".xml", "");
         String ruta = "";
         if (str.contains(DIRECTORY + PROJECTS))
-            ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+            ruta = str.replace(DIRECTORY + PROJECTS, "deshacer") + this.contFicherosDeshacer + ".xml";
         else if (str.contains("Examples"))
-            ruta = str.replace("Examples", "deshacer") + Integer.toString(this.contFicherosDeshacer) + ".xml";
+            ruta = str.replace("Examples", "deshacer") + this.contFicherosDeshacer + ".xml";
         boolean existe = existe(ruta);
         this.mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Click_GuardarDeshacer, ruta);
         ++this.contFicherosDeshacer;
@@ -4548,7 +4182,7 @@ public class Controlador {
             this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
         else this.getTheGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
 
-        if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer == true)
+        if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
             this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
         else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
 
@@ -4561,62 +4195,11 @@ public class Controlador {
             for (File file : Objects.requireNonNull(directory.listFiles())) {
                 if (file.getPath().equals(ruta)) {
                     r = true;
+                    break;
                 }
             }
         }
         return r;
-    }
-
-    private static void quicksort(Vector<String> a) {
-        quicksort(a, 0, a.size() - 1);
-    }
-
-    // quicksort a[left] to a[right]
-    private static void quicksort(Vector<String> a, int left, int right) {
-        if (right <= left) return;
-        int i = partition(a, left, right);
-        quicksort(a, left, i - 1);
-        quicksort(a, i + 1, right);
-    }
-
-    // partition a[left] to a[right], assumes left < right
-    private static int partition(Vector<String> a, int left, int right) {
-        int i = left - 1;
-        int j = right;
-        while (true) {
-            while ((a.get(++i).compareToIgnoreCase(a.get(right)) < 0))      // find item on left to swap
-                ;                               // a[right] acts as sentinel
-            while ((a.get(right).compareToIgnoreCase(a.get(--j)) < 0))      // find item on right to swap
-                if (j == left) break;           // don't go out-of-bounds
-            if (i >= j) break;                  // check if pointers cross
-            exch(a, i, j);                      // swap two elements into place
-        }
-        exch(a, i, right);                      // swap with partition element
-        return i;
-    }
-
-    private static void exch(Vector<String> a, int i, int j) {
-        //exchanges++;
-        String swap = a.get(i);
-        a.set(i, a.get(j));
-        a.set(j, swap);
-    }
-
-    public static void FileCopy(String sourceFile, String destinationFile) {
-        try {
-            File inFile = new File(sourceFile);
-            File outFile = new File(destinationFile);
-
-            FileInputStream in = new FileInputStream(inFile);
-            FileOutputStream out = new FileOutputStream(outFile);
-
-            int c;
-            while ((c = in.read()) != -1) out.write(c);
-            in.close();
-            out.close();
-        } catch (IOException e) {
-            //TODO mirar esto
-        }
     }
 
     private void guardarConf() {
@@ -4658,13 +4241,6 @@ public class Controlador {
         this.getTheGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
     }
 
-    /**
-     * Getters y Setters
-     */
-    private void setListaAtributos(Vector datos) {
-        this.listaAtributos = datos;
-    }
-
     public GUI_AnadirAtributoEntidad getTheGUIAnadirAtributoEntidad() {
         return theGUIAnadirAtributoEntidad;
     }
@@ -4677,6 +4253,10 @@ public class Controlador {
         return theGUIAnadirRestriccionAEntidad;
     }
 
+    public void setTheGUIAnadirRestriccionAEntidad(GUI_InsertarRestriccionAEntidad theGUIAnadirRestriccionAEntidad) {
+        this.theGUIAnadirRestriccionAEntidad = theGUIAnadirRestriccionAEntidad;
+    }
+
     public GUI_InsertarRestriccionAAtributo getTheGUIAnadirRestriccionAAtributo() {
         return theGUIAnadirRestriccionAAtributo;
     }
@@ -4685,20 +4265,16 @@ public class Controlador {
         return theGUIAnadirRestriccionARelacion;
     }
 
-    public void setTheGUIAnadirRestriccionAEntidad(GUI_InsertarRestriccionAEntidad theGUIAnadirRestriccionAEntidad) {
-        this.theGUIAnadirRestriccionAEntidad = theGUIAnadirRestriccionAEntidad;
-    }
-
     public GUI_AnadirAtributoRelacion getTheGUIAnadirAtributoRelacion() {
         return theGUIAnadirAtributoRelacion;
     }
 
-    public GUI_AnadirAtributo getTheGUIAnadirAtributo() {
-        return theGUIAnadirAtributo;
-    }
-
     public void setTheGUIAnadirAtributoRelacion(GUI_AnadirAtributoRelacion theGUIAnadirAtributoRelacion) {
         this.theGUIAnadirAtributoRelacion = theGUIAnadirAtributoRelacion;
+    }
+
+    public GUI_AnadirAtributo getTheGUIAnadirAtributo() {
+        return theGUIAnadirAtributo;
     }
 
     public GUI_AnadirEntidadHija getTheGUIAnadirEntidadHija() {
@@ -4769,12 +4345,12 @@ public class Controlador {
         return theGUIInsertarRelacion;
     }
 
-    public GUI_InsertarDominio getTheGUIInsertarDominio() {
-        return theGUIInsertarDominio;
-    }
-
     public void setTheGUIInsertarRelacion(GUI_InsertarRelacion theGUIInsertarRelacion) {
         this.theGUIInsertarRelacion = theGUIInsertarRelacion;
+    }
+
+    public GUI_InsertarDominio getTheGUIInsertarDominio() {
+        return theGUIInsertarDominio;
     }
 
     public GUI_Conexion getTheGUIConfigurarConexionDBMS() {
@@ -4978,12 +4554,12 @@ public class Controlador {
         return this.theGUITablaUniqueRelacion;
     }
 
-    private void setModoVista(int m) {
-        this.modoVista = m;
-    }
-
     private int getModoVista() {
         return modoVista;
+    }
+
+    private void setModoVista(int m) {
+        this.modoVista = m;
     }
 
     private void setCambios(boolean b) {
@@ -5027,12 +4603,19 @@ public class Controlador {
         return this.listaRelaciones;
     }
 
+    public void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
+        this.listaRelaciones = listaRelaciones;
+    }
+
     public Vector<TransferAtributo> getListaAtributos() {
         return listaAtributos;
     }
 
-    public void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
-        this.listaRelaciones = listaRelaciones;
+    /**
+     * Getters y Setters
+     */
+    private void setListaAtributos(Vector datos) {
+        this.listaAtributos = datos;
     }
 
     public ServiciosReporte getTheServiciosReporte() {
@@ -5047,28 +4630,12 @@ public class Controlador {
         return modoSoporte;
     }
 
-    public void setCuadricula(boolean cuadricula) {
-        this.cuadricula = cuadricula;
-    }
-
-    public void setOcultarConceptual(boolean c) {
-        this.ocultarConceptual = c;
-    }
-
-    public void setOcultarLogico(boolean l) {
-        this.ocultarLogico = l;
-    }
-
-    public void setOcultarFisico(boolean f) {
-        this.ocultarFisico = f;
-    }
-
-    public void setOcultarDominios(boolean d) {
-        this.ocultarDominios = d;
-    }
-
     public void setModoSoporte(boolean modo) {
         this.modoSoporte = modo;
+    }
+
+    public void setCuadricula(boolean cuadricula) {
+        this.cuadricula = cuadricula;
     }
 
     public boolean getCaudricula() {
@@ -5079,24 +4646,40 @@ public class Controlador {
         return ocultarConceptual;
     }
 
+    public void setOcultarConceptual(boolean c) {
+        this.ocultarConceptual = c;
+    }
+
     public boolean getOcultarLogico() {
         return ocultarLogico;
+    }
+
+    public void setOcultarLogico(boolean l) {
+        this.ocultarLogico = l;
     }
 
     public boolean getOcultarFisico() {
         return ocultarFisico;
     }
 
+    public void setOcultarFisico(boolean f) {
+        this.ocultarFisico = f;
+    }
+
     public boolean getOcultarDominios() {
         return ocultarDominios;
     }
 
+    public void setOcultarDominios(boolean d) {
+        this.ocultarDominios = d;
+    }
+
     public int getZoom() {
-        return this.valorZoom;
+        return valorZoom;
     }
 
     public void setZoom(int z) {
-        this.valorZoom = z;
+        valorZoom = z;
     }
 
     public int getContFicherosDeshacer() {
