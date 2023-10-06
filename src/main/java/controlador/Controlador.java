@@ -2635,8 +2635,8 @@ public class Controlador {
                 }
                 for (EntidadYAridad e : hijas) {
                     int idHija = e.getEntidad();
-                    for (int j = 0; j < this.listaEntidades.size(); ++j) {
-                        if (idHija == this.listaEntidades.get(j).getIdEntidad()) th.add(this.listaEntidades.get(j));
+                    for (TransferEntidad listaEntidade : this.listaEntidades) {
+                        if (idHija == listaEntidade.getIdEntidad()) th.add(listaEntidade);
                     }
                 }
                 this.hijosAntiguo = th;
@@ -2815,7 +2815,6 @@ public class Controlador {
                 this.getTheServiciosReporte().crearIncidencia(textoIncidencia, anadirDiagrama);
                 break;
             }
-
             default:
                 break;
         } // Switch
@@ -2916,8 +2915,6 @@ public class Controlador {
                 break;
             }
             case SE_InsertarEntidad_HECHO: {
-
-
                 this.getTheGUIInsertarEntidad().setInactiva();
                 setCambios(true);
                 TransferEntidad te = (TransferEntidad) datos;
@@ -3139,7 +3136,6 @@ public class Controlador {
             else this.getTheGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
 
-
         switch (mensaje) {
             /*
              * Listar dominios
@@ -3317,7 +3313,6 @@ public class Controlador {
                 break;
             }
             case SA_EliminarAtributo_HECHO: {
-
                 setCambios(true);
                 Vector<Transfer> vectorAtributoYElemMod = (Vector<Transfer>) datos;
                 vectorAtributoYElemMod.get(0);
@@ -5110,11 +5105,8 @@ public class Controlador {
 				v.add(false);
 				this.mensajeDesde_GUI(TC.GUIEditarCardinalidadEntidad_ClickBotonEditar, v);
 				break;
-			}		
-			
-			
+			}
 			default: break;
-
 		}
 	}
 	*/
