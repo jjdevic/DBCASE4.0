@@ -4,6 +4,10 @@ package controlador;
 import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
+
+import controlador.comandos.Comando;
+import controlador.comandos.FactoriaComandos;
+import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
@@ -487,80 +491,7 @@ public class Controlador {
                 archivosRecent.add((File) datos);
                 break;
             }
-            case GUI_WorkSpace_Nuevo: {
-                this.setPath((String) datos);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        getTheServiciosSistema().reset();
-                        theGUIPrincipal.loadInfo();
-                        getTheGUIPrincipal().reiniciar();
-                    }
-                });
-                setCambios(false);
-                File temp = new File(System.getProperty("user.dir") + DIRECTORY + PROJECTS + "/temp");
-                this.setFileguardar(temp);
-                File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
-                if (directory.exists()) {
-                    for (File file : Objects.requireNonNull(directory.listFiles())) {
-                        if (!file.isDirectory()) {
-                            file.delete();
-                        }
-                    }
-                }
-
-                this.contFicherosDeshacer = 0;
-                this.limiteFicherosDeshacer = 0;
-                this.auxDeshacer = false;
-                this.guardarDeshacer();
-                this.tiempoGuardado = System.currentTimeMillis() / 1000;
-                break;
-            }
-            case GUI_WorkSpace_Click_Abrir: {
-                this.contFicherosDeshacer = 0;
-                this.limiteFicherosDeshacer = 0;
-                this.auxDeshacer = false;
-                String abrirPath = (String) datos;
-                String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(abrirPath, tempPath);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        getTheServiciosSistema().reset();
-                        theGUIPrincipal.loadInfo();
-                        getTheGUIPrincipal().reiniciar();
-                    }
-                });
-                setCambios(false);
-                File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
-                if (directory.exists()) {
-                    for (File file : Objects.requireNonNull(directory.listFiles())) {
-                        if (!file.isDirectory()) {
-                            file.delete();
-                        }
-                    }
-                }
-                this.guardarDeshacer();
-                this.tiempoGuardado = System.currentTimeMillis() / 1000;
-                break;
-            }
-
-            case GUI_WorkSpace_Click_Abrir_Lenguaje: {
-                String abrirPath = (String) datos;
-                String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(abrirPath, tempPath);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        getTheServiciosSistema().reset();
-                        theGUIPrincipal.loadInfo();
-                        getTheGUIPrincipal().reiniciar();
-                    }
-                });
-                setCambios(false);
-                break;
-            }
-
+            case GUI_WorkSpace_Click_Abrir_Lenguaje:
             case GUI_WorkSpace_Click_Abrir_Tema: {
                 String abrirPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
@@ -576,7 +507,6 @@ public class Controlador {
                 setCambios(false);
                 break;
             }
-
             case GUI_WorkSpace_Click_Abrir_Deshacer: {//tenemos que diferenciar si abrimos un nuevo proyecto o el de deshacer
                 String abrirPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
@@ -593,57 +523,6 @@ public class Controlador {
                 //this.getTheGUIPrincipal().getPanelDiseno().grabFocus();
                 break;
             }
-
-            case GUI_WorkSpace_Click_Guardar: {
-                String guardarPath = (String) datos;
-                String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(tempPath, guardarPath);
-                this.getTheGUIWorkSpace().setInactiva();
-                setCambios(false);
-                this.tiempoGuardado = System.currentTimeMillis() / 1000;
-                if (this.fileguardar.getPath() != datos) {
-                    File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
-                    if (directory.exists()) {
-                        for (File file : Objects.requireNonNull(directory.listFiles())) {
-                            if (!file.isDirectory()) {
-                                file.delete();
-                            }
-                        }
-                    }
-                    File temp = new File(guardarPath);
-                    this.setFileguardar(temp);
-                    this.contFicherosDeshacer = 0;
-                    this.limiteFicherosDeshacer = 0;
-                    this.guardarDeshacer();
-                }
-                break;
-            }
-
-            case GUI_WorkSpace_Click_Guardar_Backup: {
-                String guardarPath = (String) datos;
-                String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(tempPath, guardarPath);
-                this.getTheGUIWorkSpace().setInactiva();
-                setCambios(false);
-                //this.tiempoGuardado = System.currentTimeMillis()/1000;
-                if (this.fileguardar.getPath() != datos) {
-                    File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
-                    if (directory.exists()) {
-                        for (File file : Objects.requireNonNull(directory.listFiles())) {
-                            if (!file.isDirectory()) {
-                                file.delete();
-                            }
-                        }
-                    }
-                    File temp = new File(guardarPath);
-                    //this.setFileguardar(temp);
-                    //this.contFicherosDeshacer = 0;
-                    //this.limiteFicherosDeshacer = 0;
-                    //this.guardarDeshacer();
-                }
-                break;
-            }
-
             case GUI_WorkSpace_Click_GuardarDeshacer: {
                 String guardarPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
@@ -657,6 +536,15 @@ public class Controlador {
             case GUI_WorkSpace_ERROR_CreacionFicherosXML: {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INITIAL_ERROR) + "\n" +
                         Lenguaje.text(Lenguaje.OF_XMLFILES) + "\n" + this.getPath(), Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+            
+            //Mensajes que requieren comandos
+            case GUI_WorkSpace_Nuevo:
+            case GUI_WorkSpace_Click_Abrir:
+            case GUI_WorkSpace_Click_Guardar: 
+            case GUI_WorkSpace_Click_Guardar_Backup: {
+                ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             default:
@@ -4162,7 +4050,7 @@ public class Controlador {
         //this.setFileguardar(f);
     }
 
-    private void guardarDeshacer() {
+    public void guardarDeshacer() {
         String str = fileguardar.getPath().replace(".xml", "");
         String ruta = "";
         if (str.contains(DIRECTORY + PROJECTS))
@@ -4557,7 +4445,7 @@ public class Controlador {
         this.modoVista = m;
     }
 
-    private void setCambios(boolean b) {
+    public void setCambios(boolean b) {
         cambios = b;
         getTheGUIPrincipal().setTitle(getTitle());
     }
@@ -4688,7 +4576,28 @@ public class Controlador {
     public boolean getAuxDeshacer() {
         return this.auxDeshacer;
     }
+    
+    public void setContFicherosDeshacer(int cont) {
+    	this.contFicherosDeshacer = cont;
+    }
+    
+    public void setLimiteFicherosDeshacer(int lim) {
+    	this.limiteFicherosDeshacer = lim;
+    }
 	
+    public void setAuxDeshacer(boolean b) {
+    	this.auxDeshacer = b;
+    }
+    
+    public void setTiempoGuardado(long t) {
+    	this.tiempoGuardado = t;
+    }
+    
+    private void ejecutarComandoDelMensaje(TC mensaje, Object datos) {
+    	Comando com = FactoriaComandos.getComando(mensaje, this);
+    	if(com != null) com.ejecutar(datos);
+    	else throw new IllegalArgumentException("Comando no encontrado"); //TODO
+    }
 	
 	/*public void funcionDeshacer(TC mensaje, Object datos) {
 		switch (mensaje) {
