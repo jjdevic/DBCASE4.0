@@ -16,17 +16,17 @@ import java.util.Vector;
 @SuppressWarnings("serial")
 public class GUI_RenombrarEntidad extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferEntidad entidad;
     private JButton botonRenombrar;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    private JTextField cajaNombre;
     private JLabel explicacion;
 
-    public GUI_RenombrarEntidad() {
-        initComponents();
+    public GUI_RenombrarEntidad(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.RENAME_ENTITY_DBDT));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -34,6 +34,7 @@ public class GUI_RenombrarEntidad extends Parent_GUI {
         setModal(true);
         getContentPane().setLayout(null);
         this.setSize(300, 170);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -151,4 +152,10 @@ public class GUI_RenombrarEntidad extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.entidad = (TransferEntidad) datos;
+		
+	}
 }

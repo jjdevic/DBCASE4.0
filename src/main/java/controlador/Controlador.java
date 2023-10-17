@@ -74,7 +74,7 @@ public class Controlador {
     private GUI_TablaUniqueRelacion theGUITablaUniqueRelacion;
     //Agregaciones
     private GUI_RenombrarAgregacion theGUIModificarAgregacion;
-    private GUI_AnadirAgregacion theGUIAddAgregacion;
+    //private GUI_AnadirAgregacion theGUIAddAgregacion;
     // Dominios
     private GUI_RenombrarDominio theGUIRenombrarDominio;
     private GUI_ModificarDominio theGUIModificarElementosDominio;
@@ -148,6 +148,8 @@ public class Controlador {
     private int contFicherosDeshacer = 0;
     private int limiteFicherosDeshacer = 0;
     private boolean auxDeshacer = false;
+    
+    private FactoriaGUI factoriaGUI;
 
     public Controlador() {
         iniciaFrames();
@@ -161,6 +163,7 @@ public class Controlador {
         setListaRelaciones(new Vector<TransferRelacion>());
         modoSoporte = false;
         cuadricula = false;
+        factoriaGUI = new FactoriaGUI();
         //valorZoom=0;
     }
 
@@ -398,90 +401,57 @@ public class Controlador {
         theServiciosAgregaciones = new ServiciosAgregaciones();
         theServiciosAgregaciones.setControlador(this);
         // Fuera
-        theGUIInsertarEntidad = new GUI_InsertarEntidad();
-        theGUIInsertarEntidad.setControlador(this);
-        theGUIInsertarRelacion = new GUI_InsertarRelacion();
-        theGUIInsertarRelacion.setControlador(this);
-        theGUIInsertarDominio = new GUI_InsertarDominio();
-        theGUIInsertarDominio.setControlador(this);
-        theGUIConexion = new GUI_Conexion();
-        theGUIConexion.setControlador(this);
-        theGUISeleccionarConexion = new GUI_SeleccionarConexion();
-        theGUISeleccionarConexion.setControlador(this);
-        theGUIEliminar = new GUI_Eliminar();
-        theGUIEliminar.setControlador(this);
+        theGUIInsertarEntidad = new GUI_InsertarEntidad(this);
+        theGUIInsertarRelacion = new GUI_InsertarRelacion(this);
+        theGUIInsertarDominio = new GUI_InsertarDominio(this);
+        theGUIConexion = new GUI_Conexion(this);
+        theGUISeleccionarConexion = new GUI_SeleccionarConexion(this);
+        theGUIEliminar = new GUI_Eliminar(this);
 
         // Entidades
-        theGUIRenombrarEntidad = new GUI_RenombrarEntidad();
-        theGUIRenombrarEntidad.setControlador(this);
-        theGUIAnadirAtributoEntidad = new GUI_AnadirAtributoEntidad();
-        theGUIAnadirAtributoEntidad.setControlador(this);
-        theGUIAnadirRestriccionAEntidad = new GUI_InsertarRestriccionAEntidad();
-        theGUIAnadirRestriccionAEntidad.setControlador(this);
-        theGUIAnadirAtributo = new GUI_AnadirAtributo();
-        theGUIAnadirAtributo.setControlador(this);
-        theGUIModificarEntidad = new GUI_ModificarEntidad();
-        theGUIModificarEntidad.setControlador(this);
-
+        theGUIRenombrarEntidad = new GUI_RenombrarEntidad(this);
+        theGUIAnadirAtributoEntidad = new GUI_AnadirAtributoEntidad(this);
+        theGUIAnadirRestriccionAEntidad = new GUI_InsertarRestriccionAEntidad(this);
+        theGUIAnadirAtributo = new GUI_AnadirAtributo(this);
+        theGUIModificarEntidad = new GUI_ModificarEntidad(this);
+        
         // Atributos
-        theGUIRenombrarAtributo = new GUI_RenombrarAtributo();
-        theGUIRenombrarAtributo.setControlador(this);
-        theGUIEditarDominioAtributo = new GUI_EditarDominioAtributo();
-        theGUIEditarDominioAtributo.setControlador(this);
-        theGUIAnadirSubAtributoAtributo = new GUI_AnadirSubAtributoAtributo();
-        theGUIAnadirSubAtributoAtributo.setControlador(this);
-        theGUIAnadirRestriccionAAtributo = new GUI_InsertarRestriccionAAtributo();
-        theGUIAnadirRestriccionAAtributo.setControlador(this);
+        theGUIRenombrarAtributo = new GUI_RenombrarAtributo(this);
+        theGUIEditarDominioAtributo = new GUI_EditarDominioAtributo(this);
+        theGUIAnadirSubAtributoAtributo = new GUI_AnadirSubAtributoAtributo(this);
+        theGUIAnadirRestriccionAAtributo = new GUI_InsertarRestriccionAAtributo(this);
 
         // Relaciones IsA
-        theGUIEstablecerEntidadPadre = new GUI_EstablecerEntidadPadre();
-        theGUIEstablecerEntidadPadre.setControlador(this);
-        theGUIQuitarEntidadPadre = new GUI_QuitarEntidadPadre();
-        theGUIQuitarEntidadPadre.setControlador(this);
-        theGUIAnadirEntidadHija = new GUI_AnadirEntidadHija();
-        theGUIAnadirEntidadHija.setControlador(this);
-        theGUIQuitarEntidadHija = new GUI_QuitarEntidadHija();
-        theGUIQuitarEntidadHija.setControlador(this);
+        theGUIEstablecerEntidadPadre = new GUI_EstablecerEntidadPadre(this);
+        theGUIQuitarEntidadPadre = new GUI_QuitarEntidadPadre(this);
+        theGUIAnadirEntidadHija = new GUI_AnadirEntidadHija(this);
+        theGUIQuitarEntidadHija = new GUI_QuitarEntidadHija(this);
 
         // Relaciones Normales
-        theGUIRenombrarRelacion = new GUI_RenombrarRelacion();
-        theGUIRenombrarRelacion.setControlador(this);
-        theGUIAnadirEntidadARelacion = new GUI_AnadirEntidadARelacion();
-        theGUIAnadirEntidadARelacion.setControlador(this);
-        theGUIQuitarEntidadARelacion = new GUI_QuitarEntidadARelacion();
-        theGUIQuitarEntidadARelacion.setControlador(this);
-        theGUIEditarCardinalidadEntidad = new GUI_EditarCardinalidadEntidad();
-        theGUIEditarCardinalidadEntidad.setControlador(this);
-        theGUIAnadirAtributoRelacion = new GUI_AnadirAtributoRelacion();
-        theGUIAnadirAtributoRelacion.setControlador(this);
-        theGUIAnadirRestriccionARelacion = new GUI_InsertarRestriccionARelacion();
-        theGUIAnadirRestriccionARelacion.setControlador(this);
-        theGUIModificarRelacion = new GUI_ModificarRelacion();
-        theGUIModificarRelacion.setControlador(this);
-        theGUIModificarAtributo = new GUI_ModificarAtributo();
-        theGUIModificarAtributo.setControlador(this);
+        theGUIRenombrarRelacion = new GUI_RenombrarRelacion(this);
+        theGUIAnadirEntidadARelacion = new GUI_AnadirEntidadARelacion(this);
+        theGUIQuitarEntidadARelacion = new GUI_QuitarEntidadARelacion(this);
+        theGUIEditarCardinalidadEntidad = new GUI_EditarCardinalidadEntidad(this);
+        theGUIAnadirAtributoRelacion = new GUI_AnadirAtributoRelacion(this);
+        theGUIAnadirRestriccionARelacion = new GUI_InsertarRestriccionARelacion(this);
+        theGUIModificarRelacion = new GUI_ModificarRelacion(this);
+        theGUIModificarAtributo = new GUI_ModificarAtributo(this);
         // Dominios
-        theGUIRenombrarDominio = new GUI_RenombrarDominio();
-        theGUIRenombrarDominio.setControlador(this);
-        theGUIModificarElementosDominio = new GUI_ModificarDominio();
-        theGUIModificarElementosDominio.setControlador(this);
+        theGUIRenombrarDominio = new GUI_RenombrarDominio(this);
+        theGUIModificarElementosDominio = new GUI_ModificarDominio(this);
         //Agregaciones
-        theGUIModificarAgregacion = new GUI_RenombrarAgregacion();
-        theGUIModificarAgregacion.setControlador(this);
-        theGUIAddAgregacion = new GUI_AnadirAgregacion();
-        theGUIAddAgregacion.setControlador(this);
+        theGUIModificarAgregacion = new GUI_RenombrarAgregacion(this);
+        //theGUIAddAgregacion = new GUI_AnadirAgregacion(this);
 
         // Otras
         about = new GUI_About();
         manual = new GUI_Manual();
         galeria = new GUI_Galeria();
-        theGUIWorkSpace = new GUI_SaveAs(true);
-        theGUIWorkSpace.setControlador(this);
-        panelOpciones = new GUI_Pregunta();
-        report = new GUI_Report();
-        report.setControlador(this);
-        zoom = new GUI_Zoom();
-        zoom.setControlador(this);
+        theGUIWorkSpace = new GUI_SaveAs(this, true);
+        panelOpciones = new GUI_Pregunta(this);
+        report = new GUI_Report(this);
+        zoom = new GUI_Zoom(this);
+        
     }
 
     // Mensajes que le manda la GUI_WorkSpace al Controlador
@@ -547,9 +517,8 @@ public class Controlador {
                 ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
-            default:
-                break;
-        }// Switch
+            default: break;
+        }
     }
 
     // Mensajes que manda el Panel de Diseño al Controlador
@@ -561,18 +530,6 @@ public class Controlador {
             this.guardarBackup();
 
         switch (mensaje) {
-            case PanelDiseno_Click_AddAgregacion: {
-                TransferRelacion rel = (TransferRelacion) datos;
-                this.getTheGUIAddAgregacion().setRelacion(rel);
-                this.getTheGUIAddAgregacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_EditarAgregacion: {
-                TransferRelacion rel = (TransferRelacion) datos;
-                this.getTheGUIRenombrarAgregacion().setRelacion(rel);
-                this.getTheGUIRenombrarAgregacion().setActiva();
-                break;
-            }
             case PanelDiseno_Pertenece_A_Agregacion: {
                 Vector v = (Vector) datos;
                 TransferRelacion rel = (TransferRelacion) v.get(0);
@@ -592,13 +549,8 @@ public class Controlador {
 
                 break;
             }
-            case PanelDiseno_Click_InsertarEntidad: {
-                Point2D punto = (Point2D) datos;
-                this.getTheGUIInsertarEntidad().setPosicionEntidad(punto);
-                this.getTheGUIInsertarEntidad().setActiva();
-                break;
-            }
             case PanelDiseno_Click_InsertarAtributo: {
+            	//TODO comando?
                 Vector<Transfer> listaTransfers = (Vector<Transfer>) datos;
                 //removemos IsA
                 Iterator<Transfer> itr = listaTransfers.iterator();
@@ -616,10 +568,8 @@ public class Controlador {
                             "ERROR.\nAdd an entity, a relation or an aggregation first\n",
                             Lenguaje.text(Lenguaje.ADD_ATTRIBUTE),
                             JOptionPane.PLAIN_MESSAGE);
-                else {
-                    this.getTheGUIAnadirAtributo().setListaTransfers(listaTransfers);
-                    this.getTheGUIAnadirAtributo().setActiva();
-                }
+                else factoriaGUI.getGUI(mensaje, this, datos).setActiva();
+
                 break;
             }
 
@@ -630,19 +580,10 @@ public class Controlador {
                             "ERROR.\nAdd an entity, a relation or an aggregation first\n",
                             Lenguaje.text(Lenguaje.DELETE),
                             JOptionPane.PLAIN_MESSAGE);
-                else {
-                    this.getTheGUIEliminar().setListaTransfers(listaTransfers);
-                    this.getTheGUIEliminar().setActiva();
-                }
+                else factoriaGUI.getGUI(mensaje, this, datos).setActiva();
                 break;
             }
-
-            case PanelDiseno_Click_RenombrarEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
-                this.getTheGUIRenombrarEntidad().setEntidad(te);
-                this.getTheGUIRenombrarEntidad().setActiva();
-                break;
-            }
+            
             case PanelDiseno_Click_DebilitarEntidad: {
                 TransferEntidad te = (TransferEntidad) datos;
                 if (!te.isDebil() && this.getTheServiciosRelaciones().tieneHermanoDebil(te))
@@ -716,52 +657,8 @@ public class Controlador {
                 }
                 break;
             }
-            case PanelDiseno_Click_AnadirRestriccionAEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
-                this.getTheGUIAnadirRestriccionAEntidad().setEntidad(te);
-                this.getTheGUIAnadirRestriccionAEntidad().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_AnadirRestriccionAAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheGUIAnadirRestriccionAAtributo().setAtributo(ta);
-                this.getTheGUIAnadirRestriccionAAtributo().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_AnadirRestriccionARelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIAnadirRestriccionARelacion().setRelacion(tr);
-                this.getTheGUIAnadirRestriccionARelacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_TablaUniqueAEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
-                theGUITablaUniqueEntidad = new GUI_TablaUniqueEntidad();
-                theGUITablaUniqueEntidad.setControlador(this);
-                this.getTheGUITablaUniqueEntidad().setEntidad(te);
-                this.getTheGUITablaUniqueEntidad().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_TablaUniqueARelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                theGUITablaUniqueRelacion = new GUI_TablaUniqueRelacion();
-                theGUITablaUniqueRelacion.setControlador(this);
-                this.getTheGUITablaUniqueRelacion().setRelacion(tr);
-                this.getTheGUITablaUniqueRelacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_AnadirAtributoEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
-                this.getTheGUIAnadirAtributoEntidad().setEntidad(te);
-                this.getTheGUIAnadirAtributoEntidad().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_RenombrarAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheGUIRenombrarAtributo().setAtributo(ta);
-                this.getTheGUIRenombrarAtributo().setActiva();
-                break;
-            }
+            
+            
             case PanelDiseno_Click_EliminarAtributo: {
                 Vector<Object> v = (Vector<Object>) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
@@ -792,18 +689,6 @@ public class Controlador {
                     TransferAtributo clon_atributo3 = ta.clonar();
                     this.getTheServiciosAtributos().eliminarAtributo(clon_atributo3, intAux);
                 }
-                break;
-            }
-            case PanelDiseno_Click_InsertarRelacionNormal: {
-                Point2D punto = (Point2D) datos;
-                this.getTheGUIInsertarRelacion().setPosicionRelacion(punto);
-                this.getTheGUIInsertarRelacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_RenombrarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIRenombrarRelacion().setRelacion(tr);
-                this.getTheGUIRenombrarRelacion().setActiva();
                 break;
             }
             /*Aunque desde el panel de diseño no se puede debilitar una relación este caso sigue
@@ -897,12 +782,6 @@ public class Controlador {
                 } else {
                     this.getTheServiciosRelaciones().debilitarRelacion(tr);
                 }
-                break;
-            }
-            case PanelDiseno_Click_EditarDominioAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheGUIEditarDominioAtributo().setAtributo(ta);
-                this.getTheGUIEditarDominioAtributo().setActiva();
                 break;
             }
             case PanelDiseno_Click_EditarCompuestoAtributo: {
@@ -1105,12 +984,6 @@ public class Controlador {
                 this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
                 break;
             }
-            case PanelDiseno_Click_AnadirSubAtributoAAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheGUIAnadirSubAtributoAtributo().setAtributo(ta);
-                this.getTheGUIAnadirSubAtributoAtributo().setActiva();
-                break;
-            }
             case PanelDiseno_Click_EditarClavePrimariaAtributo: {
                 Vector<Object> v = (Vector<Object>) datos;
                 this.getTheServiciosAtributos().editarClavePrimariaAtributo(v);
@@ -1122,8 +995,6 @@ public class Controlador {
                 break;
             }
             case PanelDiseno_MoverAtributo: {
-
-
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheServiciosAtributos().moverPosicionAtributo(ta);
                 break;
@@ -1145,37 +1016,7 @@ public class Controlador {
                             JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-
-                this.getTheGUIAnadirAtributoRelacion().setRelacion(tr);
-                this.getTheGUIAnadirAtributoRelacion().setActiva();
-                break;
-            }
-            /*
-             * Relaciones IsA
-             */
-            case PanelDiseno_Click_EstablecerEntidadPadre: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIEstablecerEntidadPadre().setRelacion(tr);
-                this.getTheGUIEstablecerEntidadPadre().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_QuitarEntidadPadre: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                //this.idPadreAntigua = tr.getEntidadYAridad(0).getEntidad();
-                this.getTheGUIQuitarEntidadPadre().setRelacion(tr);
-                this.getTheGUIQuitarEntidadPadre().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_AnadirEntidadHija: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIAnadirEntidadHija().setRelacion(tr);
-                this.getTheGUIAnadirEntidadHija().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_QuitarEntidadHija: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIQuitarEntidadHija().setRelacion(tr);
-                this.getTheGUIQuitarEntidadHija().setActiva();
+                factoriaGUI.getGUI(mensaje, this, datos).setActiva();
                 break;
             }
             case PanelDiseno_Click_EliminarRelacionIsA: {
@@ -1310,35 +1151,11 @@ public class Controlador {
                 }
                 break;
             }
-            case PanelDiseno_Click_AnadirEntidadARelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIAnadirEntidadARelacion().setRelacion(tr);
-                this.getTheGUIAnadirEntidadARelacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_QuitarEntidadARelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIQuitarEntidadARelacion().setRelacion(tr);
-                this.getTheGUIQuitarEntidadARelacion().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_EditarCardinalidadEntidad: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.getTheGUIEditarCardinalidadEntidad().setRelacion(tr);
-                this.getTheGUIEditarCardinalidadEntidad().setActiva();
-                break;
-            }
             /*
              * Dominios
              */
             case PanelDiseno_Click_CrearDominio: {
                 this.getTheGUIInsertarDominio().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_RenombrarDominio: {
-                TransferDominio td = (TransferDominio) datos;
-                this.getTheGUIRenombrarDominio().setDominio(td);
-                this.getTheGUIRenombrarDominio().setActiva();
                 break;
             }
             case PanelDiseno_Click_EliminarDominio: {
@@ -1374,12 +1191,6 @@ public class Controlador {
                     // Eliminamos el dominio
                     this.getTheServiciosDominios().eliminarDominio(td);
                 }
-                break;
-            }
-            case PanelDiseno_Click_ModificarDominio: {
-                TransferDominio td = (TransferDominio) datos;
-                this.getTheGUIModificarElementosDominio().setDominio(td);
-                this.getTheGUIModificarElementosDominio().setActiva();
                 break;
             }
             case PanelDiseno_Click_OrdenarValoresDominio: {
@@ -1595,24 +1406,42 @@ public class Controlador {
                 }
                 break;
             }
+            case PanelDiseno_Click_AnadirRestriccionAEntidad:
+	        case PanelDiseno_Click_AnadirRestriccionAAtributo:
+	        case PanelDiseno_Click_AnadirRestriccionARelacion:
+	        case PanelDiseno_Click_TablaUniqueAEntidad:
+	        case PanelDiseno_Click_TablaUniqueARelacion:
+	        case PanelDiseno_Click_AnadirAtributoEntidad: 
+	        case PanelDiseno_Click_RenombrarAtributo:
+	        case PanelDiseno_Click_InsertarRelacionNormal: 
+	        case PanelDiseno_Click_RenombrarRelacion:
+	        case PanelDiseno_Click_EditarDominioAtributo: 
+	        case PanelDiseno_Click_AnadirSubAtributoAAtributo:
+	        case PanelDiseno_Click_EstablecerEntidadPadre: 
+	        case PanelDiseno_Click_QuitarEntidadPadre:
+	        case PanelDiseno_Click_AnadirEntidadHija:
+	        case PanelDiseno_Click_QuitarEntidadHija: 
+	        case PanelDiseno_Click_AnadirEntidadARelacion: 
+	        case PanelDiseno_Click_QuitarEntidadARelacion: 
+	        case PanelDiseno_Click_EditarCardinalidadEntidad: 
+	        case PanelDiseno_Click_RenombrarDominio: 
+	        case PanelDiseno_Click_ModificarDominio:
+            case PanelDiseno_Click_AddAgregacion:
+            case PanelDiseno_Click_EditarAgregacion:
+            case PanelDiseno_Click_InsertarEntidad: 
+            case PanelDiseno_Click_RenombrarEntidad:{
+            	factoriaGUI.getGUI(mensaje, this, datos).setActiva();
+                break;
+            }
             default:
                 break;
-        } // switch
+        }
     }
 
     private GUI_RenombrarAgregacion getTheGUIRenombrarAgregacion() {
-        // TODO Auto-generated method stub
         return theGUIModificarAgregacion;
     }
 
-    private GUI_AnadirAgregacion getTheGUIAddAgregacion() {
-        return theGUIAddAgregacion;
-    }
-
-    /*case GUI_Principal_DESHACER:{
-		funcionDeshacer(this.ultimoMensaje, this.ultimosDatos);
-		break;
-	}*/
     // Mensajes que manda la GUIPrincipal al Controlador
     @SuppressWarnings("static-access")
     public void mensajeDesde_GUIPrincipal(TC mensaje, Object datos) {
@@ -1668,7 +1497,7 @@ public class Controlador {
                         this.getTheGUIWorkSpace().nuevoTemp();
                         setCambios(false);
                     } else if (respuesta == 0) {
-                        theGUIWorkSpace = new GUI_SaveAs(true);
+                        theGUIWorkSpace = new GUI_SaveAs(this, true);
                         theGUIWorkSpace.setControlador(this);
                         if (this.getTheGUIWorkSpace().setActiva(2)) {
                             filetemp.delete();
@@ -1762,7 +1591,7 @@ public class Controlador {
                             Lenguaje.text(Lenguaje.DBCASE), true);
                     if (respuesta == 1) guardarYSalir();
                     else if (respuesta == 0) {
-                        theGUIWorkSpace = new GUI_SaveAs(true);
+                        theGUIWorkSpace = new GUI_SaveAs(this, true);
                         theGUIWorkSpace.setControlador(this);
                         if (this.getTheGUIWorkSpace().setActiva(2)) salir();
                     } else if (respuesta == 2) {
@@ -1820,7 +1649,7 @@ public class Controlador {
                             Lenguaje.text(Lenguaje.DBCASE), true);
                     if (respuesta == 1) guardarYSalir();
                     else if (respuesta == 0) {
-                        theGUIWorkSpace = new GUI_SaveAs(true);
+                        theGUIWorkSpace = new GUI_SaveAs(this, true);
                         theGUIWorkSpace.setControlador(this);
                         if (this.getTheGUIWorkSpace().setActiva(2)) salir();
                     } else if (respuesta == 2) {
@@ -1830,7 +1659,7 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_Click_Submenu_Abrir: {
-                theGUIWorkSpace = new GUI_SaveAs(true);
+                theGUIWorkSpace = new GUI_SaveAs(this, true);
                 theGUIWorkSpace.setControlador(this);
                 theGUIWorkSpace.setModoSoporte(this.getModoSoporte());
                 if (cambios) {
@@ -1852,7 +1681,7 @@ public class Controlador {
             }
 
             case GUI_Principal_Click_Submenu_Abrir_Casos: {
-                theGUIWorkSpace = new GUI_SaveAs(false);//si mandamos false se va al directorio de casos prueba
+                theGUIWorkSpace = new GUI_SaveAs(this, false);//si mandamos false se va al directorio de casos prueba
                 theGUIWorkSpace.setControlador(this);
                 theGUIWorkSpace.setModoSoporte(this.getModoSoporte());
                 if (cambios) {
@@ -1879,7 +1708,7 @@ public class Controlador {
             }
 
             case GUI_Principal_Click_Submenu_Guardar: {
-                theGUIWorkSpace = new GUI_SaveAs(true);
+                theGUIWorkSpace = new GUI_SaveAs(this, true);
                 theGUIWorkSpace.setControlador(this);
                 this.getTheGUIWorkSpace().setActiva(2);
                 getTheGUIPrincipal().setTitle(getTitle());
@@ -1889,13 +1718,13 @@ public class Controlador {
                 if (datos instanceof TransferEntidad) {
                     TransferEntidad te = (TransferEntidad) datos;
                     if (this.getTheGUIModificarEntidad() == null)
-                        this.setTheGUIModificarEntidad(new GUI_ModificarEntidad());
+                        this.setTheGUIModificarEntidad(new GUI_ModificarEntidad(this));
                     this.getTheGUIModificarEntidad().setEntidad(te);
                     this.getTheGUIModificarEntidad().setActiva();
                 } else if (datos instanceof TransferRelacion) {
                     TransferRelacion tr = (TransferRelacion) datos;
                     if (this.getTheGUIModificarRelacion() == null) {
-                        this.setTheGUIModificarRelacion(new GUI_ModificarRelacion());
+                        this.setTheGUIModificarRelacion(new GUI_ModificarRelacion(this));
                     }
                     this.getTheGUIModificarRelacion().setRelacion(tr);
                     this.getTheGUIModificarRelacion().setActiva();
@@ -1906,7 +1735,7 @@ public class Controlador {
                     TransferAtributo ta = (TransferAtributo) datos;
 
                     if (this.getTheGUIModificarAtributo() == null)
-                        this.setTheGUIModificarAtributo(new GUI_ModificarAtributo());
+                        this.setTheGUIModificarAtributo(new GUI_ModificarAtributo(this));
                     //Le pasamos a la GUI el transfer del atributo seleccionado
                     this.getTheGUIModificarAtributo().setTransferAtributo(ta);
                     //Buscamos a quien pertenece este atributo
@@ -1942,7 +1771,7 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_Click_Submenu_GuardarComo: {
-                theGUIWorkSpace = new GUI_SaveAs(true);
+                theGUIWorkSpace = new GUI_SaveAs(this, true);
                 theGUIWorkSpace.setControlador(this);
                 this.getTheGUIWorkSpace().setActiva(3);
                 getTheGUIPrincipal().setTitle(getTitle());
@@ -1958,7 +1787,7 @@ public class Controlador {
                         this.getTheGUIWorkSpace().nuevoTemp();
                         setCambios(false);
                     } else if (respuesta == 0) {
-                        theGUIWorkSpace = new GUI_SaveAs(true);
+                        theGUIWorkSpace = new GUI_SaveAs(this, true);
                         theGUIWorkSpace.setControlador(this);
                         if (this.getTheGUIWorkSpace().setActiva(2)) {
                             filetemp.delete();
@@ -5020,8 +4849,3 @@ public class Controlador {
 	}
 	*/
 }
-
-
-
-
-

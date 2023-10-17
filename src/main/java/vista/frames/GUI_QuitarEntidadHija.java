@@ -20,18 +20,18 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "serial", "unchecked"})
 public class GUI_QuitarEntidadHija extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private TransferRelacion relacion;
     private JComboBox comboEntidades;
     private JButton botonQuitar;
     private JLabel explicacion;
 
-    public GUI_QuitarEntidadHija() {
-        initComponents();
+    public GUI_QuitarEntidadHija(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setTitle(Lenguaje.text(Lenguaje.QUIT_DAUGHTER_ENTITY));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -225,4 +225,10 @@ public class GUI_QuitarEntidadHija extends Parent_GUI {
             }
         }
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }

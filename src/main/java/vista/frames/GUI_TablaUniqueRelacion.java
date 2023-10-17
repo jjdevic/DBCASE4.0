@@ -19,7 +19,7 @@ import java.util.Vector;
 @SuppressWarnings({"serial", "unchecked"})
 public class GUI_TablaUniqueRelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferRelacion relacion;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
@@ -31,11 +31,11 @@ public class GUI_TablaUniqueRelacion extends Parent_GUI {
     private JTable tablaConjuntos;
     private Vector<JButton> botones;
 
-    public GUI_TablaUniqueRelacion() {
-        initComponents();
+    public GUI_TablaUniqueRelacion(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setResizable(false);
@@ -471,4 +471,10 @@ public class GUI_TablaUniqueRelacion extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }

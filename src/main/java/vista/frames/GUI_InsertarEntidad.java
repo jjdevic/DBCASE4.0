@@ -17,9 +17,9 @@ import java.util.Vector;
 
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_InsertarEntidad extends Parent_GUI {
-    private Controlador controlador;
+    
     private Point2D posicionEntidad;
-    private JTextField cajaNombre = this.getCajaNombre(100, 10);
+    private JTextField cajaNombre;
     private JCheckBox CasillaEsDebil;
     private JLabel explicacion;
     private JButton botonInsertar;
@@ -32,17 +32,18 @@ public class GUI_InsertarEntidad extends Parent_GUI {
     private TransferRelacion relacion;
     private boolean factibleEntidad;//Sirve para la comprobación de si se puede añadir una entidad debil
 
-    public GUI_InsertarEntidad() {
-        initComponents();
+    public GUI_InsertarEntidad(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Lenguaje.text(Lenguaje.INSERT_ENTITY));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setResizable(false);
         setModal(true);
         getContentPane().setLayout(null);
+        cajaNombre = this.getCajaNombre(100, 10);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -463,5 +464,11 @@ public class GUI_InsertarEntidad extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.posicionEntidad = (Point2D) datos;
+		
+	}
 
 }

@@ -4,15 +4,26 @@ import vista.Lenguaje;
 import vista.tema.Theme;
 
 import javax.swing.*;
+
+import controlador.Controlador;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial")
-public class Parent_GUI extends javax.swing.JDialog implements KeyListener, MouseListener {
+public abstract class Parent_GUI extends javax.swing.JDialog implements KeyListener, MouseListener {
 
     protected Theme theme = Theme.getInstancia();
+    protected Controlador controlador;
+    
+    public Parent_GUI() {}
+    
+    public Parent_GUI(Controlador controlador) {
+    	this.controlador = controlador;
+    	initComponents();
+    }
 
     public void centraEnPantalla() {
         setAlwaysOnTop(false);
@@ -80,4 +91,9 @@ public class Parent_GUI extends javax.swing.JDialog implements KeyListener, Mous
     public void keyReleased(KeyEvent e) {
     }
 
+    protected abstract void initComponents();
+    
+    public abstract void setDatos(Object datos);
+    
+    public abstract void setActiva();
 }

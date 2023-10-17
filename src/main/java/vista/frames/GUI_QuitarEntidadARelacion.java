@@ -16,7 +16,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "serial", "unchecked"})
 public class GUI_QuitarEntidadARelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private TransferRelacion relacion;
     private JComboBox comboEntidades;
@@ -27,11 +27,11 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
     private Vector<String> items;
     private Vector<String> itemsRoles;
 
-    public GUI_QuitarEntidadARelacion() {
-        initComponents();
+    public GUI_QuitarEntidadARelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.QUIT_ENTITY));
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -298,5 +298,11 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
         }
         return i;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }
 

@@ -16,7 +16,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_EditarDominioAtributo extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferAtributo atributo;
     private JComboBox comboDominios;
     private JLabel labelTamano;
@@ -24,11 +24,11 @@ public class GUI_EditarDominioAtributo extends Parent_GUI {
     private JButton botonEditar;
     private Vector<TransferDominio> listaDominios;
 
-    public GUI_EditarDominioAtributo() {
-        initComponents();
+    public GUI_EditarDominioAtributo(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.EDIT_DOMAIN_ATTRIBUTE));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -323,4 +323,10 @@ public class GUI_EditarDominioAtributo extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.atributo = (TransferAtributo) datos;
+		
+	}
 }

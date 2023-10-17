@@ -22,8 +22,8 @@ import java.util.Vector;
 public class GUI_AnadirAtributoRelacion extends Parent_GUI {
 
     private TransferRelacion relacion;
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 45);
+    
+    private JTextField cajaNombre;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
     private JCheckBox opcionNotnull;
@@ -37,16 +37,17 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
     private Vector<TransferDominio> listaDominios;
 
 
-    public GUI_AnadirAtributoRelacion() {
-        this.initComponents();
+    public GUI_AnadirAtributoRelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_ATTRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 45);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -527,5 +528,11 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
 
         }
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 
 }

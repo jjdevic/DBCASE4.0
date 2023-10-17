@@ -22,7 +22,7 @@ import java.util.Vector;
 @SuppressWarnings("serial")
 public class GUI_Conexion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private boolean _crear;
     private JLabel usuario;
@@ -44,11 +44,11 @@ public class GUI_Conexion extends Parent_GUI {
     private JPasswordField cajaPass;
     protected TransferConexion _conexion;
 
-    public GUI_Conexion() {
-        initComponents();
+    public GUI_Conexion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.SHAPE_DBMS));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -598,5 +598,17 @@ public class GUI_Conexion extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setActiva() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

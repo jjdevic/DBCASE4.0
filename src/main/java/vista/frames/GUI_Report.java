@@ -14,16 +14,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
-public class GUI_Report extends JFrame {
+public class GUI_Report extends Parent_GUI {
     private JLabel encabezado;
     private JLabel reportarIncidencia;
     private JTextArea textoIncidencia;
     private JLabel avisoTextoVacio;
     private JButton aceptar;
-    private Controlador c;
+    
     //private JButton enviarMail;
 
-    public GUI_Report() {
+    public GUI_Report(Controlador controlador) {
+    	super(controlador);
         this.setTitle(Lenguaje.text(Lenguaje.REPORT));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -113,18 +114,22 @@ public class GUI_Report extends JFrame {
             Vector<Object> datos = new Vector<Object>();
             datos.add(this.textoIncidencia.getText());
             datos.add(true);
-            c.mensajeDesde_GUI(TC.GUIReport_ReportarIncidencia, datos);
+            controlador.mensajeDesde_GUI(TC.GUIReport_ReportarIncidencia, datos);
 
             this.setVisible(false);
         }
 
     }
 
-    public Controlador getControlador() {
-        return c;
-    }
+	@Override
+	protected void initComponents() {
+		// TODO Auto-generated method stub
+		
+	}
 
-    public void setControlador(Controlador controlador) {
-        this.c = controlador;
-    }
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
 }

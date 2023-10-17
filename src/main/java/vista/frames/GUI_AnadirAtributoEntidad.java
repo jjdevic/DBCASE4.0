@@ -22,8 +22,8 @@ import java.util.Vector;
 public class GUI_AnadirAtributoEntidad extends Parent_GUI {
 
     private TransferEntidad entidad;
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 45);
+
+    private JTextField cajaNombre;
     private JCheckBox opcionClavePrimaria;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
@@ -37,16 +37,17 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     private JLabel explicacion;
     private Vector<TransferDominio> listaDominios;
 
-    public GUI_AnadirAtributoEntidad() {
-        this.initComponents();
+    public GUI_AnadirAtributoEntidad(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_ATTRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 45);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -569,23 +570,11 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
 
         }
     }
-
-    /*
-     * Getters y Setters
-     */
-    public TransferEntidad getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(TransferEntidad entidad) {
-        this.entidad = entidad;
-    }
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-    }
+    
+	@Override
+	public void setDatos(Object datos) {
+		this.entidad = (TransferEntidad) datos;
+	}
+	
+	public TransferEntidad getEntidad() { return entidad; }
 }

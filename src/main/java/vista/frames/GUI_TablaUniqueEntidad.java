@@ -19,7 +19,7 @@ import java.util.Vector;
 @SuppressWarnings({"serial", "unchecked"})
 public class GUI_TablaUniqueEntidad extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferEntidad entidad;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
@@ -31,11 +31,11 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
     private JTable tablaConjuntos;
     private Vector<JButton> botones;
 
-    public GUI_TablaUniqueEntidad() {
-        initComponents();
+    public GUI_TablaUniqueEntidad(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setResizable(false);
@@ -444,4 +444,10 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
     public void setEntidad(TransferEntidad entidad) {
         this.entidad = entidad;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.entidad = (TransferEntidad) datos;
+		
+	}
 }

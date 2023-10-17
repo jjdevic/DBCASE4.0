@@ -16,18 +16,18 @@ import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class GUI_Eliminar extends Parent_GUI {
-    private Controlador controlador;
+    
     @SuppressWarnings("rawtypes")
     private JComboBox comboTransfers;
     @SuppressWarnings("unused")
     private JButton botonConfirmar;
     private Vector<Transfer> listaTransfers;
 
-    public GUI_Eliminar() {
-        this.initComponents();
+    public GUI_Eliminar(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.DELETE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -167,5 +167,11 @@ public class GUI_Eliminar extends Parent_GUI {
 
         return lista_ordenada;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.listaTransfers = (Vector<Transfer>) datos;
+		
+	}
 
 }

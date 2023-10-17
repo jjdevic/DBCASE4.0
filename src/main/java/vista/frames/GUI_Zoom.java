@@ -17,14 +17,14 @@ public class GUI_Zoom extends Parent_GUI {
     private JLabel valorZoom;
     private JButton botonMenos;
     private JButton botonAceptar;
-    private Controlador c;
+    
     //private JButton enviarMail;
 
-    public GUI_Zoom() {
-        this.initComponents();
+    public GUI_Zoom(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setModal(true);
@@ -171,7 +171,7 @@ public class GUI_Zoom extends Parent_GUI {
 	}*/
 
     public void setActiva() {
-        zoomInicial = c.getZoom();
+        zoomInicial = controlador.getZoom();
         if (zoomInicial < 10 && zoomInicial > -10) valorZoom.setText("  " + String.valueOf(zoomInicial) + "%");
         else valorZoom.setText(" " + String.valueOf(zoomInicial) + "%");
         setTitle(Lenguaje.text(Lenguaje.DBCASE));
@@ -198,7 +198,7 @@ public class GUI_Zoom extends Parent_GUI {
     }
 
     private void botonAceptarActionPerformed(ActionEvent evt) {
-        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Zoom_Aceptar, zoomInicial);
+    	controlador.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Zoom_Aceptar, zoomInicial);
         setInactiva();
     }
 
@@ -217,15 +217,13 @@ public class GUI_Zoom extends Parent_GUI {
     }
 
     private void botonAceptarActionPerformed(KeyEvent evt) {
-        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Zoom_Aceptar, zoomInicial);
+    	controlador.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Zoom_Aceptar, zoomInicial);
         setInactiva();
     }
 
-    public Controlador getControlador() {
-        return c;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.c = controlador;
-    }
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
 }

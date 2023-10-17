@@ -18,7 +18,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "serial", "unchecked"})
 public class GUI_ModificarDominio extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferDominio dominio;
     private JTextField cajaValores;
     private JLabel explicacion;
@@ -26,11 +26,11 @@ public class GUI_ModificarDominio extends Parent_GUI {
     private JComboBox comboDominios;
     private JButton botonEditar;
 
-    public GUI_ModificarDominio() {
-        initComponents();
+    public GUI_ModificarDominio(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.EDIT_DOMAIN));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -277,4 +277,9 @@ public class GUI_ModificarDominio extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.dominio = (TransferDominio) datos;
+	}
 }

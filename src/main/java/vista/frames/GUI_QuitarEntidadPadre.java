@@ -15,18 +15,18 @@ import java.awt.event.KeyListener;
 
 @SuppressWarnings("serial")
 public class GUI_QuitarEntidadPadre extends Parent_GUI {
-    private Controlador controlador;
+    
     private TransferRelacion relacion;
     private JLabel pregunta;
     private ReportPanel explicacion;
     private JButton botonNo;
     private JButton botonSi;
 
-    public GUI_QuitarEntidadPadre() {
-        initComponents();
+    public GUI_QuitarEntidadPadre(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setTitle(Lenguaje.text(Lenguaje.QUIT_PARENT_ENTITY));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -183,4 +183,10 @@ public class GUI_QuitarEntidadPadre extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }

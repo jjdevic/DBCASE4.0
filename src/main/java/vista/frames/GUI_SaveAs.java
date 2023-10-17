@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class GUI_SaveAs extends Parent_GUI {
-    private Controlador controlador;
+    
     private JPanel panelPrincipal;
     private MyFileChooser jfc;
     private JLabel jLabel1;
@@ -30,12 +30,13 @@ public class GUI_SaveAs extends Parent_GUI {
     private boolean modoSoporte = false;
     private boolean projects;
 
-    public GUI_SaveAs(boolean dir) {
+    public GUI_SaveAs(Controlador controlador, boolean dir) {
+    	super(controlador);
         this.projects = dir;
         this.initComponents();
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         this.setTitle(Lenguaje.text(Lenguaje.DBCASE));
         this.setModal(true);
         this.setResizable(false);
@@ -297,4 +298,16 @@ public class GUI_SaveAs extends Parent_GUI {
     public void setModoSoporte(boolean modoSoporte) {
         this.modoSoporte = modoSoporte;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setActiva() {
+		// TODO Auto-generated method stub
+		
+	}
 }

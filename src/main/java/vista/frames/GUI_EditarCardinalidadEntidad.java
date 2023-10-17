@@ -17,7 +17,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private JComboBox comboEntidades;
     private JTextField cajaInicio;
@@ -41,11 +41,11 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
     private JLabel explicacion3;
     private JLabel explicacion4;
 
-    public GUI_EditarCardinalidadEntidad() {
-        initComponents();
+    public GUI_EditarCardinalidadEntidad(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.EDIT_ARITY_AND_ROLLE));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -825,4 +825,10 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }

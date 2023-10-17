@@ -4,6 +4,9 @@ package vista.frames;
 import vista.Lenguaje;
 
 import javax.swing.*;
+
+import controlador.Controlador;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,11 +21,11 @@ public class GUI_Pregunta extends Parent_GUI {
     private JButton botonSi;
     private JButton botonCancelar;
 
-    public GUI_Pregunta() {
-        this.initComponents();
+    public GUI_Pregunta(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setModal(true);
@@ -182,4 +185,16 @@ public class GUI_Pregunta extends Parent_GUI {
         respuesta = 2;
         this.setVisible(false);
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setActiva() {
+		// TODO Auto-generated method stub
+		
+	}
 }

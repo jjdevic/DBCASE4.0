@@ -20,18 +20,18 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_AnadirEntidadHija extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private JComboBox comboEntidades;
     private JButton botonInsertar;
     private JLabel explicacion;
     private TransferRelacion relacion;
 
-    public GUI_AnadirEntidadHija() {
-        initComponents();
+    public GUI_AnadirEntidadHija(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setTitle(Lenguaje.text(Lenguaje.INSERT_NEW_DAUGTHER));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -260,4 +260,9 @@ public class GUI_AnadirEntidadHija extends Parent_GUI {
         return botonInsertar;
     }
 
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }

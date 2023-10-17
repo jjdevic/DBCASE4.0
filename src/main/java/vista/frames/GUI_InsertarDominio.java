@@ -17,8 +17,8 @@ import java.util.Vector;
 
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_InsertarDominio extends Parent_GUI {
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    
+    private JTextField cajaNombre;
     private JTextField cajaValores;
     private JComboBox comboTipo;
     private JLabel explicacion;
@@ -26,11 +26,11 @@ public class GUI_InsertarDominio extends Parent_GUI {
     private JLabel textValues;
     private JButton botonInsertar;
 
-    public GUI_InsertarDominio() {
-        initComponents();
+    public GUI_InsertarDominio(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Lenguaje.text(Lenguaje.ADD_DOMAIN));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -38,6 +38,7 @@ public class GUI_InsertarDominio extends Parent_GUI {
         setModal(true);
         getContentPane().setLayout(null);
         setSize(300, 250);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -253,4 +254,10 @@ public class GUI_InsertarDominio extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
 }

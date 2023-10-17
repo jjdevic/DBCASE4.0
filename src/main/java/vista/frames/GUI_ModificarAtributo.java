@@ -20,8 +20,8 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_ModificarAtributo extends Parent_GUI {
 
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 85);
+    
+    private JTextField cajaNombre;
     private JCheckBox opcionClavePrimaria;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
@@ -40,16 +40,17 @@ public class GUI_ModificarAtributo extends Parent_GUI {
     private TransferAtributo ta;
     private String nombrePadre;
 
-    public GUI_ModificarAtributo() {
-        this.initComponents();
+    public GUI_ModificarAtributo(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.MODIFY_ATRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 85);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -541,4 +542,10 @@ public class GUI_ModificarAtributo extends Parent_GUI {
         public void keyTyped(KeyEvent e) {
         }
     };
+
+	@Override
+	public void setDatos(Object datos) {
+		// TODO Auto-generated method stub
+		
+	}
 }

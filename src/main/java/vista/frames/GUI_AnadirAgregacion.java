@@ -22,14 +22,11 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
     private JButton botonInsertar;
     private JLabel explicacion;
 
-    private Controlador controlador;
-
-
-    public GUI_AnadirAgregacion() {
-        initComponents();
+    public GUI_AnadirAgregacion(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
 
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -134,13 +131,6 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
         pane.setVisible(false);
     }
 
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-    }
 
     public TransferRelacion getRelacion() {
         return relacion;
@@ -149,4 +139,10 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+	}
+    
 }

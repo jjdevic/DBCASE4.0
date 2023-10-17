@@ -19,7 +19,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_AnadirEntidadARelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private JComboBox comboEntidadesyAgregaciones;
     private JLabel jLabel1;
@@ -42,12 +42,12 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
     private JSeparator separador1;
     private Vector<String> items;
 
-    public GUI_AnadirEntidadARelacion() {
-        initComponents();
+    public GUI_AnadirEntidadARelacion(Controlador controlador) {
+    	super(controlador);
 
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_NEW_ENTITY_TO_RELATION));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -749,4 +749,9 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
         return partialParticipation;
     }
 
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
 }
