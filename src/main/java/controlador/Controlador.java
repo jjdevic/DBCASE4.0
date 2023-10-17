@@ -509,7 +509,10 @@ public class Controlador {
                 break;
             }
             
-            //Mensajes que requieren comandos
+            /*
+            Mensajes que requieren comand
+             TODO COMANDOS
+            */
             case GUI_WorkSpace_Nuevo:
             case GUI_WorkSpace_Click_Abrir:
             case GUI_WorkSpace_Click_Guardar: 
