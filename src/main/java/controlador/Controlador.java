@@ -553,7 +553,6 @@ public class Controlador {
                 break;
             }
             case PanelDiseno_Click_InsertarAtributo: {
-            	//TODO comando?
                 Vector<Transfer> listaTransfers = (Vector<Transfer>) datos;
                 //removemos IsA
                 Iterator<Transfer> itr = listaTransfers.iterator();
@@ -594,392 +593,9 @@ public class Controlador {
                 else this.getTheServiciosEntidades().debilitarEntidad(te);
                 break;
             }
-            case PanelDiseno_Click_EliminarEntidad: {
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                this.auxTransferAtributos = te.getListaAtributos();
-                boolean preguntar = (Boolean) v.get(1);
-                int intAux = (int) v.get(2);
-                int respuesta = 0;
-                if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar) {
-                    String tieneAtributos = "";
-                    if (!te.getListaAtributos().isEmpty())
-                        tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
-                    String tieneRelacion = "";
-                    if (te.isDebil()) tieneRelacion = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_RELATION) + "\n";
-                    respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
-                                    tieneAtributos + tieneRelacion + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                            Lenguaje.text(Lenguaje.DELETE_ENTITY));
-                }
-                //Si quiere borrar la entidad
-                /*Se entrará con preguntar a false si se viene de eliminar una relación débil
-                 * (para borrar también la entidad y sus atributos)*/
-                if ((respuesta == 0) || (!preguntar)) {
-                    // Eliminamos sus atributos
-                    Vector lista_atributos = te.getListaAtributos();
-                    int conta = 0;
-                    TransferAtributo ta = new TransferAtributo(this);
-                    while (lista_atributos != null && conta < lista_atributos.size()) {
-                        String idAtributo = (String) lista_atributos.get(conta);
-                        ta.setIdAtributo(Integer.parseInt(idAtributo));
-                        this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
-                        conta++;
-                    }
-                    //Si la entidad es débil eliminamos la relación débil asociada
-                    if (te.isDebil()) {
-                        Vector<TransferRelacion> lista_rel = this.getTheServiciosRelaciones().ListaDeRelacionesNoVoid();
-                        int cont = 0, aux = 0;
-                        boolean encontrado = false;
-                        EntidadYAridad eya;
-                        int idEntidad;
-                        TransferRelacion tr = new TransferRelacion();
-                        //Para cada relación
-                        while (cont < lista_rel.size()) {
-                            //Si la relación es débil
-                            if (lista_rel.get(cont).getTipo().equals("Debil")) {
-                                //Compruebo si las entidades asociadas son la entidad débil que se va a eliminar
-                                while ((!encontrado) && (aux < lista_rel.get(cont).getListaEntidadesYAridades().size())) {
-                                    eya = (EntidadYAridad) (lista_rel.get(cont).getListaEntidadesYAridades().get(aux));
-                                    idEntidad = eya.getEntidad();
-                                    if (te.getIdEntidad() == idEntidad) {
-                                        tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
-                                        this.getTheServiciosRelaciones().eliminarRelacionNormal(tr, 1);
-                                        encontrado = true;
-                                    }
-                                    aux++;
-                                }
-                                aux = 0;
-                            }
-                            cont++;
-                        }
-                    }
-                    // Eliminamos la entidad
-                    this.getTheServiciosEntidades().eliminarEntidad(te, intAux);
-                }
-                break;
-            }
-            
-            
-            case PanelDiseno_Click_EliminarAtributo: {
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferAtributo ta = (TransferAtributo) v.get(0);
-                this.antiguosSubatributos = ta.getListaComponentes();
-                int intAux = (int) v.get(2);
-                boolean preguntar = (Boolean) v.get(1);
-                int respuesta = 0;
-                if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar) {
-                    String eliminarSubatributos = "";
-                    if (!ta.getListaComponentes().isEmpty())
-                        eliminarSubatributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
-                    respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
-                                    eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                            Lenguaje.text(Lenguaje.DELETE_ATTRIB));
-                }
-                if (respuesta == 0) {
-                    if (ta.getUnique()) {
-                        Vector<Object> ve = new Vector<Object>();
-                        TransferAtributo clon_atributo = ta.clonar();
-                        ve.add(clon_atributo);
-                        ve.add(1);
-                        this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarUniqueAtributo, ve);
-                    }
-                    TransferAtributo clon_atributo2 = ta.clonar();
-                    this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarReferenciasUniqueAtributo, clon_atributo2);
-                    TransferAtributo clon_atributo3 = ta.clonar();
-                    this.getTheServiciosAtributos().eliminarAtributo(clon_atributo3, intAux);
-                }
-                break;
-            }
-            /*Aunque desde el panel de diseño no se puede debilitar una relación este caso sigue
-             * utilizándose cuando se crea una entidad débil ya que debe generarse también una
-             * relación débil asociada a ella.*/
-            case PanelDiseno_Click_DebilitarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                //Si es una relacion fuerte...
-                if (tr.getTipo().equals("Normal")) {
-                    int numDebiles = this.getTheServiciosRelaciones().numEntidadesDebiles(tr);
-                    // ...y tiene más de una entidad débil no se puede debilitar
-                    if (numDebiles > 1) {
-                        JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
-                        break;
-                    }
-                    int respuesta1 = -1;//-1 no hay conflicto, 0 el usuario dice SI, 1 el usuario dice NO
-                    int respuesta2 = -1;
-                    // ...y tiene atributos y se quiere debilitar hay que eliminar sus atributos
-                    if (!tr.getListaAtributos().isEmpty()) {
-                        respuesta1 = panelOpciones.setActiva(
-                                Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
-                                        Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING2) + "\n" +
-                                        Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                                Lenguaje.text(Lenguaje.DBCASE));
-                    }
-                    // ...y tiene una entidad débil hay que cambiar la cardinalidad
-                    if (numDebiles == 1 && respuesta1 != 1) {
-                        respuesta2 = panelOpciones.setActiva(
-                                Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
-                                        Lenguaje.text(Lenguaje.MODIFYING_CARDINALITY) + ".\n" +
-                                        Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                                Lenguaje.text(Lenguaje.DBCASE));
-                    }
-                    if (respuesta2 == 0 && respuesta1 != 1) {
-                        //Aqui se fija la cardinalidad de la entidad débil como de 1 a 1.
-                        Vector<Object> v = new Vector<Object>();
-                        EntidadYAridad informacion;
-                        int i = 0;
-                        boolean actualizado = false;
-                        while ((!actualizado) && (i < tr.getListaEntidadesYAridades().size())) {
-                            informacion = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(i));
-                            int idEntidad = informacion.getEntidad();
-                            if (this.getTheServiciosEntidades().esDebil(idEntidad)) {
-                                actualizado = true;
-                                int idRelacion = tr.getIdRelacion();
-                                int finRango = 1;
-                                int iniRango = 1;
-                                String nombre = tr.getNombre();
-                                Point2D posicion = tr.getPosicion();
-                                Vector<Object> listaEnti = tr.getListaEntidadesYAridades();
-                                EntidadYAridad aux = (EntidadYAridad) listaEnti.get(i);
-                                aux.setFinalRango(1);
-                                aux.setPrincipioRango(1);
-                                listaEnti.remove(i);
-                                listaEnti.add(aux);
-                                Vector<Object> listaAtri = tr.getListaAtributos();
-                                String tipo = tr.getTipo();
-                                String rol = tr.getRol();
-                                v.add(idRelacion);
-                                v.add(idEntidad);
-                                v.add(iniRango);
-                                v.add(finRango);
-                                v.add(nombre);
-                                v.add(listaEnti);
-                                v.add(listaAtri);
-                                v.add(tipo);
-                                v.add(rol);
-                                v.add(posicion);
-                                this.getTheServiciosRelaciones().aridadEntidadUnoUno(v);
-                            }
-                            i++;
-                        }
-                    }
-                    if (respuesta1 == 0 && respuesta2 != 1) {
-                        // Eliminamos sus atributos
-                        Vector lista_atributos = tr.getListaAtributos();
-                        int cont = 0;
-                        TransferAtributo ta = new TransferAtributo(this);
-                        while (cont < lista_atributos.size()) {
-                            String idAtributo = (String) lista_atributos.get(cont);
-                            ta.setIdAtributo(Integer.parseInt(idAtributo));
-                            this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
-                            cont++;
-                        }
-                    }
-                    if (respuesta1 != 1 && respuesta2 != 1) {
-                        // Modificamos la relacion
-                        tr.getListaAtributos().clear();
-                        this.getTheServiciosRelaciones().debilitarRelacion(tr);
-                    }
-                } else {
-                    this.getTheServiciosRelaciones().debilitarRelacion(tr);
-                }
-                break;
-            }
-            case PanelDiseno_Click_EditarCompuestoAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                // Si es un atributo compuesto y tiene subatributos al ponerlo como simple hay que eliminar sus atributos
-                if (ta.getCompuesto() && !ta.getListaComponentes().isEmpty()) {
-			/*	Object[] options = {Lenguaje.getMensaje(Lenguaje.YES),Lenguaje.getMensaje(Lenguaje.NO)};
-				int respuesta = JOptionPane.showOptionDialog(
-						null,
-						Lenguaje.getMensaje(Lenguaje.MODIFY_ATTRIBUTE)+"\""+ta.getNombre()+"\""+
-						Lenguaje.getMensaje(Lenguaje.DELETE_ATTRIBUTES_WARNING3)+"\n" +
-						Lenguaje.getMensaje(Lenguaje.WISH_CONTINUE),
-						Lenguaje.getMensaje(Lenguaje.DBCASE),
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[1]);*/
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
-                                    Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING3) + "\n" +
-                                    Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                            Lenguaje.text(Lenguaje.DBCASE));
-                    if (respuesta == 0) {
-                        // Eliminamos sus subatributos
-                        Vector lista_atributos = ta.getListaComponentes();
-                        int cont = 0;
-                        TransferAtributo tah = new TransferAtributo(this);
-                        while (cont < lista_atributos.size()) {
-                            String idAtributo = (String) lista_atributos.get(cont);
-                            tah.setIdAtributo(Integer.parseInt(idAtributo));
-                            this.getTheServiciosAtributos().eliminarAtributo(tah, 1);
-                            cont++;
-                        }
-                        // Modificamos el atributo
-                        ta.getListaComponentes().clear();
-                        this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
-                    }
-                }
-                // Si no es compuesto o es compuesto pero no tiene subatributos
-                else {
-                    this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
-                }
-                break;
-            }
             case PanelDiseno_Click_EditarNotNullAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheServiciosAtributos().editarNotNullAtributo(ta);
-                break;
-            }
-            case PanelDiseno_Click_EditarUniqueAtributo: {
-                //hola
-                Vector<Object> ve = (Vector<Object>) datos;
-                TransferAtributo ta = (TransferAtributo) ve.get(0);
-                this.getTheServiciosAtributos().editarUniqueAtributo(ta);
-
-                this.getTheServiciosEntidades().ListaDeEntidades();
-                this.getTheServiciosAtributos().ListaDeAtributos();
-                this.getTheServiciosRelaciones().ListaDeRelaciones();
-                //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
-                Vector<TransferRelacion> relaciones = this.getTheGUIPrincipal().getListaRelaciones();
-                Vector<TransferEntidad> entidades = this.getTheGUIPrincipal().getListaEntidades();
-                boolean encontrado = false;
-                boolean esEntidad = false;
-                TransferEntidad te = null;
-                TransferRelacion tr = null;
-                int i = 0;
-                while (i < entidades.size() && !encontrado) {
-                    te = entidades.get(i);
-                    if (this.getTheServiciosEntidades().tieneAtributo(te, ta)) {
-                        encontrado = true;
-                        esEntidad = true;
-                    }
-                    i++;
-                }
-                i = 0;
-                while (i < relaciones.size() && !encontrado) {
-                    tr = relaciones.get(i);
-                    if (this.getTheServiciosRelaciones().tieneAtributo(tr, ta)) {
-                        encontrado = true;
-                    }
-                    i++;
-                }
-                if (encontrado) {
-                    if (esEntidad) {
-                        Vector v = new Vector();
-                        v.add(te);
-                        v.add(ta);
-                        this.getTheServiciosEntidades().setUniqueUnitario(v);
-                    } else {//esRelacion
-                        Vector v = new Vector();
-                        v.add(tr);
-                        v.add(ta);
-                        this.getTheServiciosRelaciones().setUniqueUnitario(v);
-                    }
-                }
-
-                break;
-            }
-            case PanelDiseno_Click_EliminarReferenciasUniqueAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().editarUniqueAtributo(ta);
-
-                //this.getTheServiciosEntidades().ListaDeEntidades();
-                //this.getTheServiciosAtributos().ListaDeAtributos();
-                //this.getTheServiciosRelaciones().ListaDeRelaciones();
-                //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
-                Vector<TransferRelacion> relaciones = this.getTheGUIPrincipal().getListaRelaciones();
-                Vector<TransferEntidad> entidades = this.getTheGUIPrincipal().getListaEntidades();
-                boolean encontrado = false;
-                boolean esEntidad = false;
-                TransferEntidad te = null;
-                TransferRelacion tr = null;
-                int i = 0;
-                while (i < entidades.size() && !encontrado) {
-                    te = entidades.get(i);
-                    if (this.getTheServiciosEntidades().tieneAtributo(te, ta)) {
-                        encontrado = true;
-                        esEntidad = true;
-                    }
-                    i++;
-                }
-                i = 0;
-                while (i < relaciones.size() && !encontrado) {
-                    tr = relaciones.get(i);
-                    if (this.getTheServiciosRelaciones().tieneAtributo(tr, ta)) {
-                        encontrado = true;
-                    }
-                    i++;
-                }
-                if (encontrado) {
-                    if (esEntidad) {
-                        Vector v = new Vector();
-                        v.add(te);
-                        v.add(ta);
-                        this.getTheServiciosEntidades().eliminarReferenciasUnitario(v);
-                    } else {//esRelacion
-                        Vector v = new Vector();
-                        v.add(tr);
-                        v.add(ta);
-                        this.getTheServiciosRelaciones().eliminarReferenciasUnitario(v);
-                    }
-                }
-
-                break;
-            }
-            case PanelDiseno_Click_ModificarUniqueAtributo: {
-                Vector v1 = (Vector) datos;
-                TransferAtributo ta = (TransferAtributo) v1.get(0);
-                String antiguoNombre = (String) v1.get(1);
-
-                this.getTheServiciosAtributos().editarUniqueAtributo(ta);
-
-                this.getTheServiciosEntidades().ListaDeEntidades();
-                this.getTheServiciosAtributos().ListaDeAtributos();
-                this.getTheServiciosRelaciones().ListaDeRelaciones();
-                //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
-                Vector<TransferRelacion> relaciones = this.getTheGUIPrincipal().getListaRelaciones();
-                Vector<TransferEntidad> entidades = this.getTheGUIPrincipal().getListaEntidades();
-                boolean encontrado = false;
-                boolean esEntidad = false;
-                TransferEntidad te = null;
-                TransferRelacion tr = null;
-                int i = 0;
-                while (i < entidades.size() && !encontrado) {
-                    te = entidades.get(i);
-                    if (this.getTheServiciosEntidades().tieneAtributo(te, ta)) {
-                        encontrado = true;
-                        esEntidad = true;
-                    }
-                    i++;
-                }
-                i = 0;
-                while (i < relaciones.size() && !encontrado) {
-                    tr = relaciones.get(i);
-                    if (this.getTheServiciosRelaciones().tieneAtributo(tr, ta)) {
-                        encontrado = true;
-                    }
-                    i++;
-                }
-                if (encontrado) {
-                    Vector v = new Vector();
-                    if (esEntidad) {
-                        v.add(te);
-                        v.add(ta);
-                        v.add(antiguoNombre);
-                        this.getTheServiciosEntidades().renombraUnique(v);
-                    } else {//esRelacion
-                        v.add(tr);
-                        v.add(ta);
-                        v.add(antiguoNombre);
-                        this.getTheServiciosRelaciones().renombraUnique(v);
-                    }
-                }
-
                 break;
             }
             case PanelDiseno_Click_EditarMultivaloradoAtributo: {
@@ -1048,152 +664,12 @@ public class Controlador {
                 this.getTheServiciosRelaciones().anadirRelacionIsA(tr);
                 break;
             }
-            /*
-             * Relaciones normales
-             */
-            case PanelDiseno_Click_EliminarRelacionNormal: {
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                int intAux = (int) v.get(2);
-                Vector vtaAux = tr.getListaAtributos();
-                Vector<TransferAtributo> vta = new Vector<TransferAtributo>();
-                Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
-                Vector<TransferEntidad> vte = new Vector<TransferEntidad>();
-
-                for (Object aux : vtaAux) {
-                    int id = Integer.parseInt((String) aux);
-                    for (TransferAtributo listaAtributo : this.listaAtributos) {
-                        if (id == listaAtributo.getIdAtributo()) vta.add(listaAtributo);
-                    }
-                }
-
-                //this.antiguosAtributosRel = vta;
-
-                for (EntidadYAridad entidadYAridad : veya) {
-                    int id = entidadYAridad.getEntidad();
-                    for (TransferEntidad listaEntidade : this.listaEntidades) {
-                        if (id == listaEntidade.getIdEntidad()) vte.add(listaEntidade);
-                    }
-                }
-
-                //this.antiguasEntidadesRel = vte;
-
-
-                boolean preguntar = (Boolean) v.get(1);
-                int respuesta = 0;
-                if (!confirmarEliminaciones) preguntar = false;
-                if (preguntar) {
-                    String tieneAtributos = "";
-                    if (!tr.getListaAtributos().isEmpty())
-                        tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
-                    String tieneEntidad = "";
-                    //Informar de que también se va a eliminar la entidad débil asociada
-                    if (tr.getTipo().equals("Debil"))
-                        tieneEntidad = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_ENTITY) + "\n";
-                    respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.THE_RELATION) + " \"" + tr.getNombre() + "\" " +
-                                    Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
-                                    tieneAtributos + tieneEntidad +
-                                    Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                            Lenguaje.text(Lenguaje.DELETE_RELATION));
-                }
-                //Si se desea eliminar la relación
-                if (respuesta == 0) {
-                    // Eliminamos sus atributos
-                    Vector lista_atributos = tr.getListaAtributos();
-                    int conta = 0;
-                    TransferAtributo ta = new TransferAtributo(this);
-                    while (conta < lista_atributos.size()) {
-                        String idAtributo = (String) lista_atributos.get(conta);
-                        ta.setIdAtributo(Integer.parseInt(idAtributo));
-                        this.getTheServiciosAtributos().eliminarAtributo(ta, 1);
-                        conta++;
-                    }
-                    //Se elimina también la entidad débil asociada
-                    if (tr.getTipo().equals("Debil")) {
-                        Vector lista_entidades = tr.getListaEntidadesYAridades();
-                        int cont = 0;
-                        TransferEntidad te = new TransferEntidad();
-                        while (cont < lista_entidades.size()) {
-                            EntidadYAridad eya = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(cont));
-                            int idEntidad = eya.getEntidad();
-                            te.setIdEntidad(idEntidad);
-                            //Tengo que rellenar los atributos de te
-                            Vector<TransferEntidad> auxiliar = (this.theGUIQuitarEntidadARelacion.getListaEntidades()); //falla aqui				if (auxiliar == null)
-                            auxiliar = this.getListaEntidades();
-                            boolean encontrado = false;
-                            int i = 0;
-                            if (auxiliar != null) {
-                                while ((!encontrado) && (i < auxiliar.size())) {
-                                    if (auxiliar.get(i).getIdEntidad() == idEntidad) {
-                                        encontrado = true;
-                                        te.setListaAtributos(auxiliar.get(i).getListaAtributos());
-                                    } else
-                                        i++;
-                                }
-                            }
-                            //Elimino también la entidad débil
-                            if (this.getTheServiciosEntidades().esDebil(idEntidad)) {
-                                //Esto es para borrar los atributos de la entidad débil y la propia entidad débil
-                                Vector<Object> vAux = new Vector<Object>();
-                                vAux.add(te);
-                                vAux.add(false);
-                                if (vAux.size() == 2) vAux.add(1);
-                                else vAux.set(2, 1);
-                                this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarEntidad, vAux);
-                            }
-                            cont++;
-                        }
-                    }
-
-                    // Eliminamos la relacion
-
-                    this.getTheServiciosAgregaciones().eliminarAgregacion(tr);
-                    this.getTheServiciosEntidades().eliminarRelacionDeEntidad(tr);
-                    this.getTheServiciosRelaciones().eliminarRelacionNormal(tr, intAux);
-                }
-                break;
-            }
+           
             /*
              * Dominios
              */
             case PanelDiseno_Click_CrearDominio: {
                 this.getTheGUIInsertarDominio().setActiva();
-                break;
-            }
-            case PanelDiseno_Click_EliminarDominio: {
-                TransferDominio td = (TransferDominio) datos;
-                int respuesta = panelOpciones.setActiva(
-                        Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
-                                Lenguaje.text(Lenguaje.MODIFYING_ATTRIBUTES_WARNING4) + "\n" +
-                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                        Lenguaje.text(Lenguaje.DELETE_DOMAIN));
-                if (respuesta == 0) {
-                    modelo.transfers.TipoDominio valorBase = td.getTipoBase();
-                    String dominioEliminado = td.getNombre();
-                    this.getTheServiciosAtributos().ListaDeAtributos();
-                    int cont = 0;
-                    TransferAtributo ta = new TransferAtributo(this);
-                    while (cont < listaAtributos.size()) {
-                        ta = listaAtributos.get(cont);
-                        if (ta.getDominio().equals(dominioEliminado)) {
-                            Vector<Object> v = new Vector();
-                            v.add(ta);
-                            String valorB;
-                            if (valorBase.name().equals("TEXT") || valorBase.name().equals("VARCHAR"))
-                                valorB = valorBase + "(20)";
-                            else valorB = valorBase.toString();
-
-                            v.add(valorB);
-
-                            if (valorBase.name().equals("TEXT") || valorBase.name().equals("VARCHAR")) v.add("20");
-                            this.getTheServiciosAtributos().editarDomnioAtributo(v);
-                        }
-                        cont++;
-                    }
-                    // Eliminamos el dominio
-                    this.getTheServiciosDominios().eliminarDominio(td);
-                }
                 break;
             }
             case PanelDiseno_Click_OrdenarValoresDominio: {
@@ -1229,186 +705,7 @@ public class Controlador {
                 break;
             }
 
-            case PanelDiseno_Click_Pegar: {
-                if (this.copiado instanceof TransferEntidad) {
-                    TransferEntidad te = (TransferEntidad) copiado;
-                    int p = te.getPegado();
-                    TransferEntidad nueva = new TransferEntidad();
-                    Point2D punto = (Point2D) datos;
-                    nueva.setPosicion(punto);
-                    nueva.setNombre(te.getNombre() + p);
-                    nueva.setDebil(te.isDebil());
-                    nueva.setListaAtributos(new Vector());
-                    nueva.setListaRelaciones(new Vector());
-                    nueva.setListaClavesPrimarias(new Vector());
-                    nueva.setListaRestricciones(new Vector());
-                    nueva.setListaUniques(new Vector());
-                    this.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, nueva);
-
-                    /*Vector<TransferAtributo> atributos = te.getListaAtributos();
-				        for (int i = 0; i < atributos.size(); ++i) {
-					        for (int j = 0; j < this.listaAtributos.size(); ++j) {
-                            //System.out.println(atributos.get(i));
-                            //System.out.println(this.listaAtributos.get(j).getIdAtributo());
-                            if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
-                                Vector<Object> v = new Vector<Object>();
-                                v.add(nueva);
-                                TransferAtributo TA = this.listaAtributos.get(j);
-                                TransferAtributo nuevoTA = new TransferAtributo(this);
-                                double x = nueva.getPosicion().getX();
-                                double y = nueva.getPosicion().getY();
-                                nuevoTA.setPosicion(new Point2D.Double(x,y));
-                                nuevoTA.setClavePrimaria(TA.getClavePrimaria());
-                                nuevoTA.setCompuesto(TA.getCompuesto());
-                                nuevoTA.setDominio(TA.getDominio());
-                                nuevoTA.setFrecuencia(TA.getFrecuencia());
-                                nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
-                                nuevoTA.setListaComponentes(TA.getListaComponentes());
-                                nuevoTA.setListaRestricciones(TA.getListaComponentes());
-                                nuevoTA.setMultivalorado(TA.getMultivalorado());
-                                nuevoTA.setNombre(TA.getNombre());
-                                nuevoTA.setNotnull(TA.getNotnull());
-                                nuevoTA.setUnique(TA.getUnique());
-                                nuevoTA.setVolumen(TA.getVolumen());
-                                v.add(nuevoTA);
-                                v.add("10");
-                                mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
-						    }
-					    }
-				    }*/
-
-                    //nueva.setListaClavesPrimarias(te.getListaClavesPrimarias());
-                    nueva.setListaRestricciones(te.getListaRestricciones());
-                    nueva.setListaUniques(te.getListaUniques());
-                    //nueva.setIdEntidad(te.getIdEntidad() + 10);
-                    nueva.setFrecuencia(te.getFrecuencia());
-                    nueva.setVolumen(te.getVolumen());
-                    nueva.setOffsetAttr(te.getOffsetAttr());
-                    te.setPegado(p + 1);
-                    ActualizaArbol(te);
-                }
-
-                if (this.copiado instanceof TransferRelacion) {
-                    TransferRelacion tr = (TransferRelacion) copiado;
-                    int p = tr.getPegado();
-                    TransferRelacion nueva = new TransferRelacion();
-                    Point2D punto = (Point2D) datos;
-                    nueva.setPosicion(punto);
-                    if (tr.getTipo().equals("IsA")) {
-                        this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarRelacionIsA, tr.getPosicion());
-                    } else {
-
-                        nueva.setNombre(tr.getNombre() + p);
-                        nueva.setCheckQuitarFlechas(tr.getCheckQuitarFlechas());
-                        nueva.setListaEntidadesYAridades(new Vector<EntidadYAridad>());
-                        nueva.setFrecuencia(tr.getFrecuencia());
-                        nueva.setIdRelacion(tr.getIdRelacion() + 10);
-                        nueva.setListaRestricciones(tr.getListaRestricciones());
-                        nueva.setListaUniques(tr.getListaUniques());
-                        nueva.setOffsetAttr(tr.getOffsetAttr());
-                        nueva.setRelacionConCardinalidad(tr.getRelacionConCardinalidad());
-                        nueva.setRelacionConCardinalidad1(tr.getRelacionConCardinalidad1());
-                        nueva.setRelacionConMinMax(tr.getRelacionConMinMax());
-                        nueva.setRelacionConParticipacion(tr.getRelacionConParticipacion());
-                        nueva.setVolumen(tr.getVolumen());
-                        nueva.setRol(tr.getRol());
-                        nueva.setTipo(tr.getTipo());
-                        nueva.setListaAtributos(new Vector());
-                        this.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, nueva);
-                        Vector<TransferAtributo> atributos = tr.getListaAtributos();
-
-                        /*for (int i = 0; i < atributos.size(); ++i) {
-                            for (int j = 0; j < this.listaAtributos.size(); ++j) {
-                                //System.out.println(atributos.get(i));
-                                //System.out.println(this.listaAtributos.get(j).getIdAtributo());
-                                if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
-                                    Vector<Object> v = new Vector<Object>();
-                                    v.add(nueva);
-                                    TransferAtributo TA = this.listaAtributos.get(j);
-                                    TransferAtributo nuevoTA = new TransferAtributo(this);
-                                    double x = nueva.getPosicion().getX();
-                                    double y = nueva.getPosicion().getY();
-                                    nuevoTA.setPosicion(new Point2D.Double(x,y));
-                                    nuevoTA.setClavePrimaria(TA.getClavePrimaria());
-                                    nuevoTA.setCompuesto(TA.getCompuesto());
-                                    nuevoTA.setDominio(TA.getDominio());
-                                    nuevoTA.setFrecuencia(TA.getFrecuencia());
-                                    nuevoTA.setIdAtributo(TA.getIdAtributo() + 10);
-                                    nuevoTA.setListaComponentes(TA.getListaComponentes());
-                                    nuevoTA.setListaRestricciones(TA.getListaComponentes());
-                                    nuevoTA.setMultivalorado(TA.getMultivalorado());
-                                    nuevoTA.setNombre(TA.getNombre());
-                                    nuevoTA.setNotnull(TA.getNotnull());
-                                    nuevoTA.setUnique(TA.getUnique());
-                                    nuevoTA.setVolumen(TA.getVolumen());
-                                    v.add(nuevoTA);
-                                    v.add("10");
-                                    mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
-                                }
-                            }
-                        }*/
-
-                        tr.setPegado(p + 1);
-                        ActualizaArbol(tr);
-                    }
-                }
-
-                if (this.copiado instanceof TransferAtributo) {
-                    return;
-                    /*TransferAtributo ta = (TransferAtributo) copiado;
-                    int p = ta.getPegado();
-                    TransferAtributo nuevo = new TransferAtributo(this);
-                    Point2D punto = (Point2D) datos;
-                    nuevo.setPosicion(punto);
-                    //obtenemos a que elemento pertenece
-                    Transfer elem_mod = this.getTheServiciosAtributos().eliminaRefererenciasAlAtributo(ta);
-                    nuevo.setClavePrimaria(ta.getClavePrimaria());
-                    nuevo.setCompuesto(ta.getCompuesto());
-                    nuevo.setDominio(ta.getDominio());
-                    nuevo.setNombre(ta.getNombre() + Integer.toString(p));
-                    nuevo.setIdAtributo(ta.getIdAtributo() + 10);
-                    nuevo.setMultivalorado(ta.getMultivalorado());
-                    nuevo.setNotnull(ta.getNotnull());
-                    nuevo.setUnique(ta.getUnique());
-                    nuevo.setSubatributo(ta.isSubatributo());
-                    nuevo.setVolumen(ta.getVolumen());
-                    nuevo.setListaComponentes(ta.getListaComponentes());
-                    nuevo.setFrecuencia(ta.getFrecuencia());
-                    nuevo.setListaRestricciones(ta.getListaRestricciones());
-                    double x = elem_mod.getPosicion().getX();
-                    double y = elem_mod.getPosicion().getY();
-                    nuevo.setPosicion(new Point2D.Double(x,y));
-
-                    if(elem_mod instanceof TransferEntidad) {
-                        Vector<Object> v = new Vector<Object>();
-                        v.add(elem_mod);
-                        v.add(nuevo);
-                        v.add("10");
-                        mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
-                    }
-
-                    else if(elem_mod instanceof TransferRelacion) {
-                        Vector<Object> v = new Vector<Object>();
-                        v.add(elem_mod);
-                        v.add(nuevo);
-                        v.add("10");
-                        mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
-                    }
-
-                    else if(elem_mod instanceof TransferAtributo) {
-                        Vector<Object> v = new Vector<Object>();
-                        v.add(elem_mod);
-                        v.add(nuevo);
-                        v.add("10");
-                        mensajeDesde_GUI(TC.GUIAnadirSubAtributoAtributo_Click_BotonAnadir, v);
-                    }
-
-                    ta.setPegado(p + 1);
-                    ActualizaArbol(ta);
-                    */
-                }
-                break;
-            }
+            //Casos que activan una GUI
             case PanelDiseno_Click_AnadirRestriccionAEntidad:
 	        case PanelDiseno_Click_AnadirRestriccionAAtributo:
 	        case PanelDiseno_Click_AnadirRestriccionARelacion:
@@ -1434,6 +731,21 @@ public class Controlador {
             case PanelDiseno_Click_InsertarEntidad: 
             case PanelDiseno_Click_RenombrarEntidad:{
             	factoriaGUI.getGUI(mensaje, this, datos).setActiva();
+                break;
+            }
+            
+            //Casos que requieren comandos
+            case PanelDiseno_Click_EliminarEntidad: 
+            case PanelDiseno_Click_EliminarAtributo:
+            case PanelDiseno_Click_DebilitarRelacion:
+            case PanelDiseno_Click_EditarUniqueAtributo: 
+            case PanelDiseno_Click_EditarCompuestoAtributo:
+            case PanelDiseno_Click_Pegar: 
+            case PanelDiseno_Click_EliminarReferenciasUniqueAtributo:
+            case PanelDiseno_Click_ModificarUniqueAtributo:
+            case PanelDiseno_Click_EliminarRelacionNormal:
+            case PanelDiseno_Click_EliminarDominio: {
+                ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             default:
@@ -3952,7 +3264,7 @@ public class Controlador {
         }
     }
 
-    private void ActualizaArbol(Transfer t) {
+    public void ActualizaArbol(Transfer t) {
         this.getTheGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
     }
 
@@ -4307,6 +3619,7 @@ public class Controlador {
     }
 
     public Vector<TransferEntidad> getListaEntidades() {
+    	//TODO ¿Cambiarlo por llamada a negocio, en vez de tener una lista guardada?
         return listaEntidades;
     }
 
@@ -4315,6 +3628,7 @@ public class Controlador {
     }
 
     public Vector<TransferRelacion> getListaRelaciones() {
+    	//TODO ¿Cambiarlo por llamada a negocio, en vez de tener una lista guardada?
         return this.listaRelaciones;
     }
 
@@ -4323,6 +3637,7 @@ public class Controlador {
     }
 
     public Vector<TransferAtributo> getListaAtributos() {
+    	//TODO ¿Cambiarlo por llamada a negocio, en vez de tener una lista guardada?
         return listaAtributos;
     }
 
@@ -4409,7 +3724,11 @@ public class Controlador {
         return this.auxDeshacer;
     }
     
-    public void setContFicherosDeshacer(int cont) {
+    public Transfer getCopiado() {
+		return copiado;
+	}
+
+	public void setContFicherosDeshacer(int cont) {
     	this.contFicherosDeshacer = cont;
     }
     
