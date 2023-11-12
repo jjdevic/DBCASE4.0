@@ -94,7 +94,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                // Eliminamos sus atributos
 	                Vector lista_atributos = tr.getListaAtributos();
 	                int cont = 0;
-	                TransferAtributo ta = new TransferAtributo(ctrl);
+	                TransferAtributo ta = new TransferAtributo();
 	                while (cont < lista_atributos.size()) {
 	                    String idAtributo = (String) lista_atributos.get(cont);
 	                    ta.setIdAtributo(Integer.parseInt(idAtributo));

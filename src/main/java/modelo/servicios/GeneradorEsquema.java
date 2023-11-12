@@ -880,9 +880,9 @@ public class GeneradorEsquema {
     }
 
     protected Vector<TransferAtributo> dameAtributosEnTransfer(Vector sinParam) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> claves = new Vector<TransferAtributo>();
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         for (int i = 0; i < sinParam.size(); i++) {
             aux.setIdAtributo(this.objectToInt(sinParam.elementAt(i)));
             aux = daoAtributos.consultarAtributo(aux);

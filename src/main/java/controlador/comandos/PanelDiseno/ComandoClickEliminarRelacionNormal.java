@@ -64,7 +64,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             // Eliminamos sus atributos
             Vector lista_atributos = tr.getListaAtributos();
             int conta = 0;
-            TransferAtributo ta = new TransferAtributo(ctrl);
+            TransferAtributo ta = new TransferAtributo();
             while (conta < lista_atributos.size()) {
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));

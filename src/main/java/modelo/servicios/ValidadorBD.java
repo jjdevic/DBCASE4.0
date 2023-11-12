@@ -347,7 +347,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 }
             }
             // Comprobar si se usa (esto solo da un aviso si falla)
-            DAOAtributos daoAtributos = new DAOAtributos(controlador);
+            DAOAtributos daoAtributos = new DAOAtributos();
             Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
             boolean esta = false;
             int k = 0;
@@ -363,7 +363,7 @@ public class ValidadorBD extends GeneradorEsquema {
 
     //metodos privados de validacion de entidades
     private boolean validaKey(TransferEntidad te) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         //valida si la entidad tiene clave y si esta dentro de sus atributos.
         //ademas si la entidad es debil, debe tener un atributo discriminante.
         boolean valido = true;
@@ -372,7 +372,7 @@ public class ValidadorBD extends GeneradorEsquema {
         Vector atbs = te.getListaAtributos();
         Vector keys = te.getListaClavesPrimarias();
         int contador = 0;
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         Vector<int[]> resultados = entidadPerteneceAisA(te);
         int enIsA = 0;
 
@@ -502,11 +502,11 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private boolean compruebaClaveCompuesto(Vector clavesEntidad, TransferAtributo ta) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         int i = 0;
         boolean todosBien = true;
         Vector subs = ta.getListaComponentes();
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         if (!ta.getCompuesto()) {
             if (estaEnVectorDeEnteros(clavesEntidad, ta.getIdAtributo())) return true;
             else return false;
@@ -527,11 +527,11 @@ public class ValidadorBD extends GeneradorEsquema {
      * - Los atributos multivalorados no son clave
      */
     private boolean validaAtributos() {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
         boolean valido = true;
         int i = 0;
-        TransferAtributo t = new TransferAtributo(controlador);
+        TransferAtributo t = new TransferAtributo();
         while (i < atributos.size()) {
             t = atributos.elementAt(i);
             valido &= validaFidelidadAtributo(t) && validaDominioDeAtributo(t);
@@ -543,7 +543,7 @@ public class ValidadorBD extends GeneradorEsquema {
 
     // comprueba si el atributo pertenece solo a una entidad.
     private boolean validaFidelidadAtributo(TransferAtributo ta) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
         DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
@@ -577,7 +577,7 @@ public class ValidadorBD extends GeneradorEsquema {
             //entonces es un subatributo, comprobamos q no esta repetido entre los subatributos
             i = 0;
             int contSubAtrib = 0;
-            TransferAtributo aux = new TransferAtributo(controlador);
+            TransferAtributo aux = new TransferAtributo();
             while (i < atributos.size() && contSubAtrib <= 1) {
                 aux = atributos.elementAt(i);
                 if (aux.getCompuesto())

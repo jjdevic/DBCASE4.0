@@ -103,7 +103,7 @@ public class addTransfersPanel extends JPanel {
         listaTransfers.addAll(daoRelaciones.ListaDeRelaciones());
         DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
         listaTransfers.addAll(daoEntidades.ListaDeEntidades());
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         listaTransfers.addAll(daoAtributos.ListaDeAtributos());
         DAOAgregaciones daoAgregaciones = new DAOAgregaciones(controlador.getPath());
         listaTransfers.addAll(daoAgregaciones.ListaDeAgregaciones());

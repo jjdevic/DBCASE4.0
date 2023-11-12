@@ -39,7 +39,7 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
                 // Eliminamos sus subatributos
                 Vector lista_atributos = ta.getListaComponentes();
                 int cont = 0;
-                TransferAtributo tah = new TransferAtributo(ctrl);
+                TransferAtributo tah = new TransferAtributo();
                 while (cont < lista_atributos.size()) {
                     String idAtributo = (String) lista_atributos.get(cont);
                     tah.setIdAtributo(Integer.parseInt(idAtributo));

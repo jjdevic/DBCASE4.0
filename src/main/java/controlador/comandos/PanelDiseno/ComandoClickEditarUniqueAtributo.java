@@ -21,7 +21,7 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
         ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
 
         ctrl.getTheServiciosEntidades().ListaDeEntidades();
-        ctrl.getTheServiciosAtributos().ListaDeAtributos();
+        ctrl.getTheServiciosAtributos().getListaDeAtributos();
         ctrl.getTheServiciosRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
         Vector<TransferRelacion> relaciones = ctrl.getTheGUIPrincipal().getListaRelaciones();

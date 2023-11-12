@@ -5,6 +5,7 @@ import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
 
+import controlador.FactoriaMsj.FactoriaMsj;
 import controlador.comandos.Comando;
 import controlador.comandos.FactoriaComandos;
 import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
@@ -388,7 +389,7 @@ public class Controlador {
         theServiciosEntidades = new ServiciosEntidades();
         theServiciosEntidades.setControlador(this);
         theServiciosAtributos = new ServiciosAtributos();
-        theServiciosAtributos.setControlador(this);
+        //theServiciosAtributos.setControlador(this);
         theServiciosRelaciones = new ServiciosRelaciones();
         theServiciosRelaciones.setControlador(this);
         theServiciosDominios = new ServiciosDominios();
@@ -773,7 +774,7 @@ public class Controlador {
                 break;
             }
             case GUIPrincipal_ActualizameLaListaDeAtributos: {
-                this.getTheServiciosAtributos().ListaDeAtributos();
+                this.getTheServiciosAtributos().getListaDeAtributos();
                 break;
             }
             case GUIPrincipal_ActualizameLaListaDeRelaciones: {
@@ -1597,7 +1598,7 @@ public class Controlador {
                 break;
             }
             case GUIEditarClavePrimariaAtributo_ActualizameListaAtributos: {
-                this.getTheServiciosAtributos().ListaDeAtributos();
+                this.getTheServiciosAtributos().getListaDeAtributos();
                 break;
             }
             case GUIEditarClavePrimariaAtributo_Click_BotonAceptar: {
@@ -1800,9 +1801,9 @@ public class Controlador {
                 TransferDominio td = (TransferDominio) v.get(0);
                 String nuevoNombre = (String) v.get(1);
                 String dominioRenombrado = td.getNombre();
-                this.getTheServiciosAtributos().ListaDeAtributos();
+                this.getTheServiciosAtributos().getListaDeAtributos();
                 int cont = 0;
-                TransferAtributo ta = new TransferAtributo(this);
+                TransferAtributo ta = new TransferAtributo();
                 while (cont < listaAtributos.size()) {
                     ta = listaAtributos.get(cont);
                     if (ta.getDominio().equals(dominioRenombrado)) {
@@ -2331,41 +2332,12 @@ public class Controlador {
 
 
         switch (mensaje) {
-            case SA_ListarAtributos_HECHO: {
-                // Ponemos la lista de atributos actualizada a las GUIs que lo necesitan
-                this.getTheGUIPrincipal().setListaAtributos((Vector) datos);
-                this.setListaAtributos((Vector) datos);
-                break;
-            }
-            /*
-             * Eliminacion de atributos
-             */
-            case SA_EliminarAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SA_EliminarAtributo_HECHO: {
                 setCambios(true);
                 Vector<Transfer> vectorAtributoYElemMod = (Vector<Transfer>) datos;
-                vectorAtributoYElemMod.get(0);
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarAtributo, vectorAtributoYElemMod);
                 ActualizaArbol(null);
-                break;
-            }
-            /*
-             * Renombrar atributo
-             */
-            case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_RenombrarAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_RenombrarAtributo_HECHO: {
@@ -2385,33 +2357,11 @@ public class Controlador {
                 this.getTheGUIRenombrarAtributo().setInactiva();
                 break;
             }
-            /*
-             * Editar dominio atributo
-             */
-            case SA_EditarDominioAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_EditarDominioAtributo_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SA_EditarDominioAtributo_HECHO: {
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarDominioAtributo, ta);
                 this.getTheGUIEditarDominioAtributo().setInactiva();
-                break;
-            }
-            /*
-             * Editar caracter compuesto de atributo
-             */
-            case SA_EditarCompuestoAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarCompuestoAtributo_HECHO: {
@@ -2423,23 +2373,11 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarCompuestoAtributo, ta);
                 break;
             }
-            /*
-             * Editar caracter multivalorado de atributo
-             */
-            case SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SA_EditarMultivaloradoAtributo_HECHO: {
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 ActualizaArbol(ta);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarMultivaloradoAtributo, ta);
-                break;
-            }
-
-            case SA_EditarNotNullAtributo_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarNotNullAtributo_HECHO: {
@@ -2465,34 +2403,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarUniqueAtributo, ta);
                 break;
             }
-
-            /*
-             * Añadir un subatributo a un atributo
-             */
-            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_SUBATTR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_SUBATR_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SA_AnadirSubAtributoAtributo_HECHO: {
                 setCambios(true);
                 Vector v = (Vector) datos;
@@ -2509,13 +2419,6 @@ public class Controlador {
                     }
                 }
                 if (!esta) this.listaAtributos.add(ta);
-                break;
-            }
-            /*
-             * Editar atributo como clave primaria de una entidad
-             */
-            case SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SA_EditarClavePrimariaAtributo_HECHO: {
@@ -2550,19 +2453,32 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesAtributo, te);
                 break;
             }
-            /*
-             * Mover Atributo en el panel de diseno (cambiar la posicion)
-             */
-            case SA_MoverPosicionAtributo_ERROR_DAOAtributos: {
-                TransferAtributo ta = (TransferAtributo) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_ERROR, ta);
-                break;
-            }
             case SA_MoverPosicionAtributo_HECHO: {
                 setCambios(true);
                 TransferAtributo ta = (TransferAtributo) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_HECHO, ta);
+                break;
+            }
+            //Errores
+            case SA_MoverPosicionAtributo_ERROR_DAOAtributos:
+            case SA_EliminarAtributo_ERROR_DAOAtributos:
+            case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio:
+            case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste:
+            case SA_RenombrarAtributo_ERROR_DAOAtributos:
+            case SA_EditarDominioAtributo_ERROR_DAOAtributos:
+            case SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero:
+            case SA_EditarDominioAtributo_ERROR_TamanoEsNegativo:
+            case SA_EditarCompuestoAtributo_ERROR_DAOAtributos:
+            case SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos:
+            case SA_EditarNotNullAtributo_ERROR_DAOAtributos:
+            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio:
+            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste:
+            case SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero:
+            case SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo:
+            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo:
+            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre:
+            case SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades:{
+                JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(mensaje), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             default:
@@ -3551,6 +3467,8 @@ public class Controlador {
 
     public void setPath(String path) {
         this.path = path;
+        //TODO Provisional
+        Config.setPath(path);
     }
 
     public File getFiletemp() {
@@ -3748,6 +3666,22 @@ public class Controlador {
     	Comando com = FactoriaComandos.getComando(mensaje, this);
     	if(com != null) com.ejecutar(datos);
     	else throw new IllegalArgumentException("Comando no encontrado"); //TODO
+    }
+    
+    
+    public void tratarConexto(Contexto contexto) {
+    	if(contexto == null) return;
+    	else if(!contexto.isExito()) {
+    		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;
+    	}
+    	else {
+    		this.guardarDeshacer();
+            this.auxDeshacer = true;
+            
+            //ActualizaArbol();
+            
+            //this.getTheGUIPrincipal().mensajesDesde_Controlador(contexto.getMensaje(), te);
+    	}
     }
 	
 	/*public void funcionDeshacer(TC mensaje, Object datos) {

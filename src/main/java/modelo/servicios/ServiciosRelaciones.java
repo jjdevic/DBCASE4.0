@@ -382,7 +382,7 @@ public class ServiciosRelaciones {
             return;
         }
         // Si nombre de atributo ya existe en esa entidad-> ERROR
-        DAOAtributos daoAtributos = new DAOAtributos(this.controlador);
+        DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributos.ListaDeAtributos(); //lista de todos los atributos
         if (lista == null) {
             controlador.mensajeDesde_SR(TC.SR_AnadirAtributoARelacion_ERROR_DAOAtributos, v);

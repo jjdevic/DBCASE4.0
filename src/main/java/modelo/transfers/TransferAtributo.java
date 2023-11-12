@@ -1,5 +1,6 @@
 package modelo.transfers;
 
+import controlador.Config;
 import controlador.Controlador;
 
 import java.awt.*;
@@ -24,15 +25,15 @@ public class TransferAtributo extends Transfer {
     private boolean multivalorado;
     private Vector listaRestricciones;
     private Point2D posicion;
-    private Controlador c;
+    //private Controlador c;
     private int pegado = 0;
 
-    public TransferAtributo(Controlador c) {
-        this.c = c;
+    public TransferAtributo() {
+        
     }
 
     public TransferAtributo clonar() {
-        TransferAtributo clon_ta = new TransferAtributo(c);
+        TransferAtributo clon_ta = new TransferAtributo();
         clon_ta.setIdAtributo(this.getIdAtributo());
         clon_ta.setNombre(this.getNombre());
         clon_ta.setDominio(this.getDominio());
@@ -88,7 +89,7 @@ public class TransferAtributo extends Transfer {
     }
 
     public boolean isNullable() {
-        return c.isNullAttrs() && !notnull && !ClavePrimaria && !compuesto;
+        return Config.getIsNullAttrs() && !notnull && !ClavePrimaria && !compuesto;
     }
 
     public void setNotnull(boolean notnull) {

@@ -387,7 +387,7 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
     private void actualizarUniquesUnitarios() {
         Vector<String> vUniques = this.entidad.getListaUniques();
         Vector<String> vAtributos = this.entidad.getListaAtributos();
-        controlador.getTheServiciosAtributos().ListaDeAtributos();
+        controlador.getTheServiciosAtributos().getListaDeAtributos();
         for (int i = 0; i < vUniques.size(); i++) {
             for (int j = 0; j < vAtributos.size(); j++)
                 if (vUniques.get(i).equals(controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {

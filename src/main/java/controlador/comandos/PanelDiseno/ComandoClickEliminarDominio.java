@@ -25,9 +25,9 @@ public class ComandoClickEliminarDominio extends Comando{
         if (respuesta == 0) {
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
-            ctrl.getTheServiciosAtributos().ListaDeAtributos();
+            ctrl.getTheServiciosAtributos().getListaDeAtributos();
             int cont = 0;
-            TransferAtributo ta = new TransferAtributo(ctrl);
+            TransferAtributo ta = new TransferAtributo();
             while (cont < ctrl.getListaAtributos().size()) {
                 ta = ctrl.getListaAtributos().get(cont);
                 if (ta.getDominio().equals(dominioEliminado)) {

@@ -44,7 +44,7 @@ public class ComandoClickEliminarEntidad extends Comando {
                 // Eliminamos sus atributos
 	            Vector lista_atributos = te.getListaAtributos();
 	            int conta = 0;
-	            TransferAtributo ta = new TransferAtributo(ctrl);
+	            TransferAtributo ta = new TransferAtributo();
 	            while (lista_atributos != null && conta < lista_atributos.size()) {
 	                String idAtributo = (String) lista_atributos.get(conta);
 	                ta.setIdAtributo(Integer.parseInt(idAtributo));

@@ -584,7 +584,7 @@ public class MyMenu extends JMenuBar {
                 listaTransfers.addAll(daoRelaciones.ListaDeRelaciones());
                 DAOEntidades daoEntidades = new DAOEntidades(c.getPath());
                 listaTransfers.addAll(daoEntidades.ListaDeEntidades());
-                DAOAtributos daoAtributos = new DAOAtributos(c);
+                DAOAtributos daoAtributos = new DAOAtributos();
                 listaTransfers.addAll(daoAtributos.ListaDeAtributos());
                 DAOAgregaciones daoAgregaciones = new DAOAgregaciones(c.getPath());
                 listaTransfers.addAll(daoAgregaciones.ListaDeAgregaciones());
