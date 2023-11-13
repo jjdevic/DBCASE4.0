@@ -107,4 +107,10 @@ public class GUI_Recientes extends Parent_GUI {
 		
 	}
 
+	@Override
+	public void setInactiva() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

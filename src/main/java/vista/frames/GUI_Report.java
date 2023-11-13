@@ -132,4 +132,10 @@ public class GUI_Report extends Parent_GUI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setInactiva() {
+		// TODO Auto-generated method stub
+		
+	}
 }

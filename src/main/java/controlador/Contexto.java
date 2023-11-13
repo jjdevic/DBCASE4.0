@@ -5,6 +5,18 @@ public class Contexto {
 	private boolean exito;
 	private Object datos;
 	
+	public Contexto(boolean exito, TC mensaje) {
+		this.exito = exito;
+		this.mensaje = mensaje;
+		this.datos = null;
+	}
+	
+	public Contexto(boolean exito, TC mensaje, Object datos) {
+		this.exito = exito;
+		this.mensaje = mensaje;
+		this.datos = datos;
+	}
+	
 	public TC getMensaje() {
 		return mensaje;
 	}

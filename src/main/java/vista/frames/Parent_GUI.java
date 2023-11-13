@@ -96,4 +96,6 @@ public abstract class Parent_GUI extends javax.swing.JDialog implements KeyListe
     public abstract void setDatos(Object datos);
     
     public abstract void setActiva();
+    
+    public abstract void setInactiva();
 }

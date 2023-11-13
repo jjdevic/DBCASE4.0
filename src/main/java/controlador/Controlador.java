@@ -2344,13 +2344,13 @@ public class Controlador {
                 setCambios(true);
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
-                String antiguoNombre = (String) v.get(2);
+                //String antiguoNombre = (String) v.get(2);
 
-                TransferAtributo clon_atributo = ta.clonar();
+                /*TransferAtributo clon_atributo = ta.clonar();
                 Vector v1 = new Vector();
                 v1.add(clon_atributo);
                 v1.add(antiguoNombre);
-                this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_ModificarUniqueAtributo, v1);
+                this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_ModificarUniqueAtributo, v1);*/
 
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarAtributo, ta);
@@ -2410,7 +2410,7 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirSubAtributoAAtributo, v);
                 this.getTheGUIAnadirSubAtributoAtributo().setInactiva();
 
-                TransferAtributo ta = (TransferAtributo) v.get(1);
+                /*TransferAtributo ta = (TransferAtributo) v.get(1);
                 boolean esta = false;
                 for (TransferAtributo listaAtributo : this.listaAtributos) {
                     if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
@@ -2418,7 +2418,7 @@ public class Controlador {
                         break;
                     }
                 }
-                if (!esta) this.listaAtributos.add(ta);
+                if (!esta) this.listaAtributos.add(ta);*/
                 break;
             }
             case SA_EditarClavePrimariaAtributo_HECHO: {
@@ -3678,9 +3678,22 @@ public class Controlador {
     		this.guardarDeshacer();
             this.auxDeshacer = true;
             
-            //ActualizaArbol();
+            Vector v = null;
+            Transfer tr = null;
             
-            //this.getTheGUIPrincipal().mensajesDesde_Controlador(contexto.getMensaje(), te);
+            if(contexto.getDatos() != null) {
+            	v = (Vector) contexto.getDatos();
+            	tr = (Transfer) v.get(0);
+            }
+            
+            //Actualizar el árbol del panel de información
+            ActualizaArbol(tr); //ActualizaArbol en realidad nunca usa el transfer, solo lo usa para ver si no es nulo.
+            
+            //Actualizar la GUIPrincipal
+            this.getTheGUIPrincipal().mensajesDesde_Controlador(contexto.getMensaje(), tr);
+            
+            //Desactivar la GUI correspondiente tomandola de FactoriaGUI
+            if(factoriaGUI.getGUI(contexto.getMensaje(), this, tr) != null) factoriaGUI.getGUI(contexto.getMensaje(), this, tr).setInactiva();;
     	}
     }
 	

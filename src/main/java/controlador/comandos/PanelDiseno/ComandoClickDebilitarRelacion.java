@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -98,7 +99,9 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                while (cont < lista_atributos.size()) {
 	                    String idAtributo = (String) lista_atributos.get(cont);
 	                    ta.setIdAtributo(Integer.parseInt(idAtributo));
-	                    ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+	                    
+	                    Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+	                    ctrl.tratarConexto(ctxt);
 	                    cont++;
 	                }
 	            }
