@@ -101,7 +101,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                    ta.setIdAtributo(Integer.parseInt(idAtributo));
 	                    
 	                    Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
-	                    ctrl.tratarConexto(ctxt);
+	                    ctrl.tratarContexto(ctxt);
 	                    cont++;
 	                }
 	            }

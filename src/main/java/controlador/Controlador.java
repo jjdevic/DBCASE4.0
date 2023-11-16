@@ -115,6 +115,7 @@ public class Controlador {
     private int modoVista;
     private Vector<TransferEntidad> listaEntidades;
     private Vector<TransferRelacion> listaRelaciones;
+    private Contexto ctxt;
 
     //private Vector<TransferAgregacion> listaAgregaciones; por el momento no parece necesario
 
@@ -596,17 +597,20 @@ public class Controlador {
             }
             case PanelDiseno_Click_EditarNotNullAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().editarNotNullAtributo(ta);
+                ctxt = this.getTheServiciosAtributos().editarNotNullAtributo(ta);
+                tratarContexto(ctxt);
                 break;
             }
             case PanelDiseno_Click_EditarMultivaloradoAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                ctxt = this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                tratarContexto(ctxt);
                 break;
             }
             case PanelDiseno_Click_EditarClavePrimariaAtributo: {
                 Vector<Object> v = (Vector<Object>) datos;
-                this.getTheServiciosAtributos().editarClavePrimariaAtributo(v);
+                ctxt = this.getTheServiciosAtributos().editarClavePrimariaAtributo(v);
+                tratarContexto(ctxt);
                 break;
             }
             case PanelDiseno_MoverEntidad: {
@@ -616,7 +620,8 @@ public class Controlador {
             }
             case PanelDiseno_MoverAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().moverPosicionAtributo(ta);
+                ctxt = this.getTheServiciosAtributos().moverPosicionAtributo(ta);
+                tratarContexto(ctxt);
                 break;
             }
             case PanelDiseno_MoverRelacion: {
@@ -1214,6 +1219,7 @@ public class Controlador {
 
     // Mensajes que le mandan las GUIs al controlador
     public void mensajeDesde_GUI(TC mensaje, Object datos) {
+    	
         switch (mensaje) {
 
             case GUIInsertarAgregacion: {
@@ -1294,7 +1300,8 @@ public class Controlador {
                 vRenombrar.add(ta);
                 vRenombrar.add(nuevoNombre);
                 if (!ta.getNombre().equals(nuevoNombre)) {
-                    this.getTheServiciosAtributos().renombrarAtributo(vRenombrar);
+                    ctxt = this.getTheServiciosAtributos().renombrarAtributo(vRenombrar);
+                    tratarContexto(ctxt);
                 }
                 //Creamos un vector para modificar el dominio
                 Vector<Object> vDominio = new Vector<Object>();
@@ -1307,7 +1314,8 @@ public class Controlador {
                 } else {
                     vDominio.add(dominio);
                 }
-                this.getTheServiciosAtributos().editarDomnioAtributo(vDominio);
+                ctxt = this.getTheServiciosAtributos().editarDomnioAtributo(vDominio);
+                tratarContexto(ctxt);
                 //Buscamos si el atributo pertenece a una entidad y si es asi a cual
 
                 DAOEntidades daoEntidades = new DAOEntidades(this.getPath());
@@ -1329,19 +1337,24 @@ public class Controlador {
                     vClavePrimaria.add(ta);
                     vClavePrimaria.add(te);
                     //vClavePrimaria.add(0);
-                    this.getTheServiciosAtributos().editarClavePrimariaAtributo(vClavePrimaria);
+                    ctxt = this.getTheServiciosAtributos().editarClavePrimariaAtributo(vClavePrimaria);
+                    tratarContexto(ctxt);
                 }
                 if (compuestoSelected != ta.getCompuesto()) {
-                    this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                    ctxt = this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                    tratarContexto(ctxt);
                 }
                 if (uniqueSelected != ta.getUnique()) {
-                    this.getTheServiciosAtributos().editarUniqueAtributo(ta);
+                    ctxt = this.getTheServiciosAtributos().editarUniqueAtributo(ta);
+                    tratarContexto(ctxt);
                 }
                 if (notNullSelected != ta.getNotnull()) {
-                    this.theServiciosAtributos.editarNotNullAtributo(ta);
+                    ctxt = this.theServiciosAtributos.editarNotNullAtributo(ta);
+                    tratarContexto(ctxt);
                 }
                 if (multivaloradoSelected != ta.isMultivalorado()) {
-                    this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                	ctxt = this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                	tratarContexto(ctxt);
                 }
                 ActualizaArbol(ta);
                 this.getTheServiciosSistema().reset();
@@ -1468,7 +1481,8 @@ public class Controlador {
             }
             case GUIPonerRestriccionesAAtributo_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
-                this.getTheServiciosAtributos().setRestricciones(v);
+                ctxt = this.getTheServiciosAtributos().setRestricciones(v);
+                tratarContexto(ctxt);
                 ActualizaArbol((Transfer) v.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
@@ -1489,7 +1503,8 @@ public class Controlador {
             }
             case GUIInsertarRestriccionAAtributo_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                this.getTheServiciosAtributos().anadirRestriccion(v);
+                ctxt = this.getTheServiciosAtributos().anadirRestriccion(v);
+                tratarContexto(ctxt);
                 ActualizaArbol((Transfer) v.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
@@ -1544,8 +1559,8 @@ public class Controlador {
             }
             case GUIRenombrarAtributo_Click_BotonRenombrar: {
                 Vector v = (Vector) datos;
-                this.getTheServiciosAtributos().renombrarAtributo(v);
-
+                ctxt = this.getTheServiciosAtributos().renombrarAtributo(v);
+                tratarContexto(ctxt);
                 ActualizaArbol((Transfer) v.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
@@ -1567,28 +1582,32 @@ public class Controlador {
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
                 this.antiguoDominioAtributo = ta.getDominio();
-                this.getTheServiciosAtributos().editarDomnioAtributo(v);
+                ctxt = this.getTheServiciosAtributos().editarDomnioAtributo(v);
+                tratarContexto(ctxt);
                 ActualizaArbol((Transfer) v.get(0));
                 this.getTheServiciosSistema().reset();
                 break;
             }
             case GUIEditarCompuestoAtributo_Click_BotonAceptar: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                ctxt = this.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                tratarContexto(ctxt);
                 ActualizaArbol(ta);
                 this.getTheServiciosSistema().reset();
                 break;
             }
             case GUIEditarMultivaloradoAtributo_Click_BotonAceptar: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                ctxt = this.getTheServiciosAtributos().editarMultivaloradoAtributo(ta);
+                tratarContexto(ctxt);
                 ActualizaArbol(ta);
                 this.getTheServiciosSistema().reset();
                 break;
             }
             case GUIAnadirSubAtributoAtributo_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
-                this.getTheServiciosAtributos().anadirAtributo(vectorTransfers);
+                ctxt = this.getTheServiciosAtributos().anadirAtributo(vectorTransfers);
+                tratarContexto(ctxt);
                 ActualizaArbol(vectorTransfers.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
@@ -1598,13 +1617,15 @@ public class Controlador {
                 break;
             }
             case GUIEditarClavePrimariaAtributo_ActualizameListaAtributos: {
+            	//TODO tomar la lista de la clase Modelo
                 this.getTheServiciosAtributos().getListaDeAtributos();
                 break;
             }
             case GUIEditarClavePrimariaAtributo_Click_BotonAceptar: {
                 Vector<Object> vectorAtributoyEntidad = (Vector<Object>) datos;
                 //vectorAtributoyEntidad.add(0);
-                this.getTheServiciosAtributos().editarClavePrimariaAtributo(vectorAtributoyEntidad);
+                ctxt = this.getTheServiciosAtributos().editarClavePrimariaAtributo(vectorAtributoyEntidad);
+                tratarContexto(ctxt);
                 ActualizaArbol((Transfer) vectorAtributoyEntidad.get(1));
                 this.getTheServiciosSistema().reset();
                 break;
@@ -1811,7 +1832,8 @@ public class Controlador {
                         vect.add(ta);
                         vect.add(nuevoNombre);
 
-                        this.getTheServiciosAtributos().editarDomnioAtributo(vect);
+                        ctxt = this.getTheServiciosAtributos().editarDomnioAtributo(vect);
+                        tratarContexto(ctxt);
                     }
                     cont++;
                 }
@@ -3669,7 +3691,7 @@ public class Controlador {
     }
     
     
-    public void tratarConexto(Contexto contexto) {
+    public void tratarContexto(Contexto contexto) {
     	if(contexto == null) return;
     	else if(!contexto.isExito()) {
     		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;

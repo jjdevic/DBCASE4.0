@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import controlador.comandos.Comando;
@@ -68,7 +69,8 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             while (conta < lista_atributos.size()) {
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
-                ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+                Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+                ctrl.tratarContexto(ctxt);
                 conta++;
             }
             //Se elimina también la entidad débil asociada

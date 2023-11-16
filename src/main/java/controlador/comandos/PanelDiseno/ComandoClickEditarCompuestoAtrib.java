@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -43,17 +44,20 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
                 while (cont < lista_atributos.size()) {
                     String idAtributo = (String) lista_atributos.get(cont);
                     tah.setIdAtributo(Integer.parseInt(idAtributo));
-                    ctrl.getTheServiciosAtributos().eliminarAtributo(tah, 1);
+                    Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(tah, 1);
+                    ctrl.tratarContexto(ctxt);
                     cont++;
                 }
                 // Modificamos el atributo
                 ta.getListaComponentes().clear();
-                ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                Contexto ctxt = ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                ctrl.tratarContexto(ctxt);
             }
         }
         // Si no es compuesto o es compuesto pero no tiene subatributos
         else {
-            ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+            Contexto ctxt = ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+            ctrl.tratarContexto(ctxt);
         }
 	}
 

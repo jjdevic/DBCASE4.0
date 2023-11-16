@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -25,6 +26,7 @@ public class ComandoClickEliminarDominio extends Comando{
         if (respuesta == 0) {
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
+            //TODO Tomarlas de modelos
             ctrl.getTheServiciosAtributos().getListaDeAtributos();
             int cont = 0;
             TransferAtributo ta = new TransferAtributo();
@@ -41,7 +43,8 @@ public class ComandoClickEliminarDominio extends Comando{
                     v.add(valorB);
 
                     if (valorBase.name().equals("TEXT") || valorBase.name().equals("VARCHAR")) v.add("20");
-                    ctrl.getTheServiciosAtributos().editarDomnioAtributo(v);
+                    Contexto ctxt = ctrl.getTheServiciosAtributos().editarDomnioAtributo(v);
+                    ctrl.tratarContexto(ctxt);
                 }
                 cont++;
             }

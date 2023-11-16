@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -17,7 +18,8 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
 	@Override
 	public void ejecutar(Object datos) {
 		TransferAtributo ta = (TransferAtributo) datos;
-        ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        Contexto ctxt = ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        ctrl.tratarContexto(ctxt);
 
         //ctrl.getTheServiciosEntidades().ListaDeEntidades();
         //ctrl.getTheServiciosAtributos().ListaDeAtributos();

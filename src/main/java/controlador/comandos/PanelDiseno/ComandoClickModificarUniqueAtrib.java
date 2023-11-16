@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -20,8 +21,10 @@ public class ComandoClickModificarUniqueAtrib extends Comando{
         TransferAtributo ta = (TransferAtributo) v1.get(0);
         String antiguoNombre = (String) v1.get(1);
 
-        ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        Contexto ctxt = ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        ctrl.tratarContexto(ctxt);
 
+        //TODO modelo
         ctrl.getTheServiciosEntidades().ListaDeEntidades();
         ctrl.getTheServiciosAtributos().getListaDeAtributos();
         ctrl.getTheServiciosRelaciones().ListaDeRelaciones();

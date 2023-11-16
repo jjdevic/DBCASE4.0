@@ -2,6 +2,7 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
@@ -18,8 +19,10 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
 	public void ejecutar(Object datos) {
 		Vector<Object> ve = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) ve.get(0);
-        ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        Contexto ctxt = ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        ctrl.tratarContexto(ctxt);
 
+        //TODO Cabiar los getListas, no tomarlas de controller sino de modelo
         ctrl.getTheServiciosEntidades().ListaDeEntidades();
         ctrl.getTheServiciosAtributos().getListaDeAtributos();
         ctrl.getTheServiciosRelaciones().ListaDeRelaciones();
