@@ -5,7 +5,8 @@ import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
 
-import controlador.FactoriaMsj.FactoriaMsj;
+import controlador.Factorias.FactoriaMsj;
+import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.Comando;
 import controlador.comandos.FactoriaComandos;
 import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
@@ -779,7 +780,8 @@ public class Controlador {
                 break;
             }
             case GUIPrincipal_ActualizameLaListaDeAtributos: {
-                this.getTheServiciosAtributos().getListaDeAtributos();
+            	//TODO Provisional
+                this.getTheGUIPrincipal().setListaAtributos(getTheServiciosAtributos().getListaDeAtributos());
                 break;
             }
             case GUIPrincipal_ActualizameLaListaDeRelaciones: {
@@ -3712,7 +3714,7 @@ public class Controlador {
             ActualizaArbol(tr); //ActualizaArbol en realidad nunca usa el transfer, solo lo usa para ver si no es nulo.
             
             //Actualizar la GUIPrincipal
-            this.getTheGUIPrincipal().mensajesDesde_Controlador(contexto.getMensaje(), tr);
+            this.getTheGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(ctxt.getMensaje()), tr);
             
             //Desactivar la GUI correspondiente tomandola de FactoriaGUI
             if(factoriaGUI.getGUI(contexto.getMensaje(), this, tr) != null) factoriaGUI.getGUI(contexto.getMensaje(), this, tr).setInactiva();;

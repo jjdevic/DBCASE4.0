@@ -1,4 +1,4 @@
-package controlador.FactoriaMsj;
+package controlador.Factorias;
 
 import controlador.TC;
 import vista.Lenguaje;

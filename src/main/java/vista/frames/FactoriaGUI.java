@@ -6,6 +6,7 @@ import java.util.Map;
 import controlador.Controlador;
 import controlador.TC;
 
+/* Esta factoría se encarga de devolver la GUI correspondiente al mensaje TC.Controlador_ recibido. */
 public class FactoriaGUI {
 
 	private Map<TC, Parent_GUI> map_guis;
@@ -24,8 +25,9 @@ public class FactoriaGUI {
 			return gui;
 		}
 		else {
+			//TODO Cambiar los mensajes de panel de diseno a mensajes de Controlador_, ahora los traduce la FactoriaTCCtrl
 			switch(mensaje) {
-			case PanelDiseno_Click_AddAgregacion: gui = new GUI_AnadirAgregacion(ctrl); break;
+			case Controlador_InsertarAgregacion: gui = new GUI_AnadirAgregacion(ctrl); break;
 			case PanelDiseno_Click_AnadirRestriccionAEntidad: gui = new GUI_InsertarRestriccionAEntidad(ctrl); break;
 	        case PanelDiseno_Click_AnadirRestriccionAAtributo: gui = new GUI_InsertarRestriccionAAtributo(ctrl); break;
 	        case PanelDiseno_Click_AnadirRestriccionARelacion: gui = new GUI_InsertarRestriccionARelacion(ctrl); break;
