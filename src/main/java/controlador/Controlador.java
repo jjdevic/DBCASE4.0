@@ -531,7 +531,7 @@ public class Controlador {
     public void mensajeDesde_PanelDiseno(TC mensaje, Object datos) {
         long tiempoActual = System.currentTimeMillis() / 1000;
         long ti = (tiempoActual - this.tiempoGuardado);
-        //System.out.println(ti);// lo que ha transcurrido en segundos desde la ultima ve que se guardo
+        
         if (cambios && ti > 600) // si ha pasado mas de media hora
             this.guardarBackup();
 
@@ -712,7 +712,7 @@ public class Controlador {
                 break;
             }
 
-            //Casos que activan una GUI
+            //Casos que solo activan una GUI
             case PanelDiseno_Click_AnadirRestriccionAEntidad:
 	        case PanelDiseno_Click_AnadirRestriccionAAtributo:
 	        case PanelDiseno_Click_AnadirRestriccionARelacion:
@@ -1917,9 +1917,6 @@ public class Controlador {
         }
 
         switch (mensaje) {
-            /*
-             * Listar entidades
-             */
             case SE_ListarEntidades_HECHO: {
                 this.getTheGUIPrincipal().setListaEntidades((Vector) datos);
                 this.getTheGUIEstablecerEntidadPadre().setListaEntidades((Vector) datos);
@@ -1933,74 +1930,12 @@ public class Controlador {
                 this.setListaEntidades((Vector) datos);
                 break;
             }
-            /*
-             * Insercion de entidades
-             */
-            case SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
-            case SE_InsertarRelacion_ERROR_NombreDeEntidadYaExisteComoAgregacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
-            case SE_InsertarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_InsertarEntidad_ERROR_DAO: {
-                this.getTheGUIInsertarEntidad().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SE_InsertarEntidad_HECHO: {
                 this.getTheGUIInsertarEntidad().setInactiva();
                 setCambios(true);
                 TransferEntidad te = (TransferEntidad) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarEntidad, te);
                 //this.listaEntidades.add(te);
-                break;
-            }
-
-            /*
-             * Renombrar entidades
-             */
-            case SE_RenombrarEntidad_ERROR_NombreDeEntidadEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_RenombrarEntidad_ERROR_NombreDeEntidadYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_RenombrarEntidad_ERROR_NombreDeEntidadYaExisteComoRelacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_RenombrarEntidad_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_RenombrarEntidad_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SE_RenombrarEntidad_HECHO: {
@@ -2012,47 +1947,11 @@ public class Controlador {
                 this.getTheGUIRenombrarEntidad().setInactiva();
                 break;
             }
-            /*
-             * Debilitar/Fortalecer una entidad
-             */
-            case SE_DebilitarEntidad_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SE_DebilitarEntidad_HECHO: {
                 TransferEntidad te = (TransferEntidad) datos;
                 setCambios(true);
                 ActualizaArbol(te);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_DebilitarEntidad, te);
-                break;
-            }
-            /*
-             * Añadir atributo a una relacion
-             */
-            case SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIAnadirAtributoRelacion().setInactiva();
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SE_AnadirAtributoAEntidad_HECHO: {
@@ -2073,27 +1972,10 @@ public class Controlador {
                 if (!esta) this.listaAtributos.add(ta);
                 break;
             }
-            /*
-             * Elimimacion de una entidad
-             */
-            case SE_EliminarEntidad_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-                break;
-            }
             case SE_EliminarEntidad_HECHO: {
                 setCambios(true);
                 ActualizaArbol(null);
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarEntidad, datos);
-                break;
-            }
-            /*
-             * Mover Entidad en el panel de diseno (cambiar la posicion)
-             */
-            case SE_MoverPosicionEntidad_ERROR_DAOEntidades: {
-                TransferEntidad te = (TransferEntidad) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), 0);
-
-                this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverEntidad_ERROR, te);
                 break;
             }
             case SE_MoverPosicionEntidad_HECHO: {
@@ -2108,9 +1990,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverEntidad_HECHO, te);
                 break;
             }
-            /*
-             * Restricciones a entidad
-             */
             case SE_AnadirRestriccionAEntidad_HECHO: {
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
@@ -2133,9 +2012,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesEntidad, te);
                 break;
             }
-            /*
-             * Restricciones a entidad
-             */
             case SE_AnadirUniqueAEntidad_HECHO: {
                 Vector v = (Vector) datos;
                 TransferEntidad te = (TransferEntidad) v.get(0);
@@ -2170,9 +2046,13 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniqueUnitarioEntidad, clon_entidad);
                 break;
             }
-            default:
+            default: {
+            	String msj_error = FactoriaMsj.getMsj(mensaje);
+            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
+            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
-        } // switch
+            }
+        }
     }
     //Utilidades
 
@@ -2194,9 +2074,6 @@ public class Controlador {
         }
 
         switch (mensaje) {
-            /*
-             * Listar dominios
-             */
             case SD_ListarDominios_HECHO: {
                 this.getTheGUIPrincipal().setListaDominios((Vector) datos);
                 this.getTheGUIAnadirAtributoEntidad().setListaDominios((Vector) datos);
@@ -2207,22 +2084,7 @@ public class Controlador {
                 this.getTheGUIModificarAtributo().setListaDominios((Vector) datos);
                 break;
             }
-            /*
-             * Insercion de dominios
-             */
-            case SD_InsertarDominio_ERROR_NombreDeDominioEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_InsertarDominio_ERROR_NombreDeDominioYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_InsertarDominio_ERROR_DAO: {
-                this.getTheGUIInsertarDominio().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
+            //TODO Revisar este caso, se puede usar lo que se devuelve desde neogocio para meterlo en el ctxt y no se necesita pasar por FactoriaMsj en este caso
             case SD_InsertarDominio_ERROR_ValorNoValido: {
                 Vector v = (Vector) datos;
                 String error = (String) v.get(1);
@@ -2236,22 +2098,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarDominio, td);
                 break;
             }
-
-            /*
-             * Renombrar dominios
-             */
-            case SD_RenombrarDominio_ERROR_NombreDeDominioEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_RenombrarDominio_ERROR_NombreDeDominioYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_RenombrarDominio_ERROR_DAODominios: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SD_RenombrarDominio_HECHO: {
                 Vector v = (Vector) datos;
                 TransferDominio td = (TransferDominio) v.get(0);
@@ -2261,13 +2107,6 @@ public class Controlador {
                 this.getTheGUIRenombrarDominio().setInactiva();
                 break;
             }
-            /*
-             * Elimimacion de un dominio
-             */
-            case SD_EliminarDominio_ERROR_DAODominios: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.DOMAINS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SD_EliminarDominio_HECHO: {
                 setCambios(true);
                 TransferDominio td = (TransferDominio) ((Vector) datos).get(0);
@@ -2275,9 +2114,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarDominio, td);
                 break;
             }
-            /*
-             * Modificar dominios
-             */
             case SD_ModificarTipoBaseDominio_HECHO: {
                 setCambios(true);
                 Vector v = (Vector) datos;
@@ -2285,15 +2121,7 @@ public class Controlador {
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_ModificarTipoBaseDominio, td);
                 break;
-            }
-            case SD_ModificarTipoBaseDominio_ERROR_DAODominios: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_ModificarTipoBaseDominio_ERROR_TipoBaseDominioEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_TYPE_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
+            }       
             case SD_ModificarElementosDominio_HECHO: {
                 setCambios(true);
                 Vector v = (Vector) datos;
@@ -2303,21 +2131,13 @@ public class Controlador {
                 this.getTheGUIModificarElementosDominio().setInactiva();
                 break;
             }
-            case SD_ModificarElementosDominio_ERROR_DAODominios: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_DOM_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
+            default: {
+            	String msj_error = FactoriaMsj.getMsj(mensaje);
+            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
+            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
-            case SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_VALUES), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SD_ModificarElementosDominio_ERROR_ValorNoValido: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_VALUE), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            default:
-                break;
-        } // switch
+        }
     }
 
     // Mensajes que mandan los Servicios de Atributos al Controlador
@@ -2483,35 +2303,19 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_HECHO, ta);
                 break;
             }
-            //Errores
-            case SA_MoverPosicionAtributo_ERROR_DAOAtributos:
-            case SA_EliminarAtributo_ERROR_DAOAtributos:
-            case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio:
-            case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste:
-            case SA_RenombrarAtributo_ERROR_DAOAtributos:
-            case SA_EditarDominioAtributo_ERROR_DAOAtributos:
-            case SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero:
-            case SA_EditarDominioAtributo_ERROR_TamanoEsNegativo:
-            case SA_EditarCompuestoAtributo_ERROR_DAOAtributos:
-            case SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos:
-            case SA_EditarNotNullAtributo_ERROR_DAOAtributos:
-            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio:
-            case SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste:
-            case SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero:
-            case SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo:
-            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo:
-            case SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre:
-            case SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades:{
-                JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(mensaje), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
+            default: {
+            	String msj_error = FactoriaMsj.getMsj(mensaje);
+            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
+            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
-            default:
-                break;
-        } // switch
+        }
     }
 
     //mensajes que manda el ServivioAgregaciones al controlador
     public void mensajeDesde_AG(TC mensaje, Object datos) {
+    	Integer n_error = null;
+    	
         if (mensaje == TC.SAG_RenombrarAgregacion_HECHO || mensaje == TC.SAG_InsertarAgregacion_HECHO || mensaje == TC.SAG_AnadirAtributoAAgregacion_HECHO || mensaje == TC.SAG_EliminarAgregacion_HECHO) {
             //this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;
@@ -2528,31 +2332,6 @@ public class Controlador {
         }
 
         switch (mensaje) {
-            case SAG_InsertarAgregacion_ERROR_NombreVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SAG_InsertarAgregacion_ERROR_NombreDeYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SAG_InsertarAgregacion_ERROR_NombreDeEntYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SAG_InsertarAgregacion_ERROR_NombreDeRelYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SAG_InsertarAgregacion_ERROR_DAO: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.AGGREGATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SAG_RenombrarAgregacion_ERROR_NombreVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
             case SAG_ListarAgregacion_HECHO: { // igual hay mas clases en las que hay que cambiar la lista de agregaciones
                 this.getTheGUIPrincipal().setListaAgregaciones((Vector) datos);
                 break;
@@ -2600,17 +2379,21 @@ public class Controlador {
                 ActualizaArbol(null);
                 break;
             }
-
-            default:
+            default: {
+            	String msj_error = FactoriaMsj.getMsj(mensaje);
+            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
+            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
-
+            }
         }
     }
 
     // Mensajes que mandan los Servicios de Relaciones al Controlador
     public void mensajeDesde_SR(TC mensaje, Object datos) {
         int intAux = 2;
+        Integer n_error = null;
         TransferRelacion taux = new TransferRelacion();
+        
         if (mensaje == TC.SR_EliminarRelacionNormal_HECHO) {
             Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion de la relacion venga de eliminar entidad debil
             intAux = (int) aux.get(1);
@@ -2648,40 +2431,6 @@ public class Controlador {
                 this.setListaRelaciones((Vector) datos);
                 break;
             }
-            /*
-             * Insercion de Relaciones
-             */
-            case SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExisteComoEntidad: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExisteComoAgregacion: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_AGREG_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_InsertarRelacion_ERROR_NombreDelRolYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ROL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
-            case SR_InsertarRelacion_ERROR_NombreDeRolNecesario: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.NECESARY_ROL), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
-            case SR_InsertarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIInsertarRelacion().setInactiva();
-                break;
-            }
             case SR_InsertarRelacion_HECHO: {
                 setCambios(true);
                 this.getTheGUIInsertarRelacion().setInactiva();
@@ -2691,43 +2440,10 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
                 break;
             }
-            /*
-             * Eliminacion de una relacion
-             */
-            case SR_EliminarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-
-            /*creo q esta no se usa nunca*/
             case SR_EliminarRelacion_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacion, tr);
-                break;
-            }
-
-            // Renombrar relacion
-            case SR_RenombrarRelacion_ERROR_NombreDeRelacionEsVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_RenombrarRelacion_ERROR_NombreDeRelacionYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_REL_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_RenombrarRelacion_ERROR_NombreDeRelacionYaExisteComoEntidad: {
-                this.getTheGUIRenombrarRelacion().setInactiva();
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENT_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIRenombrarRelacion().setActiva();
-                break;
-            }
-            case SR_RenombrarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_RenombrarRelacion_ERROR_DAOEntidades: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ENTITIES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_RenombrarRelacion_HECHO: {
@@ -2738,13 +2454,6 @@ public class Controlador {
                 this.getTheGUIRenombrarRelacion().setInactiva();
                 break;
             }
-            /*
-             * Debilitar una relacion
-             */
-            case SR_DebilitarRelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_DebilitarRelacion_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
@@ -2752,9 +2461,6 @@ public class Controlador {
                 ActualizaArbol(tr);
                 break;
             }
-            /*
-             * Restricciones a Relacion
-             */
             case SR_AnadirRestriccionARelacion_HECHO: {
                 Vector v = (Vector) datos;
                 TransferRelacion te = (TransferRelacion) v.get(0);
@@ -2777,50 +2483,10 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesRelacion, te);
                 break;
             }
-
-            /*
-             * Mover Relacion en el panel de diseno (cambiar la posicion)
-             */
-            case SR_MoverPosicionRelacion_ERROR_DAORelaciones: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverRelacion_ERROR, tr);
-                break;
-            }
             case SR_MoverPosicionRelacion_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverRelacion_HECHO, tr);
-                break;
-            }
-
-            /*
-             * Añadir atributo a una relacion
-             */
-            case SR_AnadirAtributoARelacion_ERROR_NombreDeAtributoVacio: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.EMPTY_ATTRIB_NAME), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirAtributoARelacion_ERROR_NombreDeAtributoYaExiste: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ATTRIB_NAME_REL), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirAtributoARelacion_ERROR_TamanoNoEsEntero: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirAtributoARelacion_ERROR_TamanoEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_SIZE2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirAtributoARelacion_ERROR_DAOAtributos: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIAnadirAtributoRelacion().setInactiva();
-                break;
-            }
-            case SR_AnadirAtributoARelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIAnadirAtributoRelacion().setInactiva();
                 break;
             }
             case SR_AnadirAtributoARelacion_HECHO: {
@@ -2842,29 +2508,11 @@ public class Controlador {
                 if (!esta) this.listaAtributos.add(ta);
                 break;
             }
-
-            /*
-             * Establecer la entidad padre en una relacion IsA
-             */
-            case SR_EstablecerEntidadPadre_ERROR_DAORelaciones: {
-                this.getTheGUIEstablecerEntidadPadre().setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_EstablecerEntidadPadre_HECHO: {
                 setCambios(true);
                 this.getTheGUIEstablecerEntidadPadre().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EstablecerEntidadPadre, vt);
-                break;
-            }
-            /*
-             * Quitar la entidad padre en una relacion IsA
-             */
-            case SR_QuitarEntidadPadre_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIQuitarEntidadPadre().setInactiva();
                 break;
             }
             case SR_QuitarEntidadPadre_HECHO: {
@@ -2874,29 +2522,11 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadPadre, tr);
                 break;
             }
-            /*
-             * Anadir una entidad hija a una relacion IsA
-             */
-            case SR_AnadirEntidadHija_ERROR_DAORelaciones: {
-                this.getTheGUIEstablecerEntidadPadre().setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_AnadirEntidadHija_HECHO: {
                 setCambios(true);
                 this.getTheGUIAnadirEntidadHija().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadHija, vt);
-                break;
-            }
-            /*
-             * Quitar una entidad hija en una relacion IsA
-             */
-            case SR_QuitarEntidadHija_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                this.getTheGUIQuitarEntidadHija().setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
                 break;
             }
             case SR_QuitarEntidadHija_HECHO: {
@@ -2906,25 +2536,11 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadHija, vt);
                 break;
             }
-            /*
-             * Eliminar una relacion IsA
-             */
-            case SR_EliminarRelacionIsA_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_EliminarRelacionIsA_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacionIsA, tr);
                 ActualizaArbol(null);
-                break;
-            }
-            /*
-             * Eliminar una relacion Normal
-             */
-            case SR_EliminarRelacionNormal_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EliminarRelacionNormal_HECHO: {
@@ -2936,47 +2552,12 @@ public class Controlador {
                 ActualizaArbol(null);
                 break;
             }
-            /*
-             * Insertar una relacion IsA
-             */
-            case SR_InsertarRelacionIsA_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_InsertarRelacionIsA_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
                 this.antiguaIsA = tr;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacionIsA, tr);
                 ActualizaArbol(tr);
-                break;
-            }
-            /*
-             * Anadir una entidad a una relacion normal
-             */
-            case SR_AnadirEntidadARelacion_ERROR_InicioNoEsEnteroOn: {
-                Vector v = (Vector) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_ERROR_InicioEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_ERROR_FinalNoEsEnteroOn: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_ERROR_FinalEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_ERROR_InicioMayorQueFinal: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_AnadirEntidadARelacion_HECHO: {
@@ -2987,47 +2568,11 @@ public class Controlador {
                 this.getTheGUIAnadirEntidadARelacion().setInactiva();
                 break;
             }
-            /*
-             * Quitar una entidad en una relacion Normal
-             */
-            case SR_QuitarEntidadARelacion_ERROR_DAORelaciones: {
-                this.getTheGUIQuitarEntidadARelacion().setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
             case SR_QuitarEntidadARelacion_HECHO: {
                 setCambios(true);
                 this.getTheGUIQuitarEntidadARelacion().setInactiva();
                 Vector<Transfer> vt = (Vector<Transfer>) datos;
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadARelacion, vt);
-                break;
-            }
-            /*
-             * Editar la aridad de una entidad en una relacion
-             */
-            case SR_EditarCardinalidadEntidad_ERROR_InicioNoEsEnteroOn: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY1), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_ERROR_InicioEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY2), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_ERROR_FinalNoEsEnteroOn: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY3), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_ERROR_FinalEsNegativo: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY4), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_ERROR_InicioMayorQueFinal: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.INCORRECT_CARDINALITY5), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_ERROR_DAORelaciones: {
-                JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATIONS_FILE_ERROR), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
             }
             case SR_EditarCardinalidadEntidad_HECHO: {
@@ -3037,14 +2582,13 @@ public class Controlador {
                 this.getTheGUIEditarCardinalidadEntidad().setInactiva();
                 break;
             }
-
             case SR_AridadEntidadUnoUno_HECHO: {
                 setCambios(true);
                 Vector v = (Vector) datos;
 
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_CardinalidadUnoUno, v);
                 break;
-            } // switch
+            } 
             case SR_AnadirUniqueARelacion_HECHO: {
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
@@ -3064,7 +2608,6 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarUniqueRelacion, clon_relacion);
                 break;
             }
-
             case SR_setUniquesARelacion_HECHO: {
                 Vector v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(1);
@@ -3083,8 +2626,12 @@ public class Controlador {
                 this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniqueUnitarioRelacion, clon_relacion);
                 break;
             }
-            default:
+            default: {
+            	String msj_error = FactoriaMsj.getMsj(mensaje);
+            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
+            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
                 break;
+            }
         }
     }
 
@@ -3118,7 +2665,7 @@ public class Controlador {
                 this.getTheGUIPrincipal().escribeEnModelo(info);
                 break;
             }
-        }// switch
+        }
     }
 
     private void guardarBackup() {
@@ -3713,11 +3260,12 @@ public class Controlador {
             //Actualizar el árbol del panel de información
             ActualizaArbol(tr); //ActualizaArbol en realidad nunca usa el transfer, solo lo usa para ver si no es nulo.
             
-            //Actualizar la GUIPrincipal
-            this.getTheGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(ctxt.getMensaje()), tr);
+            //Actualizar la GUI
+            this.getTheGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), tr);
             
-            //Desactivar la GUI correspondiente tomandola de FactoriaGUI
-            if(factoriaGUI.getGUI(contexto.getMensaje(), this, tr) != null) factoriaGUI.getGUI(contexto.getMensaje(), this, tr).setInactiva();;
+            //Desactivar la GUI específica correspondiente (si existe) tomándola de FactoriaGUI
+            Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), this, tr);
+            if(gui != null) gui.setInactiva();
     	}
     }
 	
