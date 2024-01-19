@@ -43,7 +43,7 @@ public class ComandoClickEliminarAtributo extends Comando{
             TransferAtributo clon_atributo2 = ta.clonar();
             ctrl.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarReferenciasUniqueAtributo, clon_atributo2);
             TransferAtributo clon_atributo3 = ta.clonar();
-            Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(clon_atributo3, intAux);
+            Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
             ctrl.tratarContexto(ctxt);
         }
 	}

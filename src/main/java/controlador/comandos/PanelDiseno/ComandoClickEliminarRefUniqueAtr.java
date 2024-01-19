@@ -18,7 +18,7 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
 	@Override
 	public void ejecutar(Object datos) {
 		TransferAtributo ta = (TransferAtributo) datos;
-        Contexto ctxt = ctrl.getTheServiciosAtributos().editarUniqueAtributo(ta);
+        Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         ctrl.tratarContexto(ctxt);
 
         //ctrl.getTheServiciosEntidades().ListaDeEntidades();
@@ -34,7 +34,7 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
         int i = 0;
         while (i < entidades.size() && !encontrado) {
             te = entidades.get(i);
-            if (ctrl.getTheServiciosEntidades().tieneAtributo(te, ta)) {
+            if (ctrl.getFactoriaServicios().getServicioEntidades().tieneAtributo(te, ta)) {
                 encontrado = true;
                 esEntidad = true;
             }
@@ -43,7 +43,7 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
         i = 0;
         while (i < relaciones.size() && !encontrado) {
             tr = relaciones.get(i);
-            if (ctrl.getTheServiciosRelaciones().tieneAtributo(tr, ta)) {
+            if (ctrl.getFactoriaServicios().getServicioRelaciones().tieneAtributo(tr, ta)) {
                 encontrado = true;
             }
             i++;
@@ -53,12 +53,12 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
                 Vector v = new Vector();
                 v.add(te);
                 v.add(ta);
-                ctrl.getTheServiciosEntidades().eliminarReferenciasUnitario(v);
+                ctrl.getFactoriaServicios().getServicioEntidades().eliminarReferenciasUnitario(v);
             } else {//esRelacion
                 Vector v = new Vector();
                 v.add(tr);
                 v.add(ta);
-                ctrl.getTheServiciosRelaciones().eliminarReferenciasUnitario(v);
+                ctrl.getFactoriaServicios().getServicioRelaciones().eliminarReferenciasUnitario(v);
             }
         }
 	}

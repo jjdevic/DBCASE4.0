@@ -69,7 +69,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             while (conta < lista_atributos.size()) {
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
-                Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+                Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
                 ctrl.tratarContexto(ctxt);
                 conta++;
             }
@@ -97,7 +97,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                         }
                     }
                     //Elimino también la entidad débil
-                    if (ctrl.getTheServiciosEntidades().esDebil(idEntidad)) {
+                    if (ctrl.getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
                         //Esto es para borrar los atributos de la entidad débil y la propia entidad débil
                         Vector<Object> vAux = new Vector<Object>();
                         vAux.add(te);
@@ -111,10 +111,9 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             }
 
             // Eliminamos la relacion
-
-            ctrl.getTheServiciosAgregaciones().eliminarAgregacion(tr);
-            ctrl.getTheServiciosEntidades().eliminarRelacionDeEntidad(tr);
-            ctrl.getTheServiciosRelaciones().eliminarRelacionNormal(tr, intAux);
+            ctrl.getFactoriaServicios().getServicioAgregaciones().eliminarAgregacion(tr);
+            ctrl.getFactoriaServicios().getServicioEntidades().eliminarRelacionDeEntidad(tr);
+            ctrl.getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, intAux);
         }
 	}
 

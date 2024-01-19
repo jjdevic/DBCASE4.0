@@ -49,14 +49,14 @@ public class ComandoClickEliminarEntidad extends Comando {
 	            while (lista_atributos != null && conta < lista_atributos.size()) {
 	                String idAtributo = (String) lista_atributos.get(conta);
 	                ta.setIdAtributo(Integer.parseInt(idAtributo));
-	                Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+	                Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
 	                ctrl.tratarContexto(ctxt);
 	                conta++;
 	            }
             
             //Si la entidad es débil eliminamos la relación débil asociada
 	            if (te.isDebil()) {
-	                Vector<TransferRelacion> lista_rel = ctrl.getTheServiciosRelaciones().ListaDeRelacionesNoVoid();
+	                Vector<TransferRelacion> lista_rel = ctrl.getFactoriaServicios().getServicioRelaciones().ListaDeRelacionesNoVoid();
 	                int cont = 0, aux = 0;
 	                boolean encontrado = false;
 	                EntidadYAridad eya;
@@ -72,7 +72,7 @@ public class ComandoClickEliminarEntidad extends Comando {
 	                            idEntidad = eya.getEntidad();
 	                            if (te.getIdEntidad() == idEntidad) {
 	                                tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
-	                                ctrl.getTheServiciosRelaciones().eliminarRelacionNormal(tr, 1);
+	                                ctrl.getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
 	                                encontrado = true;
 	                            }
 	                            aux++;
@@ -83,7 +83,7 @@ public class ComandoClickEliminarEntidad extends Comando {
 	                }
 	            }
             // Eliminamos la entidad
-            ctrl.getTheServiciosEntidades().eliminarEntidad(te, intAux);
+            ctrl.getFactoriaServicios().getServicioEntidades().eliminarEntidad(te, intAux);
             } 
 	}
 }

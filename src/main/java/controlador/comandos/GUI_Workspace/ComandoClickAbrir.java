@@ -31,7 +31,7 @@ public class ComandoClickAbrir extends Comando {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                ctrl.getTheServiciosSistema().reset();
+                ctrl.getFactoriaServicios().getServicioSistema().reset();
                 ctrl.getTheGUIPrincipal().loadInfo();
                 ctrl.getTheGUIPrincipal().reiniciar();
             }

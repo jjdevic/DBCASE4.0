@@ -322,7 +322,7 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
                     ponAtributo(boton1.getText());
                 }
             });
-            boton1.setText(controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(entidad.getListaAtributos().get(i).toString())));
+            boton1.setText(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(entidad.getListaAtributos().get(i).toString())));
             boton1.addKeyListener(new KeyListener() {
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == 10) {
@@ -387,29 +387,29 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
     private void actualizarUniquesUnitarios() {
         Vector<String> vUniques = this.entidad.getListaUniques();
         Vector<String> vAtributos = this.entidad.getListaAtributos();
-        controlador.getTheServiciosAtributos().getListaDeAtributos();
+        controlador.getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
         for (int i = 0; i < vUniques.size(); i++) {
-            for (int j = 0; j < vAtributos.size(); j++)
-                if (vUniques.get(i).equals(controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
-                    if (!controlador.getTheServiciosAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
+            for (int j = 0; j < vAtributos.size(); j++) 
+                if (vUniques.get(i).equals(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
+                    if (!controlador.getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
                         int numAtributo = -1;
                         for (int k = 0; k < controlador.getTheGUIPrincipal().getListaAtributos().size(); k++) {
-                            String nombre = controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
+                            String nombre = controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
                             if (((TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(k)).getNombre().equals(nombre)) {
                                 numAtributo = k;
                             }
                         }
                         final TransferAtributo atributo = (TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(numAtributo);
                         TransferAtributo clon_atributo = atributo.clonar();
-                        controlador.getTheServiciosAtributos().editarUniqueAtributo(clon_atributo);
+                        controlador.getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
                     }
                 }
         }
         for (int i = 0; i < vAtributos.size(); i++) {
-            if (controlador.getTheServiciosAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
+            if (controlador.getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
                 boolean encontrado = false;
                 for (int j = 0; j < vUniques.size(); j++) {
-                    if (vUniques.get(j).equals(controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
+                    if (vUniques.get(j).equals(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
                         encontrado = true;
                     }
                 }
@@ -417,14 +417,14 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
                     //hay que arreglar uno unique unitario que acabas de quitar
                     int numAtributo = -1;
                     for (int k = 0; k < controlador.getTheGUIPrincipal().getListaAtributos().size(); k++) {
-                        String nombre = controlador.getTheServiciosAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
+                        String nombre = controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
                         if (((TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(k)).getNombre().equals(nombre)) {
                             numAtributo = k;
                         }
                     }
                     final TransferAtributo atributo = (TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(numAtributo);
                     TransferAtributo clon_atributo = atributo.clonar();
-                    controlador.getTheServiciosAtributos().editarUniqueAtributo(clon_atributo);
+                    controlador.getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
                 }
             }
         }

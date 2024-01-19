@@ -27,7 +27,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 		TransferRelacion tr = (TransferRelacion) datos;
         //Si es una relacion fuerte...
         if (tr.getTipo().equals("Normal")) {
-            int numDebiles = ctrl.getTheServiciosRelaciones().numEntidadesDebiles(tr);
+            int numDebiles = ctrl.getFactoriaServicios().getServicioRelaciones().numEntidadesDebiles(tr);
             // ...y tiene más de una entidad débil no se puede debilitar
             if (numDebiles > 1) {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
@@ -60,7 +60,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                while ((!actualizado) && (i < tr.getListaEntidadesYAridades().size())) {
 	                    informacion = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(i));
 	                    int idEntidad = informacion.getEntidad();
-	                    if (ctrl.getTheServiciosEntidades().esDebil(idEntidad)) {
+	                    if (ctrl.getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
 	                        actualizado = true;
 	                        int idRelacion = tr.getIdRelacion();
 	                        int finRango = 1;
@@ -86,7 +86,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                        v.add(tipo);
 	                        v.add(rol);
 	                        v.add(posicion);
-	                        ctrl.getTheServiciosRelaciones().aridadEntidadUnoUno(v);
+	                        ctrl.getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
 	                    }
 	                    i++;
 	                }
@@ -100,7 +100,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                    String idAtributo = (String) lista_atributos.get(cont);
 	                    ta.setIdAtributo(Integer.parseInt(idAtributo));
 	                    
-	                    Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(ta, 1);
+	                    Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
 	                    ctrl.tratarContexto(ctxt);
 	                    cont++;
 	                }
@@ -108,11 +108,11 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	            if (respuesta1 != 1 && respuesta2 != 1) {
 	                // Modificamos la relacion
 	                tr.getListaAtributos().clear();
-	                ctrl.getTheServiciosRelaciones().debilitarRelacion(tr);
+	                ctrl.getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
 	            }
             }
         } else {
-            ctrl.getTheServiciosRelaciones().debilitarRelacion(tr);
+            ctrl.getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
         }
 		
 	}

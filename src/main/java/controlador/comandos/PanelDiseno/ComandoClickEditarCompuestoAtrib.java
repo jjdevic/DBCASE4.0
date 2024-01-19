@@ -44,19 +44,19 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
                 while (cont < lista_atributos.size()) {
                     String idAtributo = (String) lista_atributos.get(cont);
                     tah.setIdAtributo(Integer.parseInt(idAtributo));
-                    Contexto ctxt = ctrl.getTheServiciosAtributos().eliminarAtributo(tah, 1);
+                    Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(tah, 1);
                     ctrl.tratarContexto(ctxt);
                     cont++;
                 }
                 // Modificamos el atributo
                 ta.getListaComponentes().clear();
-                Contexto ctxt = ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+                Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
                 ctrl.tratarContexto(ctxt);
             }
         }
         // Si no es compuesto o es compuesto pero no tiene subatributos
         else {
-            Contexto ctxt = ctrl.getTheServiciosAtributos().editarCompuestoAtributo(ta);
+            Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
             ctrl.tratarContexto(ctxt);
         }
 	}

@@ -27,7 +27,7 @@ public class ComandoClickEliminarDominio extends Comando{
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
             //TODO Tomarlas de modelos
-            ctrl.getTheServiciosAtributos().getListaDeAtributos();
+            ctrl.getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
             int cont = 0;
             TransferAtributo ta = new TransferAtributo();
             while (cont < ctrl.getListaAtributos().size()) {
@@ -43,13 +43,13 @@ public class ComandoClickEliminarDominio extends Comando{
                     v.add(valorB);
 
                     if (valorBase.name().equals("TEXT") || valorBase.name().equals("VARCHAR")) v.add("20");
-                    Contexto ctxt = ctrl.getTheServiciosAtributos().editarDomnioAtributo(v);
+                    Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().editarDomnioAtributo(v);
                     ctrl.tratarContexto(ctxt);
                 }
                 cont++;
             }
             // Eliminamos el dominio
-            ctrl.getTheServiciosDominios().eliminarDominio(td);
+            ctrl.getFactoriaServicios().getServicioDominios().eliminarDominio(td);
         }
 	}
 
