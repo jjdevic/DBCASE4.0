@@ -11,9 +11,9 @@ import java.util.Objects;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Comando;
 import vista.Lenguaje;
 
 public class ComandoWorkspaceNuevo extends Comando {
@@ -37,7 +37,7 @@ public class ComandoWorkspaceNuevo extends Comando {
 		SwingUtilities.invokeLater(new Runnable() {             
 		    @Override                                           
 		    public void run() {                                 
-		        ctrl.getFactoriaServicios().getServicioSistema().reset();               
+		        getFactoriaServicios().getServicioSistema().reset();               
 		        ctrl.getFactoriaGUI().getGUIPrincipal().loadInfo();                     
 		        ctrl.getFactoriaGUI().getGUIPrincipal().reiniciar();               
 		    }                                                   

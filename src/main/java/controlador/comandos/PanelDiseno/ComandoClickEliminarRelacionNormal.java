@@ -2,10 +2,10 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
@@ -69,8 +69,8 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             while (conta < lista_atributos.size()) {
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
-                Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-                ctrl.tratarContexto(ctxt);
+                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+                tratarContexto(ctxt);
                 conta++;
             }
             //Se elimina también la entidad débil asociada
@@ -97,7 +97,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                         }
                     }
                     //Elimino también la entidad débil
-                    if (ctrl.getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
+                    if (getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
                         //Esto es para borrar los atributos de la entidad débil y la propia entidad débil
                         Vector<Object> vAux = new Vector<Object>();
                         vAux.add(te);
@@ -111,9 +111,9 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             }
 
             // Eliminamos la relacion
-            ctrl.getFactoriaServicios().getServicioAgregaciones().eliminarAgregacion(tr);
-            ctrl.getFactoriaServicios().getServicioEntidades().eliminarRelacionDeEntidad(tr);
-            ctrl.getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, intAux);
+            getFactoriaServicios().getServicioAgregaciones().eliminarAgregacion(tr);
+            getFactoriaServicios().getServicioEntidades().eliminarRelacionDeEntidad(tr);
+            getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, intAux);
         }
 	}
 

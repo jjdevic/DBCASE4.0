@@ -3,9 +3,9 @@ package controlador.comandos.PanelDiseno;
 import java.awt.geom.Point2D;
 import java.util.Vector;
 
+import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;

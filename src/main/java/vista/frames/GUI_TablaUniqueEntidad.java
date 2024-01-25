@@ -197,7 +197,6 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
                 v.add(predicados);
                 v.add(this.entidad);
                 controlador.mensajeDesde_GUI(TC.GUIPonerUniquesAEntidad_Click_BotonAceptar, v);
-                actualizarUniquesUnitarios();
                 this.setInactiva();
             }
         }
@@ -322,7 +321,7 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
                     ponAtributo(boton1.getText());
                 }
             });
-            boton1.setText(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(entidad.getListaAtributos().get(i).toString())));
+            boton1.setText((String) controlador.mensaje(TC.GetNombreAtributo, Integer.parseInt(entidad.getListaAtributos().get(i).toString())));
             boton1.addKeyListener(new KeyListener() {
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == 10) {
@@ -381,65 +380,6 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ERROR_TABLE),
                     Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void actualizarUniquesUnitarios() {
-        Vector<String> vUniques = this.entidad.getListaUniques();
-        Vector<String> vAtributos = this.entidad.getListaAtributos();
-        controlador.getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
-        
-        //Recorrer para cada unique de la entidad seleccionada, cada atributo de la entidad seleccionada
-        for (int i = 0; i < vUniques.size(); i++) {
-            for (int j = 0; j < vAtributos.size(); j++) 
-            	
-            	//Si el unique numero i es igual al nombre del atributo j
-                if (vUniques.get(i).equals(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
-                    //Si el atributo j no es unique
-                	if (!controlador.getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
-                        int numAtributo = -1;
-                        //Buscar la posicion del atributo j en la lista de atributos de la GUIPrincipal
-                        for (int k = 0; k < controlador.getListaAtributos().size(); k++) {
-                        	
-                            String nombre = controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
-                            if (((TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                                numAtributo = k;
-                            }
-                        }
-                        //Hacer el atributo j unique
-                        final TransferAtributo atributo = (TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(numAtributo);
-                        TransferAtributo clon_atributo = atributo.clonar();
-                        controlador.getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                    }
-                }
-        }
-        //Recorrer cada atributo de la entidad seleccionada
-        for (int i = 0; i < vAtributos.size(); i++) {
-        	//Si el atributo i es unique
-            if (controlador.getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
-                boolean encontrado = false;
-                //Comprobar que el atributo i (que es unique según servicio de atributos) está marcado como tal en vUniques
-                for (int j = 0; j < vUniques.size(); j++) {
-                    if (vUniques.get(j).equals(controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
-                        encontrado = true;
-                    }
-                }
-                //Si no está marcado como unique en vUniques, desmarcarlo.
-                if (!encontrado) {
-                    //hay que arreglar uno unique unitario que acabas de quitar
-                    int numAtributo = -1;
-                    for (int k = 0; k < controlador.getTheGUIPrincipal().getListaAtributos().size(); k++) {
-                        String nombre = controlador.getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
-                        if (((TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                            numAtributo = k;
-                        }
-                    }
-                    final TransferAtributo atributo = (TransferAtributo) controlador.getTheGUIPrincipal().getListaAtributos().get(numAtributo);
-                    TransferAtributo clon_atributo = atributo.clonar();
-                    //EditarUniqueAtributo hace unique = !unique
-                    controlador.getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                }
-            }
         }
     }
 

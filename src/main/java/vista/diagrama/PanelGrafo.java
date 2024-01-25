@@ -538,7 +538,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
             case 89: //CTR Y
                 if (e.isControlDown())
                     this.controlador.mensajeDesde_GUIPrincipal(TC.GUI_Principal_REHACER, null);
-                this.controlador.getTheGUIPrincipal().getMyMenu().getRehacer().transferFocus();
+                this.controlador.transferFocusRehacer();
                 this.grabFocus();
                 break;
 

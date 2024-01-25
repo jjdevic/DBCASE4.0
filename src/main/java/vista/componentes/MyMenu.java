@@ -609,7 +609,6 @@ public class MyMenu extends JMenuBar {
                 new Thread(new Runnable() {
                     public void run() {
                         c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarModeloRelacional, null);
-                        c.getTheGUIPrincipal().getModeloText().goToTop();
                     }
                 }).start();
             }
@@ -624,7 +623,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoModelo, c.getTheGUIPrincipal().getModeloText().getText());
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoModelo, null);
                     }
                 });
                 hilo.start();
@@ -664,12 +663,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.getTheGUIPrincipal().getConexionActual().setDatabase("");
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarScriptSQL, c.getTheGUIPrincipal().getConexionActual());
-
-                        // Restaurar el sistema
-                        c.getTheGUIPrincipal().getConexionActual().setDatabase("");
-                        c.getTheGUIPrincipal().getModeloText().goToTop();
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarScriptSQL, null);
                     }
                 });
                 hilo.start();
@@ -685,7 +679,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoScriptSQL, c.getTheGUIPrincipal().getCodigoText().getText());
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoScriptSQL, null);
                     }
                 });
                 hilo.start();
@@ -703,7 +697,7 @@ public class MyMenu extends JMenuBar {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
                         // Comprobar si hay codigo
-                        if (!c.getTheGUIPrincipal().getScriptGeneradoCorrectamente()) {
+                        if (!c.isScriptGeneradoCorrectamente()) {
                             JOptionPane.showMessageDialog(null,
                                     Lenguaje.text(Lenguaje.ERROR) + ".\n" +
                                             Lenguaje.text(Lenguaje.MUST_GENERATE_SCRIPT_EX),
@@ -713,11 +707,7 @@ public class MyMenu extends JMenuBar {
                         }
 
                         // Ejecutar en DBMS
-                        TransferConexion tc = new TransferConexion(
-                                c.getTheGUIPrincipal().getCBO().getSelectedIndex(),
-                                c.getTheGUIPrincipal().getCBO().getSelectedItem().toString());
-
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonEjecutarEnDBMS, tc);
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonEjecutarEnDBMS, null);
                     }
                 });
                 hilo.start();
@@ -944,6 +934,10 @@ public class MyMenu extends JMenuBar {
                     Lenguaje.text(Lenguaje.DBCASE),
                     JOptionPane.PLAIN_MESSAGE);
         }
+    }
+    
+    public void transferFocusRehacer() {
+    	this.rehacer.transferFocus();
     }
 
     /************

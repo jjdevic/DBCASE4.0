@@ -1,5 +1,6 @@
 package controlador.comandos;
 
+import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
 import controlador.comandos.GUI_Workspace.ComandoClickAbrir;

@@ -8,8 +8,8 @@ import java.util.Objects;
 
 import javax.swing.SwingUtilities;
 
+import controlador.Comando;
 import controlador.Controlador;
-import controlador.comandos.Comando;
 
 public class ComandoClickAbrir extends Comando {
 
@@ -31,7 +31,7 @@ public class ComandoClickAbrir extends Comando {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                ctrl.getFactoriaServicios().getServicioSistema().reset();
+                getFactoriaServicios().getServicioSistema().reset();
                 ctrl.getFactoriaGUI().getGUIPrincipal().loadInfo();
                 ctrl.getFactoriaGUI().getGUIPrincipal().reiniciar();
             }

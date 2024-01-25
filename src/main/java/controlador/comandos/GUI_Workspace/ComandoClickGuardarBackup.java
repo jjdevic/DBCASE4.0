@@ -6,9 +6,9 @@ import static vista.utils.Otros.INCIDENCES;
 import java.io.File;
 import java.util.Objects;
 
+import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Comando;
 
 public class ComandoClickGuardarBackup extends Comando {
 

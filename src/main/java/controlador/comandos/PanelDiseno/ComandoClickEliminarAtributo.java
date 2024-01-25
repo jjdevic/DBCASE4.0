@@ -2,10 +2,10 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
 import vista.Lenguaje;
 
@@ -43,8 +43,8 @@ public class ComandoClickEliminarAtributo extends Comando{
             TransferAtributo clon_atributo2 = ta.clonar();
             ctrl.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarReferenciasUniqueAtributo, clon_atributo2);
             TransferAtributo clon_atributo3 = ta.clonar();
-            Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
-            ctrl.tratarContexto(ctxt);
+            Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
+            tratarContexto(ctxt);
         }
 	}
 

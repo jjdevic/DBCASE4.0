@@ -2,9 +2,9 @@ package controlador.comandos.PanelDiseno;
 
 import java.util.Vector;
 
+import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
-import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
@@ -49,14 +49,14 @@ public class ComandoClickEliminarEntidad extends Comando {
 	            while (lista_atributos != null && conta < lista_atributos.size()) {
 	                String idAtributo = (String) lista_atributos.get(conta);
 	                ta.setIdAtributo(Integer.parseInt(idAtributo));
-	                Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-	                ctrl.tratarContexto(ctxt);
+	                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+	                tratarContexto(ctxt);
 	                conta++;
 	            }
             
             //Si la entidad es débil eliminamos la relación débil asociada
 	            if (te.isDebil()) {
-	                Vector<TransferRelacion> lista_rel = ctrl.getFactoriaServicios().getServicioRelaciones().ListaDeRelacionesNoVoid();
+	                Vector<TransferRelacion> lista_rel = getFactoriaServicios().getServicioRelaciones().ListaDeRelacionesNoVoid();
 	                int cont = 0, aux = 0;
 	                boolean encontrado = false;
 	                EntidadYAridad eya;
@@ -72,7 +72,7 @@ public class ComandoClickEliminarEntidad extends Comando {
 	                            idEntidad = eya.getEntidad();
 	                            if (te.getIdEntidad() == idEntidad) {
 	                                tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
-	                                ctrl.getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
+	                                getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
 	                                encontrado = true;
 	                            }
 	                            aux++;
@@ -83,7 +83,7 @@ public class ComandoClickEliminarEntidad extends Comando {
 	                }
 	            }
             // Eliminamos la entidad
-            ctrl.getFactoriaServicios().getServicioEntidades().eliminarEntidad(te, intAux);
+            getFactoriaServicios().getServicioEntidades().eliminarEntidad(te, intAux);
             } 
 	}
 }

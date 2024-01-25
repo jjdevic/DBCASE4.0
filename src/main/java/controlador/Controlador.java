@@ -8,7 +8,6 @@ import org.w3c.dom.Document;
 
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
-import controlador.comandos.Comando;
 import controlador.comandos.FactoriaComandos;
 import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
 import persistencia.DAOEntidades;
@@ -1097,25 +1096,33 @@ public class Controlador {
              */
             case GUI_Principal_Click_BotonGenerarModeloRelacional: {
             	factoriaServicios.getServicioSistema().generaModeloRelacional();
+            	factoriaGUI.getGUIPrincipal().getModeloText().goToTop();
                 break;
             }
             case GUI_Principal_Click_BotonGenerarScriptSQL: {
-                TransferConexion tc = (TransferConexion) datos;
+            	factoriaGUI.getGUIPrincipal().getConexionActual().setDatabase("");
+            	
+                TransferConexion tc = factoriaGUI.getGUIPrincipal().getConexionActual();
                 factoriaServicios.getServicioSistema().generaScriptSQL(tc);
+                
+                // Restaurar el sistema
+                factoriaGUI.getGUIPrincipal().getConexionActual().setDatabase("");
+                factoriaGUI.getGUIPrincipal().getModeloText().goToTop();
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoScriptSQL: {
-                String texto = (String) datos;
-                factoriaServicios.getServicioSistema().exportarCodigo(texto, true);
+                factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true);
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoModelo: {
-                String texto = (String) datos;
-                factoriaServicios.getServicioSistema().exportarCodigo(texto, false);
+                factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false);
                 break;
             }
             case GUI_Principal_Click_BotonEjecutarEnDBMS: {
-                TransferConexion tc = (TransferConexion) datos;
+            	TransferConexion tc = new TransferConexion(
+                        factoriaGUI.getGUIPrincipal().getCBO().getSelectedIndex(),
+                        factoriaGUI.getGUIPrincipal().getCBO().getSelectedItem().toString());
+            	
                 Parent_GUI gui = factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false);
                 gui.setDatos(tc);
                 gui.setActiva();
@@ -1447,15 +1454,122 @@ public class Controlador {
             case GUIPonerUniquesAEntidad_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
                 factoriaServicios.getServicioEntidades().setUniques(v);
-                ActualizaArbol((Transfer) v.get(1));
+                TransferEntidad entidad = (TransferEntidad) v.get(1);
+                ActualizaArbol(entidad);
                 factoriaServicios.getServicioSistema().reset();
+                
+                //TODO Es necesario esto?
+                Vector<String> vUniques = entidad.getListaUniques();
+                Vector<String> vAtributos = entidad.getListaAtributos();
+                
+                //Recorrer cada unique de la entidad seleccionada, buscando casos en los que estén marcados en la lista vUniques
+                //mientras que según el controlador no figuren como uniques en la aplicación (este sería el caso en el que
+                //se ha seleccionado un nuevo unique)
+                for (int i = 0; i < vUniques.size(); i++) {
+                    for (int j = 0; j < vAtributos.size(); j++) 
+                    	
+                    	//Si el unique numero i es igual al nombre del atributo j
+                        if (vUniques.get(i).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
+                            //Si el atributo j no es unique
+                        	if (!getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
+                                int numAtributo = -1;
+                                //Buscar la posicion del atributo j en la lista de atributos de la GUIPrincipal
+                                for (int k = 0; k < getListaAtributos().size(); k++) {
+                                	
+                                    String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
+                                    if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
+                                        numAtributo = k;
+                                    }
+                                }
+                                //Hacer el atributo j unique
+                                final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
+                                TransferAtributo clon_atributo = atributo.clonar();
+                                getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                            }
+                        }
+                }
+                
+                //Recorrer cada atributo de la entidad seleccionada, buscando casos en los que un atributo es unique pero no está en vUniques.
+                //Este sería el caso en el que se elimina un unique que estaba previamente en la lista
+                for (int i = 0; i < vAtributos.size(); i++) {
+                	//Si el atributo i es unique
+                    if (getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
+                        boolean encontrado = false;
+                        //Comprobar que el atributo i está marcado como tal en vUniques
+                        for (int j = 0; j < vUniques.size(); j++) {
+                            if (vUniques.get(j).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
+                                encontrado = true;
+                            }
+                        }
+                        //Si no está marcado como unique en vUniques, desmarcarlo.
+                        if (!encontrado) {
+                            int numAtributo = -1;
+                            for (int k = 0; k < getListaAtributos().size(); k++) {
+                                String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
+                                if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
+                                    numAtributo = k;
+                                }
+                            }
+                            final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
+                            TransferAtributo clon_atributo = atributo.clonar();
+                            //EditarUniqueAtributo hace unique = !unique
+                            getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                        }
+                    }
+                }
                 break;
             }
             case GUIPonerUniquesARelacion_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
                 factoriaServicios.getServicioRelaciones().setUniques(v);
-                ActualizaArbol((Transfer) v.get(1));
+                TransferRelacion relacion = (TransferRelacion) v.get(1);
+                ActualizaArbol(relacion);
                 factoriaServicios.getServicioSistema().reset();
+                
+                //TODO Es necesario esto?:
+                Vector<String> vUniques = relacion.getListaUniques();
+                Vector<String> vAtributos = relacion.getListaAtributos();
+                
+                for (int i = 0; i < vUniques.size(); i++) {
+                    for (int j = 0; j < vAtributos.size(); j++)
+                        if (vUniques.get(i).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
+                            if (!getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
+                                int numAtributo = -1;
+                                for (int k = 0; k < getListaAtributos().size(); k++) {
+                                    String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
+                                    if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
+                                        numAtributo = k;
+                                    }
+                                }
+                                final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
+                                TransferAtributo clon_atributo = atributo.clonar();
+                                getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                            }
+                        }
+                }
+                
+                for (int i = 0; i < vAtributos.size(); i++) {
+                    if (getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
+                        boolean encontrado = false;
+                        for (int j = 0; j < vUniques.size(); j++) {
+                            if (vUniques.get(j).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
+                                encontrado = true;
+                            }
+                        }
+                        if (!encontrado) {
+                            int numAtributo = -1;
+                            for (int k = 0; k < getListaAtributos().size(); k++) {
+                                String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
+                                if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
+                                    numAtributo = k;
+                                }
+                            }
+                            final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
+                            TransferAtributo clon_atributo = atributo.clonar();
+                            getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                        }
+                    }
+                }
                 break;
             }
 
@@ -2576,6 +2690,20 @@ public class Controlador {
             }
         }
     }
+    
+    public Object mensaje(TC msj, Object datos) {
+    	Object resultado = null;
+    	switch(msj) {
+    	case GetNombreAtributo: {
+    		Integer id = (Integer) datos;
+    		resultado = getFactoriaServicios().getServicioAtributos().getNombreAtributo(id);
+    		break;
+    	}
+    	default: break;
+    	}
+    	
+    	return resultado;
+    }
 
     private void guardarBackup() {
         String ruta = "";
@@ -2677,12 +2805,21 @@ public class Controlador {
     	return factoriaServicios.getServicioRelaciones().ListaDeRelacionesNoVoid();
     }
     
-    public void setListaEntidades(Vector<TransferEntidad> listaEntidades) {
+    protected void setListaEntidades(Vector<TransferEntidad> listaEntidades) {
 		this.listaEntidades = listaEntidades;
 	}
 
-	public void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
+	protected void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
 		this.listaRelaciones = listaRelaciones;
+	}
+	
+	public boolean isScriptGeneradoCorrectamente() {
+		return factoriaGUI.getGUIPrincipal().getScriptGeneradoCorrectamente();
+	}
+	
+	//Funcion específica para la funcionalidad Rehacer
+	public void transferFocusRehacer() {
+		factoriaGUI.getGUIPrincipal().getMyMenu().transferFocusRehacer();
 	}
 
     /*public GUI_AnadirAtributoEntidad getTheGUIAnadirAtributoEntidad() {
@@ -3075,7 +3212,7 @@ public class Controlador {
     }
     
 
-	public FactoriaServicios getFactoriaServicios() {
+	protected FactoriaServicios getFactoriaServicios() {
 		return factoriaServicios;
 	}
 
@@ -3090,7 +3227,7 @@ public class Controlador {
     }
     
     
-    public void tratarContexto(Contexto contexto) {
+    protected void tratarContexto(Contexto contexto) {
     	if(contexto == null) return;
     	else if(!contexto.isExito()) {
     		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;
@@ -3113,7 +3250,7 @@ public class Controlador {
             //Actualizar la GUI
             this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), tr);
             
-            //Desactivar la GUI específica correspondiente (si existe) tomándola de FactoriaGUI
+            //Desactivar la GUI específica correspondiente (si existe)
             Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), tr, false);
             if(gui != null) gui.setInactiva();
     	}

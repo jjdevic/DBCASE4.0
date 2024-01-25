@@ -5,9 +5,9 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
-import controlador.comandos.Comando;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -27,7 +27,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 		TransferRelacion tr = (TransferRelacion) datos;
         //Si es una relacion fuerte...
         if (tr.getTipo().equals("Normal")) {
-            int numDebiles = ctrl.getFactoriaServicios().getServicioRelaciones().numEntidadesDebiles(tr);
+            int numDebiles = getFactoriaServicios().getServicioRelaciones().numEntidadesDebiles(tr);
             // ...y tiene más de una entidad débil no se puede debilitar
             if (numDebiles > 1) {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
@@ -60,7 +60,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                while ((!actualizado) && (i < tr.getListaEntidadesYAridades().size())) {
 	                    informacion = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(i));
 	                    int idEntidad = informacion.getEntidad();
-	                    if (ctrl.getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
+	                    if (getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
 	                        actualizado = true;
 	                        int idRelacion = tr.getIdRelacion();
 	                        int finRango = 1;
@@ -86,7 +86,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                        v.add(tipo);
 	                        v.add(rol);
 	                        v.add(posicion);
-	                        ctrl.getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
+	                        getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
 	                    }
 	                    i++;
 	                }
@@ -100,19 +100,19 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                    String idAtributo = (String) lista_atributos.get(cont);
 	                    ta.setIdAtributo(Integer.parseInt(idAtributo));
 	                    
-	                    Contexto ctxt = ctrl.getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-	                    ctrl.tratarContexto(ctxt);
+	                    Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+	                    tratarContexto(ctxt);
 	                    cont++;
 	                }
 	            }
 	            if (respuesta1 != 1 && respuesta2 != 1) {
 	                // Modificamos la relacion
 	                tr.getListaAtributos().clear();
-	                ctrl.getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+	                getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
 	            }
             }
         } else {
-            ctrl.getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+            getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
         }
 		
 	}
