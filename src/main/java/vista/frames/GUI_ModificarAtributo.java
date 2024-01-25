@@ -545,7 +545,15 @@ public class GUI_ModificarAtributo extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		// TODO Auto-generated method stub
+		Vector<Object> v = (Vector<Object>) datos;
 		
+		this.ta = (TransferAtributo) v.get(0);
+		this.nombrePadre = (String) v.get(1);
+	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

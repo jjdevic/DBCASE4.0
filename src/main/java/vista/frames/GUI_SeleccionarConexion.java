@@ -248,8 +248,7 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
     }
 
     private void botonNuevaActionPerformed(ActionEvent evt) {
-        controlador.getTheGUIConfigurarConexionDBMS().setConexion(_conexion);
-        controlador.getTheGUIConfigurarConexionDBMS().setActiva(true, "", null);
+    	controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickNueva, _conexion);
     }
 
     private void botonBorrarActionPerformed(ActionEvent evt) {
@@ -283,7 +282,8 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
         config.leerFicheroConfiguracion();
         TransferConexion tc = config.obtenConexion(elegido);
 
-        controlador.getTheGUIConfigurarConexionDBMS().setActiva(false, elegido, tc);
+        controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickEditar, tc);
+        //controlador.getTheGUIConfigurarConexionDBMS().setActiva(false, elegido, tc);
     }
 
     private String getElementoSeleccionado() {
@@ -380,7 +380,12 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
+		this._conexion = (TransferConexion) datos;
+	}
+
+	@Override
+	public boolean setActiva(int op) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 }

@@ -5,12 +5,16 @@ import static vista.utils.Otros.INCIDENCES;
 import static vista.utils.Otros.PROJECTS;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import controlador.Controlador;
+import controlador.TC;
 import controlador.comandos.Comando;
+import vista.Lenguaje;
 
 public class ComandoWorkspaceNuevo extends Comando {
 	
@@ -20,13 +24,22 @@ public class ComandoWorkspaceNuevo extends Comando {
 	
 	@Override
 	public void ejecutar(Object datos) {
-		ctrl.setPath((String) datos);                        
+		try {
+            ctrl.setFiletemp(File.createTempFile("dbcase", "xml"));
+            ctrl.creaFicheroXML(ctrl.getFiletemp());
+            ctrl.setPath(ctrl.getFiletemp().getAbsolutePath());
+        
+		} catch (IOException e) {
+            JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
+                    Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
+        }
+                        
 		SwingUtilities.invokeLater(new Runnable() {             
 		    @Override                                           
 		    public void run() {                                 
 		        ctrl.getFactoriaServicios().getServicioSistema().reset();               
-		        ctrl.getTheGUIPrincipal().loadInfo();                     
-		        ctrl.getTheGUIPrincipal().reiniciar();               
+		        ctrl.getFactoriaGUI().getGUIPrincipal().loadInfo();                     
+		        ctrl.getFactoriaGUI().getGUIPrincipal().reiniciar();               
 		    }                                                   
 		});                                                     
 		ctrl.setCambios(false);                                      

@@ -279,4 +279,10 @@ public class GUI_InsertarRestriccionAEntidad extends Parent_GUI {
 		this.entidad = (TransferEntidad) datos;
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -159,4 +159,10 @@ public class GUI_RenombrarAtributo extends Parent_GUI {
 		this.atributo = (TransferAtributo) datos;
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

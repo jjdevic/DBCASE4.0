@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Objects;
 
 import controlador.Controlador;
+import controlador.TC;
 import controlador.comandos.Comando;
 
 public class ComandoClickGuardar extends Comando{
@@ -21,7 +22,7 @@ public class ComandoClickGuardar extends Comando{
 		String guardarPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
         Controlador.FileCopy(tempPath, guardarPath);
-        ctrl.getTheGUIWorkSpace().setInactiva();
+        ctrl.getFactoriaGUI().getGUI(TC.GUI_WorkSpace, null, false).setInactiva();
         ctrl.setCambios(false);
         
         ctrl.setTiempoGuardado(System.currentTimeMillis() / 1000);

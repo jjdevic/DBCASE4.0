@@ -260,4 +260,10 @@ public class GUI_InsertarDominio extends Parent_GUI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

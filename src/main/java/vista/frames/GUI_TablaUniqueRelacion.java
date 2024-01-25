@@ -477,4 +477,10 @@ public class GUI_TablaUniqueRelacion extends Parent_GUI {
 		this.relacion = (TransferRelacion) datos;
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -217,9 +217,8 @@ public class GUI_Conexion extends Parent_GUI {
                 conf.anadeConexion(textoNombre.getText(), guardada);
                 conf.guardarFicheroCofiguracion();
             }
-
-            controlador.getTheGuiSeleccionarConexion().rellenaTabla();
-
+            
+            controlador.mensajeDesde_GUI(TC.GUIConexion_ClickConectar, null);
             this.setInactiva();
         } else {
 
@@ -253,7 +252,7 @@ public class GUI_Conexion extends Parent_GUI {
                 conf.anadeConexion(textoNombre.getText(), guardada);
                 conf.guardarFicheroCofiguracion();
             }
-            controlador.getTheGuiSeleccionarConexion().rellenaTabla();
+            controlador.mensajeDesde_GUI(TC.GUIConexion_ClickConectar, null);
             this.setInactiva();
         }
     }
@@ -610,5 +609,12 @@ public class GUI_Conexion extends Parent_GUI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
 

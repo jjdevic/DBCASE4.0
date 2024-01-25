@@ -22,7 +22,7 @@ public class GUI_Recientes extends Parent_GUI {
     private ArrayList<File> recientes = new ArrayList<File>();
 
 
-    public GUI_Recientes(ArrayList<File> files, Controlador c) {
+    public GUI_Recientes(Controlador c, ArrayList<File> files) { 
     	super(c);
         recientes = files;
 
@@ -102,15 +102,21 @@ public class GUI_Recientes extends Parent_GUI {
 	}
 
 	@Override
+	public void setInactiva() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void setActiva() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setInactiva() {
+	public boolean setActiva(int op) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 }

@@ -617,5 +617,11 @@ public class GUI_AnadirAtributo extends Parent_GUI {
 		this.listaTransfers = (Vector<Transfer>) datos;
 	}
 
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

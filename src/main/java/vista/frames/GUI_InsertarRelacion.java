@@ -173,4 +173,10 @@ public class GUI_InsertarRelacion extends Parent_GUI {
 		
 	}
 
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

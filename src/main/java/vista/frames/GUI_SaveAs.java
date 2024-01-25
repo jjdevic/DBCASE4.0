@@ -219,24 +219,6 @@ public class GUI_SaveAs extends Parent_GUI {
         return this.jfc;
     }
 
-    @SuppressWarnings("static-access")
-    public void nuevoTemp() {
-        try {
-            controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-            controlador.creaFicheroXML(controlador.getFiletemp());
-            String ruta = controlador.getFiletemp().getAbsolutePath();
-            this.controlador.mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Nuevo, ruta);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
-                    Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-        }
-
-        //controlador.setFileguardar(null);
-
-    }
-
-
     /*
      * METODOS PARA MANEJAR LOS FICHEROS XML
      */
@@ -301,8 +283,7 @@ public class GUI_SaveAs extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		// TODO Auto-generated method stub
-		
+		this.modoSoporte = (Boolean) datos;
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                     int idEntidad = eya.getEntidad();
                     te.setIdEntidad(idEntidad);
                     //Tengo que rellenar los atributos de te
-                    Vector<TransferEntidad> auxiliar = (ctrl.getTheGUIQuitarEntidadARelacion().getListaEntidades()); //falla aqui				if (auxiliar == null)
+                    Vector<TransferEntidad> auxiliar = null/* TODO ctrl.getTheGUIQuitarEntidadARelacion().getListaEntidades()*/; //falla aqui				if (auxiliar == null)
                     auxiliar = ctrl.getListaEntidades();
                     boolean encontrado = false;
                     int i = 0;

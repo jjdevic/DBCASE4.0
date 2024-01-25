@@ -155,7 +155,12 @@ public class GUI_ModificarRelacion extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+	}
+
+	@Override
+	public boolean setActiva(int op) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 }

@@ -144,5 +144,10 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
 	public void setDatos(Object datos) {
 		this.relacion = (TransferRelacion) datos;
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		return false;
+	}
     
 }

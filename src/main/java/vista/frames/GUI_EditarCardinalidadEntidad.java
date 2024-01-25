@@ -831,4 +831,10 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
 		this.relacion = (TransferRelacion) datos;
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

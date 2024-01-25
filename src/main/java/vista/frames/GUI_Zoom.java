@@ -226,4 +226,10 @@ public class GUI_Zoom extends Parent_GUI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

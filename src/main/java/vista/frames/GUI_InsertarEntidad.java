@@ -468,7 +468,12 @@ public class GUI_InsertarEntidad extends Parent_GUI {
 	@Override
 	public void setDatos(Object datos) {
 		this.posicionEntidad = (Point2D) datos;
-		
+	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

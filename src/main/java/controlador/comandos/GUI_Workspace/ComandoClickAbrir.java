@@ -32,8 +32,8 @@ public class ComandoClickAbrir extends Comando {
             @Override
             public void run() {
                 ctrl.getFactoriaServicios().getServicioSistema().reset();
-                ctrl.getTheGUIPrincipal().loadInfo();
-                ctrl.getTheGUIPrincipal().reiniciar();
+                ctrl.getFactoriaGUI().getGUIPrincipal().loadInfo();
+                ctrl.getFactoriaGUI().getGUIPrincipal().reiniciar();
             }
         });
         ctrl.setCambios(false);

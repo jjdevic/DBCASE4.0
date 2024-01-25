@@ -282,4 +282,10 @@ public class GUI_ModificarDominio extends Parent_GUI {
 	public void setDatos(Object datos) {
 		this.dominio = (TransferDominio) datos;
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

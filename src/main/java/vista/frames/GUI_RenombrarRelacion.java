@@ -156,4 +156,10 @@ public class GUI_RenombrarRelacion extends Parent_GUI {
 	public void setDatos(Object datos) {
 		this.relacion = (TransferRelacion) datos;
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

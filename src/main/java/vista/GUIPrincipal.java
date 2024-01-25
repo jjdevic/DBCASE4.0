@@ -36,7 +36,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     private Vector<TransferEntidad> listaEntidades;
     private Vector<TransferAtributo> listaAtributos;
     private Vector<TransferRelacion> listaRelaciones;
-
     private Vector<TransferAgregacion> listaAgregaciones;
 
     private Vector<TransferDominio> listaDominios;
@@ -113,7 +112,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         setModoVista(modo);
         loadInfo();
         c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_IniciaFrames, null);
-        c.getTheGUIAnadirAtributo().setListaDominios(getListaDominios());
+        //TODO mirar esta linea
+        //c.getTheGUIAnadirAtributo().setListaDominios(getListaDominios());
     }
 
     public static void changeFont(Component component, Font font) {

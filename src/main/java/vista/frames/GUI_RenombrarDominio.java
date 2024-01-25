@@ -159,4 +159,10 @@ public class GUI_RenombrarDominio extends Parent_GUI {
 		this.dominio = (TransferDominio) datos;
 		
 	}
+
+	@Override
+	public boolean setActiva(int op) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

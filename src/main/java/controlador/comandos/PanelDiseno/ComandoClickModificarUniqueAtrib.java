@@ -29,8 +29,8 @@ public class ComandoClickModificarUniqueAtrib extends Comando{
         ctrl.getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
         ctrl.getFactoriaServicios().getServicioRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
-        Vector<TransferRelacion> relaciones = ctrl.getTheGUIPrincipal().getListaRelaciones();
-        Vector<TransferEntidad> entidades = ctrl.getTheGUIPrincipal().getListaEntidades();
+        Vector<TransferRelacion> relaciones = ctrl.getFactoriaGUI().getGUIPrincipal().getListaRelaciones();
+        Vector<TransferEntidad> entidades = ctrl.getFactoriaGUI().getGUIPrincipal().getListaEntidades();
         boolean encontrado = false;
         boolean esEntidad = false;
         TransferEntidad te = null;
