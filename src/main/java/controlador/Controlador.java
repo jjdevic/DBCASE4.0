@@ -75,6 +75,7 @@ public class Controlador {
     private TC ultimoMensaje;
     private Object ultimosDatos;
     //private TransferEntidad auxTransferEntidad;
+    /*
     private Vector auxTransferAtributos;
     private Point2D posAux;
     private String antigoNombreAtributo;
@@ -83,15 +84,15 @@ public class Controlador {
     private boolean antiguoMultivaloradoAtribuo;
     private boolean antiguoNotnullAtribuo;
     private boolean antiguoUniqueAtribuo;
-    private boolean antiguoClavePrimaria;
+    private boolean antiguoClavePrimaria;*/
     //private int idPadreAntigua;
-    private Vector<TransferEntidad> hijosAntiguo;
+    /*private Vector<TransferEntidad> hijosAntiguo;
     private Vector<TransferEntidad> entidadesAntiguo;
     private TransferEntidad padreAntiguo;
     private TransferRelacion antiguaIsA;
     private Vector<TransferAtributo> antiguosAtributosRel;
     private Vector<TransferEntidad> antiguasEntidadesRel;
-    private Vector<TransferAtributo> antiguosSubatributos;
+    private Vector<TransferAtributo> antiguosSubatributos;*/
 
     private Transfer copiado;
 
@@ -1144,46 +1145,6 @@ public class Controlador {
     public void mensajeDesde_GUI(TC mensaje, Object datos) {
     	
         switch (mensaje) {
-
-            case GUIInsertarAgregacion: {
-                Vector v = (Vector) datos;
-                TransferRelacion t = (TransferRelacion) v.elementAt(0); //relacion sobre el que se construye la agregacion
-                String nombre = (String) v.elementAt(1); //nombre de la nueva agregacion
-                TransferAgregacion agreg = new TransferAgregacion();
-                boolean sepuede = true;
-
-                //comprobamos que esa relaci�n no pertenece a alguna agregacion existente:
-                Vector<TransferAgregacion> agregaciones = factoriaServicios.getServicioAgregaciones().ListaDeAgregaciones();
-                for (int i = 0; i < agregaciones.size() && sepuede; ++i) {
-                    TransferAgregacion actual_agreg = agregaciones.get(i);
-                    Vector lista_relaciones = actual_agreg.getListaRelaciones();
-                    String relacionId = (String) lista_relaciones.get(0); //solo hay una relacion por agregacion
-                    if (Integer.parseInt(relacionId) == t.getIdRelacion()) {
-                        JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELACION_YA_TIENE_AGREGACION), Lenguaje.text(Lenguaje.ERROR), 0);
-                        sepuede = false;
-                    }
-                }
-
-                if (sepuede) {
-                    agreg.setNombre(nombre);
-                    Vector relaciones = new Vector();
-                    factoriaServicios.getServicioRelaciones().getSubesquema(t, relaciones);//tenemos que quitar del menu conceptual que se pueda hacer sobre entidades(comentalo)
-
-                    if (relaciones.size() == 1) {
-                        agreg.setListaRelaciones(relaciones);
-                        agreg.setListaAtributos(new Vector());
-
-                        factoriaServicios.getServicioAgregaciones().anadirAgregacion(agreg);
-                        ActualizaArbol(agreg);
-                        factoriaServicios.getServicioSistema().reset();
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.AGREG_MAS_RELACIONES), Lenguaje.text(Lenguaje.ERROR), 0);
-                    }
-                }
-                break;
-            }
-
             case GUIInsertarEntidad_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
                 factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
@@ -1196,156 +1157,6 @@ public class Controlador {
                 boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te);
                 //TODO this.getTheGUIInsertarEntidad().comprobadaEntidad(exito);
                 ActualizaArbol(te);
-                factoriaServicios.getServicioSistema().reset();
-                break;
-            }
-            case GUIModificarAtributo_Click_ModificarAtributo: {
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferAtributo ta = (TransferAtributo) v.get(0);
-                this.antigoNombreAtributo = ta.getNombre();
-                this.antiguoDominioAtributo = ta.getDominio();
-                this.antiguoCompuestoAtribuo = ta.getCompuesto();
-                this.antiguoMultivaloradoAtribuo = ta.getMultivalorado();
-                this.antiguoNotnullAtribuo = ta.getNotnull();
-                this.antiguoUniqueAtribuo = ta.getUnique();
-                this.antiguoClavePrimaria = ta.getClavePrimaria();
-                String nuevoNombre = (String) v.get(1);
-                boolean clavePrimaraSelected = (boolean) v.get(2);
-                boolean compuestoSelected = (boolean) v.get(3);
-                boolean notNullSelected = (boolean) v.get(4);
-                boolean uniqueSelected = (boolean) v.get(5);
-                boolean multivaloradoSelected = (boolean) v.get(6);
-
-                //Creamos un vector para renombrar
-                Vector<Object> vRenombrar = new Vector<Object>();
-                vRenombrar.add(ta);
-                vRenombrar.add(nuevoNombre);
-                if (!ta.getNombre().equals(nuevoNombre)) {
-                    ctxt = factoriaServicios.getServicioAtributos().renombrarAtributo(vRenombrar);
-                    tratarContexto(ctxt);
-                }
-                //Creamos un vector para modificar el dominio
-                Vector<Object> vDominio = new Vector<Object>();
-                vDominio.add(ta);
-                String dominio = (String) v.get(7);
-                if (v.size() == 9) { //Significa que el vector tiene un campo tamaño
-                    String tamano = (String) v.get(8);
-                    vDominio.add(dominio + "(" + tamano + ")");
-                    vDominio.add(tamano);
-                } else {
-                    vDominio.add(dominio);
-                }
-                ctxt = factoriaServicios.getServicioAtributos().editarDomnioAtributo(vDominio);
-                tratarContexto(ctxt);
-                //Buscamos si el atributo pertenece a una entidad y si es asi a cual
-
-                DAOEntidades daoEntidades = new DAOEntidades(this.getPath());
-                Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
-                TransferEntidad te = new TransferEntidad();
-                boolean encontrado = false;
-                for (TransferEntidad entidade : entidades) {
-                    Vector<String> atributos = entidade.getListaAtributos();
-                    for (String atributo : atributos) {
-                        if (atributo.equals(Integer.toString(ta.getIdAtributo()))) {
-                            te = entidade;
-                            encontrado = true;
-                        }
-                    }
-                }
-                //Modificamos los valores ClavePrimaria, Compuesto, Unique, NotNull y Multivalorado si es necesario
-                if (encontrado && clavePrimaraSelected != ta.isClavePrimaria()) {
-                    Vector<Object> vClavePrimaria = new Vector<Object>();
-                    vClavePrimaria.add(ta);
-                    vClavePrimaria.add(te);
-                    //vClavePrimaria.add(0);
-                    ctxt = factoriaServicios.getServicioAtributos().editarClavePrimariaAtributo(vClavePrimaria);
-                    tratarContexto(ctxt);
-                }
-                if (compuestoSelected != ta.getCompuesto()) {
-                    ctxt = factoriaServicios.getServicioAtributos().editarCompuestoAtributo(ta);
-                    tratarContexto(ctxt);
-                }
-                if (uniqueSelected != ta.getUnique()) {
-                    ctxt = factoriaServicios.getServicioAtributos().editarUniqueAtributo(ta);
-                    tratarContexto(ctxt);
-                }
-                if (notNullSelected != ta.getNotnull()) {
-                    ctxt = factoriaServicios.getServicioAtributos().editarNotNullAtributo(ta);
-                    tratarContexto(ctxt);
-                }
-                if (multivaloradoSelected != ta.isMultivalorado()) {
-                	ctxt = factoriaServicios.getServicioAtributos().editarMultivaloradoAtributo(ta);
-                	tratarContexto(ctxt);
-                }
-                ActualizaArbol(ta);
-                factoriaServicios.getServicioSistema().reset();
-                break;
-            }
-            case GUIModificarEntidad_Click_ModificarEntidad: {
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                boolean eraDebil = te.isDebil();
-                String nuevoNombre = (String) v.get(1);
-                boolean debilitar = (boolean) v.get(2);
-                //Si se ha modificado su nombre la renombramos
-                if (!Objects.equals(te.getNombre(), nuevoNombre)) {
-                    Vector<Object> v1 = new Vector<Object>();
-                    v1.add(te);
-                    v1.add(nuevoNombre);
-                    factoriaServicios.getServicioEntidades().renombrarEntidad(v1);
-                }
-                //Si se ha debilitado añadimos la relación entre la entidad modificada y la especificada en la GUI
-                if (debilitar) {
-                    boolean debilitada = false;
-                    if (!eraDebil) {
-                    	factoriaServicios.getServicioEntidades().debilitarEntidad(te);
-                    }
-                    TransferEntidad te2 = (TransferEntidad) v.get(4);
-                    TransferRelacion tr = (TransferRelacion) v.get(3);
-                    if (factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr)) {
-                        Vector<Object> v2 = new Vector<Object>();
-                        v2.add(tr);
-                        v2.add(te);
-                        v2.add(Integer.toString(1));//Inicio
-                        v2.add("n");//Fin
-                        v2.add("");//Rol
-                        //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                        v2.add(true);
-                        v2.add(false);
-                        v2.add(false);
-                        //Debilitamos la entidad y añadimos a la nueva relacion
-                        factoriaServicios.getServicioRelaciones().anadirRelacion(tr, 1);//mandamos un 1, se anade la relacion por otro metodo
-                        factoriaServicios.getServicioRelaciones().anadirEntidadARelacion(v2, 1);//mandamos un 1, se anade la relacion por otro metodo
-                        //dudaa
-                        Vector<Object> v3 = new Vector<Object>();
-                        v3.add(tr);
-                        v3.add(te2);
-                        v3.add(Integer.toString(0));//Inicio
-                        v3.add("1");//Fin
-                        v3.add("");//Rol
-                        //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                        v3.add(true);
-                        v3.add(false);
-                        v3.add(false);
-                        factoriaServicios.getServicioRelaciones().anadirEntidadARelacion(v3, 1);//mandamos un 1, se anade la relacion por otro metodo
-                    } else if (!eraDebil) {
-                    	factoriaServicios.getServicioEntidades().debilitarEntidad(te);
-                    }
-                } else if (eraDebil) {
-                	factoriaServicios.getServicioEntidades().debilitarEntidad(te);
-                    DAORelaciones dao = new DAORelaciones(this.getPath());
-                    Vector<TransferRelacion> lista_relaciones = dao.ListaDeRelaciones();
-                    //factoriaServicios.getServicioRelaciones().restablecerDebilidadRelaciones();
-                    for (TransferRelacion tr : lista_relaciones) {
-                        Vector<EntidadYAridad> eya = tr.getListaEntidadesYAridades();
-                        for (EntidadYAridad entidadYAridad : eya) {
-                            if (entidadYAridad.getEntidad() == te.getIdEntidad() && tr.getTipo().equals("Debil"))
-                                factoriaServicios.getServicioRelaciones().debilitarRelacion(tr);
-                        }
-                    }
-
-                }
-                ActualizaArbol((Transfer) v.get(0));
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
@@ -1451,134 +1262,6 @@ public class Controlador {
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
-            case GUIPonerUniquesAEntidad_Click_BotonAceptar: {
-                Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioEntidades().setUniques(v);
-                TransferEntidad entidad = (TransferEntidad) v.get(1);
-                ActualizaArbol(entidad);
-                factoriaServicios.getServicioSistema().reset();
-                
-                //TODO Es necesario esto?
-                Vector<String> vUniques = entidad.getListaUniques();
-                Vector<String> vAtributos = entidad.getListaAtributos();
-                
-                //Recorrer cada unique de la entidad seleccionada, buscando casos en los que estén marcados en la lista vUniques
-                //mientras que según el controlador no figuren como uniques en la aplicación (este sería el caso en el que
-                //se ha seleccionado un nuevo unique)
-                for (int i = 0; i < vUniques.size(); i++) {
-                    for (int j = 0; j < vAtributos.size(); j++) 
-                    	
-                    	//Si el unique numero i es igual al nombre del atributo j
-                        if (vUniques.get(i).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
-                            //Si el atributo j no es unique
-                        	if (!getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
-                                int numAtributo = -1;
-                                //Buscar la posicion del atributo j en la lista de atributos de la GUIPrincipal
-                                for (int k = 0; k < getListaAtributos().size(); k++) {
-                                	
-                                    String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
-                                    if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                                        numAtributo = k;
-                                    }
-                                }
-                                //Hacer el atributo j unique
-                                final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
-                                TransferAtributo clon_atributo = atributo.clonar();
-                                getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                            }
-                        }
-                }
-                
-                //Recorrer cada atributo de la entidad seleccionada, buscando casos en los que un atributo es unique pero no está en vUniques.
-                //Este sería el caso en el que se elimina un unique que estaba previamente en la lista
-                for (int i = 0; i < vAtributos.size(); i++) {
-                	//Si el atributo i es unique
-                    if (getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
-                        boolean encontrado = false;
-                        //Comprobar que el atributo i está marcado como tal en vUniques
-                        for (int j = 0; j < vUniques.size(); j++) {
-                            if (vUniques.get(j).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
-                                encontrado = true;
-                            }
-                        }
-                        //Si no está marcado como unique en vUniques, desmarcarlo.
-                        if (!encontrado) {
-                            int numAtributo = -1;
-                            for (int k = 0; k < getListaAtributos().size(); k++) {
-                                String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
-                                if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                                    numAtributo = k;
-                                }
-                            }
-                            final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
-                            TransferAtributo clon_atributo = atributo.clonar();
-                            //EditarUniqueAtributo hace unique = !unique
-                            getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                        }
-                    }
-                }
-                break;
-            }
-            case GUIPonerUniquesARelacion_Click_BotonAceptar: {
-                Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().setUniques(v);
-                TransferRelacion relacion = (TransferRelacion) v.get(1);
-                ActualizaArbol(relacion);
-                factoriaServicios.getServicioSistema().reset();
-                
-                //TODO Es necesario esto?:
-                Vector<String> vUniques = relacion.getListaUniques();
-                Vector<String> vAtributos = relacion.getListaAtributos();
-                
-                for (int i = 0; i < vUniques.size(); i++) {
-                    for (int j = 0; j < vAtributos.size(); j++)
-                        if (vUniques.get(i).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j))))) {
-                            if (!getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(j)))) {
-                                int numAtributo = -1;
-                                for (int k = 0; k < getListaAtributos().size(); k++) {
-                                    String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(j)));
-                                    if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                                        numAtributo = k;
-                                    }
-                                }
-                                final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
-                                TransferAtributo clon_atributo = atributo.clonar();
-                                getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                            }
-                        }
-                }
-                
-                for (int i = 0; i < vAtributos.size(); i++) {
-                    if (getFactoriaServicios().getServicioAtributos().idUnique(Integer.parseInt(vAtributos.get(i)))) {
-                        boolean encontrado = false;
-                        for (int j = 0; j < vUniques.size(); j++) {
-                            if (vUniques.get(j).equals(getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i))))) {
-                                encontrado = true;
-                            }
-                        }
-                        if (!encontrado) {
-                            int numAtributo = -1;
-                            for (int k = 0; k < getListaAtributos().size(); k++) {
-                                String nombre = getFactoriaServicios().getServicioAtributos().getNombreAtributo(Integer.parseInt(vAtributos.get(i)));
-                                if (((TransferAtributo) getListaAtributos().get(k)).getNombre().equals(nombre)) {
-                                    numAtributo = k;
-                                }
-                            }
-                            final TransferAtributo atributo = (TransferAtributo) getListaAtributos().get(numAtributo);
-                            TransferAtributo clon_atributo = atributo.clonar();
-                            getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
-                        }
-                    }
-                }
-                break;
-            }
-
-            case GUIEditarDominioAtributo_ActualizameLaListaDeDominios:
-            case GUIAnadirSubAtributoAtributo_ActualizameLaListaDeDominios:
-            case GUIAnadirAtributoRelacion_ActualizameLaListaDeDominios: {
-            	factoriaServicios.getServicioDominios().ListaDeDominios();
-                break;
-            }
             case GUIRenombrarAtributo_Click_BotonRenombrar: {
                 Vector v = (Vector) datos;
                 ctxt = factoriaServicios.getServicioAtributos().renombrarAtributo(v);
@@ -1602,7 +1285,6 @@ public class Controlador {
             case GUIEditarDominioAtributo_Click_BotonEditar: {
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
-                this.antiguoDominioAtributo = ta.getDominio();
                 ctxt = factoriaServicios.getServicioAtributos().editarDomnioAtributo(v);
                 tratarContexto(ctxt);
                 ActualizaArbol((Transfer) v.get(0));
@@ -1633,15 +1315,6 @@ public class Controlador {
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
-            case GUIEditarClavePrimariaAtributo_ActualizameListaEntidades: {
-            	factoriaServicios.getServicioEntidades().ListaDeEntidades();
-                break;
-            }
-            case GUIEditarClavePrimariaAtributo_ActualizameListaAtributos: {
-            	//TODO tomar la lista de la clase Modelo
-            	factoriaServicios.getServicioAtributos().getListaDeAtributos();
-                break;
-            }
             case GUIEditarClavePrimariaAtributo_Click_BotonAceptar: {
                 Vector<Object> vectorAtributoyEntidad = (Vector<Object>) datos;
                 //vectorAtributoyEntidad.add(0);
@@ -1651,9 +1324,21 @@ public class Controlador {
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
+            case GUIInsertarAgregacion:
+            case GUIModificarAtributo_Click_ModificarAtributo:
+            case GUIAnadirEntidadARelacion_ClickBotonAnadir:
+            case GUIPonerUniquesAEntidad_Click_BotonAceptar: 
+            case GUIModificarEntidad_Click_ModificarEntidad: {
+                ejecutarComandoDelMensaje(mensaje, datos);
+                break;
+            }
             /*
              * Relaciones
              */
+            case GUIQuitarEntidadPadre_ClickBotonSi:
+            case GUIPonerUniquesARelacion_Click_BotonAceptar: {
+            	ejecutarComandoDelMensaje(mensaje, datos); break;
+            }
             case GUIInsertarRelacion_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
                 factoriaServicios.getServicioRelaciones().anadirRelacion(tr, 0);
@@ -1678,46 +1363,10 @@ public class Controlador {
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
-            case GUIEstablecerEntidadPadre_ActualizameListaEntidades: {
-            	factoriaServicios.getServicioEntidades().ListaDeEntidades();
-                break;
-            }
             case GUIEstablecerEntidadPadre_ClickBotonAceptar: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
                 factoriaServicios.getServicioRelaciones().establecerEntidadPadreEnRelacionIsA(relacionIsAyEntidadPadre);
                 ActualizaArbol(relacionIsAyEntidadPadre.get(0));
-                factoriaServicios.getServicioSistema().reset();
-                break;
-            }
-            case GUIQuitarEntidadPadre_ClickBotonSi: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                //this.idPadreAntigua = tr.getEntidadYAridad(0).getEntidad();
-                Vector<EntidadYAridad> eyaV = tr.getListaEntidadesYAridades();
-                EntidadYAridad eya = eyaV.get(0);
-                int idPadre = eya.getEntidad();
-                TransferEntidad te = new TransferEntidad();
-                for (TransferEntidad listaEntidade : this.listaEntidades) {
-                    if (idPadre == listaEntidade.getIdEntidad())
-                        this.padreAntiguo = listaEntidade;
-                }
-
-                //obtenemos las hijas
-                Vector<TransferEntidad> th = new Vector<TransferEntidad>();
-                Vector<EntidadYAridad> hijas = new Vector<EntidadYAridad>();
-                for (int i = 1; i < eyaV.size(); i++) {
-                    EntidadYAridad eyaH = eyaV.get(i);
-                    hijas.add(eyaH);
-                }
-                for (EntidadYAridad e : hijas) {
-                    int idHija = e.getEntidad();
-                    for (TransferEntidad listaEntidade : this.listaEntidades) {
-                        if (idHija == listaEntidade.getIdEntidad()) th.add(listaEntidade);
-                    }
-                }
-                this.hijosAntiguo = th;
-
-                factoriaServicios.getServicioRelaciones().quitarEntidadPadreEnRelacionIsA(tr);
-                ActualizaArbol(tr);
                 factoriaServicios.getServicioSistema().reset();
                 break;
             }
@@ -1748,47 +1397,6 @@ public class Controlador {
              */
             case GUIAnadirEntidadARelacion_ActualizameListaEntidades: {
             	factoriaServicios.getServicioEntidades().ListaDeEntidades();
-                break;
-            }
-            case GUIAnadirEntidadARelacion_ClickBotonAnadir: {
-                // v tiene: [transferRelacion, idEntidad, inicioRango, finalRango, rol]
-                Vector v = (Vector) datos;
-                //Vamos a controlar que no se añada una segunda entidad débil a una relación débil
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                TransferEntidad te = (TransferEntidad) v.get(1);
-                boolean cardinalidadSeleccionada = (boolean) v.get(5);
-                boolean participacionSeleccionada = (boolean) v.get(6);
-                boolean minMaxSeleccionado = (boolean) v.get(7);
-                boolean cardinalidadMax1Seleccionada;
-                if (v.size() == 8) cardinalidadMax1Seleccionada = false;
-                else cardinalidadMax1Seleccionada = (boolean) v.get(8);
-
-                tr.setRelacionConCardinalidad(cardinalidadSeleccionada);
-                tr.setRelacionConParticipacion(participacionSeleccionada);
-                tr.setRelacionConMinMax(minMaxSeleccionado);
-                tr.setRelacionConCardinalidad1(cardinalidadMax1Seleccionada);
-
-                Vector<EntidadYAridad> vectorTupla = tr.getListaEntidadesYAridades();
-                boolean relDebil = tr.getTipo().equals("Debil");
-                boolean entDebil = te.isDebil();
-                boolean relTieneEntDebil = false;
-                for (EntidadYAridad entidadYAridad : vectorTupla) {
-                    int entidad = entidadYAridad.getEntidad();
-                    if (factoriaServicios.getServicioEntidades().esDebil(entidad)) {
-                        relTieneEntDebil = true;
-                        break;
-                    }
-                }
-                if (relDebil && entDebil && relTieneEntDebil)
-                    JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ALREADY_WEAK_ENTITY), Lenguaje.text(Lenguaje.ERROR), 0);
-                else factoriaServicios.getServicioRelaciones().anadirEntidadARelacion(v, 0);
-
-                //a�adimos la relacion a la entidad para que sepa a que relaciones esta conectada
-
-                factoriaServicios.getServicioEntidades().anadirRelacionAEntidad(v);
-
-                ActualizaArbol(tr);
-                factoriaServicios.getServicioSistema().reset();
                 break;
             }
             case GUIQuitarEntidadARelacion_ActualizameListaEntidades: {
@@ -2004,12 +1612,12 @@ public class Controlador {
             case SE_MoverPosicionEntidad_HECHO: {
                 setCambios(true);
                 TransferEntidad te = (TransferEntidad) datos;
-                this.posAux = te.getPosicion();
+                /*this.posAux = te.getPosicion();
                 for (TransferEntidad listaEntidade : this.listaEntidades) {
                     if (Objects.equals(te.getNombre(), listaEntidade.getNombre())) {
                         posAux = listaEntidade.getPosicion();
                     }
-                }
+                }*/
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverEntidad_HECHO, te);
                 break;
             }
@@ -2578,7 +2186,7 @@ public class Controlador {
             case SR_InsertarRelacionIsA_HECHO: {
                 setCambios(true);
                 TransferRelacion tr = (TransferRelacion) datos;
-                this.antiguaIsA = tr;
+                //this.antiguaIsA = tr;
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacionIsA, tr);
                 ActualizaArbol(tr);
                 break;
@@ -2788,7 +2396,7 @@ public class Controlador {
         }
     }
 
-    public void ActualizaArbol(Transfer t) {
+    protected void ActualizaArbol(Transfer t) {
         this.factoriaGUI.getGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
     }
     

@@ -1,6 +1,7 @@
 package controlador;
 
 import modelo.servicios.FactoriaServicios;
+import modelo.transfers.Transfer;
 
 public abstract class Comando {
 	public Controlador ctrl;
@@ -17,5 +18,9 @@ public abstract class Comando {
 	
 	protected void tratarContexto(Contexto ctxt) {
 		ctrl.tratarContexto(ctxt);
+	}
+	
+	protected void ActualizaArbol(Transfer tr) {
+		ctrl.ActualizaArbol(tr);
 	}
 }

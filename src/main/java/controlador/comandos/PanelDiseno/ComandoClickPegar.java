@@ -74,7 +74,7 @@ public class ComandoClickPegar extends Comando{
             nueva.setVolumen(te.getVolumen());
             nueva.setOffsetAttr(te.getOffsetAttr());
             te.setPegado(p + 1);
-            ctrl.ActualizaArbol(te);
+            ActualizaArbol(te);
         }
 
         if (ctrl.getCopiado() instanceof TransferRelacion) {
@@ -138,7 +138,7 @@ public class ComandoClickPegar extends Comando{
                 }*/
 
                 tr.setPegado(p + 1);
-                ctrl.ActualizaArbol(tr);
+                ActualizaArbol(tr);
             }
         }
 
