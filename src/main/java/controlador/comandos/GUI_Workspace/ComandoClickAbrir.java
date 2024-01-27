@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 
 import controlador.Comando;
 import controlador.Controlador;
+import utils.UtilsFunc;
 
 public class ComandoClickAbrir extends Comando {
 
@@ -26,7 +27,7 @@ public class ComandoClickAbrir extends Comando {
 		
         String abrirPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
-        Controlador.FileCopy(abrirPath, tempPath);
+        UtilsFunc.FileCopy(abrirPath, tempPath);
         
         SwingUtilities.invokeLater(new Runnable() {
             @Override

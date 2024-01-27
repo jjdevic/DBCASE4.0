@@ -9,6 +9,7 @@ import java.util.Objects;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
+import utils.UtilsFunc;
 
 public class ComandoClickGuardarBackup extends Comando {
 
@@ -20,7 +21,7 @@ public class ComandoClickGuardarBackup extends Comando {
 	public void ejecutar(Object datos) {
 		String guardarPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
-        Controlador.FileCopy(tempPath, guardarPath);
+        UtilsFunc.FileCopy(tempPath, guardarPath);
         ctrl.getFactoriaGUI().getGUI(TC.GUI_WorkSpace, null, false).setInactiva();
         ctrl.setCambios(false);
         

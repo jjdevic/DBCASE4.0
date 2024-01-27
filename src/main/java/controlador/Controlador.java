@@ -13,6 +13,7 @@ import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
+import utils.UtilsFunc;
 import vista.GUIPrincipal;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
@@ -33,20 +34,10 @@ import static vista.utils.Otros.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {
     //Recientes
-    private static final ArchivosRecientes archivosRecent = new ArchivosRecientes();
-    private static int valorZoom;
+    private ArchivosRecientes archivosRecent;
+    private int valorZoom;
     private static Stack<Document> pilaDeshacer;
-
-    //About
-    private GUI_About about;
-    //report
-    private GUI_Report report;
-    //manual
-    private GUI_Zoom zoom;
-    //manual
-    private GUI_Manual manual;
-    //galeria
-    private GUI_Galeria galeria;
+    
     //Otros
     private String path;
     private Vector<TransferAtributo> listaAtributos;
@@ -63,12 +54,7 @@ public class Controlador {
     private GUI_Pregunta panelOpciones;
     private final Theme theme;
     private int modoVista;
-    private Vector<TransferEntidad> listaEntidades;
-	private Vector<TransferRelacion> listaRelaciones;
     private Contexto ctxt;
-
-    //private Vector<TransferAgregacion> listaAgregaciones; por el momento no parece necesario
-
     private boolean modoSoporte;
 
     //Para boton Deshacer solo afecta a acciones con elementos
@@ -106,289 +92,16 @@ public class Controlador {
     private FactoriaServicios factoriaServicios;
 
     public Controlador() {
+    	archivosRecent = new ArchivosRecientes();
         cambios = false;
         theme = Theme.getInstancia();
         pilaDeshacer = new Stack<Document>();
-        setListaEntidades(new Vector<TransferEntidad>());
-        setListaRelaciones(new Vector<TransferRelacion>());
         modoSoporte = false;
         cuadricula = false;
         factoriaGUI = new FactoriaGUI(this);
-        //valorZoom=0;
-        
         factoriaServicios = new FactoriaServicios(this);
+        //valorZoom=0; 
     }
-
-    public static void main(String[] args) throws Exception {
-
-        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            if ("Nimbus".equals(info.getName())) {
-                try {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                         UnsupportedLookAndFeelException e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
-        File directory = new File(System.getProperty("user.dir") + DIRECTORY);
-        if (directory.mkdir()) {
-            //creamos la carpeta projects si no existe
-            File projects = new File(System.getProperty("user.dir") + DIRECTORY + PROJECTS);
-            if (!projects.exists()) projects.mkdir();
-
-            //Creamos la carpeta incidences si no existe
-            File incidences = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
-            if (!incidences.exists()) incidences.mkdir();
-        }
-
-        // Obtenemos configuración inicial (si la hay)
-        ConfiguradorInicial conf = new ConfiguradorInicial();
-        conf.leerFicheroConfiguracion();
-
-        // Obtenemos el lenguaje en el que vamos a trabajar
-
-        Lenguaje.encuentraLenguajes();//AQUI
-        Theme.loadThemes();
-        Theme.changeTheme(conf.obtenTema());
-        //valorZoom=conf.obtenZoom();
-
-
-        if (conf.existeFichero()) {
-            archivosRecent.recibeRecientes(conf.darRecientes());
-            Vector<String> lengs = Lenguaje.obtenLenguajesDisponibles();
-            boolean encontrado = false;
-            int k = 0;
-            while (!encontrado && k < lengs.size()) {
-                encontrado = lengs.get(k).equalsIgnoreCase(conf.obtenLenguaje());
-                k++;
-            }
-
-            if (encontrado) Lenguaje.cargaLenguaje(conf.obtenLenguaje());
-            else Lenguaje.cargaLenguajePorDefecto();
-
-        } else {
-            Lenguaje.cargaLenguajePorDefecto();
-
-            Theme.loadDefaultTheme();
-        }
-        Controlador controlador = new Controlador();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-                    creaFicheroXML(controlador.getFiletemp());
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(null,
-                            Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
-                            Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-                }
-                String ruta = controlador.getFiletemp().getPath();
-                controlador.setPath(ruta);
-                controlador.setNullAttrs(conf.obtenNullAttr());
-
-                // Abrimos el documento guardado últimamente
-                File ultimo = new File(conf.obtenUltimoProyecto());
-                if (ultimo.exists()) {
-                    archivosRecent.add(ultimo);
-                    //controlador.setZoom(0);
-                    controlador.setFileguardar(ultimo);
-                    controlador.setModoVista(conf.obtenModoVista());
-                    controlador.setZoom(conf.obtenZoom());
-                    controlador.setNullAttrs(conf.obtenNullAttr());
-                    String abrirPath = conf.obtenUltimoProyecto();
-                    String tempPath = controlador.filetemp.getAbsolutePath();
-                    FileCopy(abrirPath, tempPath);
-
-                    // Reinicializamos la GUIPrincipal
-                    controlador.factoriaGUI.getGUIPrincipal().setActiva(controlador.getModoVista());
-                    // Reiniciamos los datos de los servicios de sistema
-                    controlador.getFactoriaServicios().getServicioSistema().reset();
-                    controlador.setCambios(false);
-                    controlador.factoriaGUI.getGUIPrincipal().loadInfo();
-                    controlador.factoriaGUI.getGUIPrincipal().cambiarZoom(valorZoom);
-
-                } else {
-                    controlador.setModoVista(0);
-                    controlador.factoriaGUI.getGUIPrincipal().setActiva(controlador.getModoVista());
-                }
-                // Establecemos la base de datos por defecto
-                if (conf.existeFichero())
-                    controlador.factoriaGUI.getGUIPrincipal().cambiarConexion(conf.obtenGestorBBDD());
-
-                if (ultimo.exists()) {
-                    //Almacenamos nuestro primer fichero en la carpeta usada para la tarea deshacer
-                    File directorio = new File(System.getProperty("user.dir") + "/deshacer");
-                    if (!directorio.exists()) {
-                        if (directorio.mkdirs()) {
-                            // System.out.println("Directorio creado");
-                        } else {
-                            System.out.println("Error al crear directorio");
-                        }
-                    } else {
-                        for (File file : Objects.requireNonNull(directorio.listFiles())) {
-                            if (!file.isDirectory()) {
-                                file.delete();
-                            }
-                        }
-                    }
-                    controlador.guardarDeshacer();
-                } else {
-                    //Almacenamos nuestro primer fichero en la carpeta usada para la tarea deshacer
-                    File temp = new File(System.getProperty("user.dir") + "/projects/temp");
-                    controlador.setFileguardar(temp);
-                    File directorio = new File(System.getProperty("user.dir") + "/deshacer");
-                    if (!directorio.exists()) {
-                        if (directorio.mkdirs()) {
-                            // System.out.println("Directorio creado");
-                        } else {
-                            System.out.println("Error al crear directorio");
-                        }
-                    } else {
-                        for (File file : Objects.requireNonNull(directorio.listFiles())) {
-                            if (!file.isDirectory()) {
-                                file.delete();
-                            }
-                        }
-                    }
-                    controlador.guardarDeshacer();
-                }
-            }
-        });
-    }
-
-    public static boolean creaFicheroXML(File f) {
-        FileWriter fw;
-        String ruta = f.getPath();
-        try {
-            fw = new FileWriter(ruta);
-            fw.write("<?xml version=" + '\"' + "1.0" + '\"' + " encoding="
-                    + '\"' + "utf-8" + '\"' + " ?>" + '\n');
-            //"ISO-8859-1"
-            fw.write("<Inf_dbcase>" + "\n");
-            fw.write("<EntityList proximoID=\"1\">" + "\n" + "</EntityList>" + "\n");
-            fw.write("<RelationList proximoID=\"1\">" + "\n" + "</RelationList>" + "\n");
-            fw.write("<AttributeList proximoID=\"1\">" + "\n" + "</AttributeList>" + "\n");
-            fw.write("<DomainList proximoID=\"1\">" + "\n" + "</DomainList>");
-            fw.write("<AggregationList proximoID=\"1\">" + "\n" + "</AggregationList>");
-            fw.write("</Inf_dbcase>" + "\n");
-            fw.close();
-            return true;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR_CREATING_FILE) + "\n" + ruta,
-                    Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
-
-    private static void quicksort(Vector<String> a) {
-        quicksort(a, 0, a.size() - 1);
-    }
-
-    // quicksort a[left] to a[right]
-    private static void quicksort(Vector<String> a, int left, int right) {
-        if (right <= left) return;
-        int i = partition(a, left, right);
-        quicksort(a, left, i - 1);
-        quicksort(a, i + 1, right);
-    }
-
-    // partition a[left] to a[right], assumes left < right
-    private static int partition(Vector<String> a, int left, int right) {
-        int i = left - 1;
-        int j = right;
-        while (true) {
-            while ((a.get(++i).compareToIgnoreCase(a.get(right)) < 0))      // find item on left to swap
-                ;                               // a[right] acts as sentinel
-            while ((a.get(right).compareToIgnoreCase(a.get(--j)) < 0))      // find item on right to swap
-                if (j == left) break;           // don't go out-of-bounds
-            if (i >= j) break;                  // check if pointers cross
-            exch(a, i, j);                      // swap two elements into place
-        }
-        exch(a, i, right);                      // swap with partition element
-        return i;
-    }
-
-    private static void exch(Vector<String> a, int i, int j) {
-        //exchanges++;
-        String swap = a.get(i);
-        a.set(i, a.get(j));
-        a.set(j, swap);
-    }
-
-    public static void FileCopy(String sourceFile, String destinationFile) {
-        try {
-            File inFile = new File(sourceFile);
-            File outFile = new File(destinationFile);
-
-            FileInputStream in = new FileInputStream(inFile);
-            FileOutputStream out = new FileOutputStream(outFile);
-
-            int c;
-            while ((c = in.read()) != -1) out.write(c);
-            in.close();
-            out.close();
-        } catch (IOException e) {
-            //TODO mirar esto
-        }
-    }
-
-    /* private void iniciaFrames() {
-
-        theGUIInsertarEntidad = new GUI_InsertarEntidad(this);
-        theGUIInsertarRelacion = new GUI_InsertarRelacion(this);
-        theGUIInsertarDominio = new GUI_InsertarDominio(this);
-        theGUIConexion = new GUI_Conexion(this);
-        theGUISeleccionarConexion = new GUI_SeleccionarConexion(this);
-        theGUIEliminar = new GUI_Eliminar(this);
-
-        // Entidades
-        theGUIRenombrarEntidad = new GUI_RenombrarEntidad(this);
-        theGUIAnadirAtributoEntidad = new GUI_AnadirAtributoEntidad(this);
-        theGUIAnadirRestriccionAEntidad = new GUI_InsertarRestriccionAEntidad(this);
-        theGUIAnadirAtributo = new GUI_AnadirAtributo(this);
-        theGUIModificarEntidad = new GUI_ModificarEntidad(this);
-        
-        // Atributos
-        theGUIRenombrarAtributo = new GUI_RenombrarAtributo(this);
-        theGUIEditarDominioAtributo = new GUI_EditarDominioAtributo(this);
-        theGUIAnadirSubAtributoAtributo = new GUI_AnadirSubAtributoAtributo(this);
-        theGUIAnadirRestriccionAAtributo = new GUI_InsertarRestriccionAAtributo(this);
-
-        // Relaciones IsA
-        theGUIEstablecerEntidadPadre = new GUI_EstablecerEntidadPadre(this);
-        theGUIQuitarEntidadPadre = new GUI_QuitarEntidadPadre(this);
-        theGUIAnadirEntidadHija = new GUI_AnadirEntidadHija(this);
-        theGUIQuitarEntidadHija = new GUI_QuitarEntidadHija(this);
-
-        // Relaciones Normales
-        theGUIRenombrarRelacion = new GUI_RenombrarRelacion(this);
-        theGUIAnadirEntidadARelacion = new GUI_AnadirEntidadARelacion(this);
-        theGUIQuitarEntidadARelacion = new GUI_QuitarEntidadARelacion(this);
-        theGUIEditarCardinalidadEntidad = new GUI_EditarCardinalidadEntidad(this);
-        theGUIAnadirAtributoRelacion = new GUI_AnadirAtributoRelacion(this);
-        theGUIAnadirRestriccionARelacion = new GUI_InsertarRestriccionARelacion(this);
-        theGUIModificarRelacion = new GUI_ModificarRelacion(this);
-        theGUIModificarAtributo = new GUI_ModificarAtributo(this);
-        // Dominios
-        theGUIRenombrarDominio = new GUI_RenombrarDominio(this);
-        theGUIModificarElementosDominio = new GUI_ModificarDominio(this);
-        //Agregaciones
-        theGUIModificarAgregacion = new GUI_RenombrarAgregacion(this);
-        //theGUIAddAgregacion = new GUI_AnadirAgregacion(this);
-
-        // Otras
-        about = new GUI_About();
-        manual = new GUI_Manual();
-        galeria = new GUI_Galeria();
-        theGUIWorkSpace = new GUI_SaveAs(this, true);
-        panelOpciones = new GUI_Pregunta(this);
-        report = new GUI_Report(this);
-        zoom = new GUI_Zoom(this);
-        
-    } */
 
     // Mensajes que le manda la GUI_WorkSpace al Controlador
     public void mensajeDesde_GUIWorkSpace(TC mensaje, Object datos) {
@@ -401,7 +114,7 @@ public class Controlador {
             case GUI_WorkSpace_Click_Abrir_Tema: {
                 String abrirPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(abrirPath, tempPath);
+                UtilsFunc.FileCopy(abrirPath, tempPath);
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -416,7 +129,7 @@ public class Controlador {
             case GUI_WorkSpace_Click_Abrir_Deshacer: {//tenemos que diferenciar si abrimos un nuevo proyecto o el de deshacer
                 String abrirPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(abrirPath, tempPath);
+                UtilsFunc.FileCopy(abrirPath, tempPath);
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -432,7 +145,7 @@ public class Controlador {
             case GUI_WorkSpace_Click_GuardarDeshacer: {
                 String guardarPath = (String) datos;
                 String tempPath = this.filetemp.getAbsolutePath();
-                FileCopy(tempPath, guardarPath);
+                UtilsFunc.FileCopy(tempPath, guardarPath);
 
                 factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setInactiva();
                 setCambios(false);
@@ -613,7 +326,8 @@ public class Controlador {
             }
             case PanelDiseno_Click_OrdenarValoresDominio: {
                 TransferDominio td = (TransferDominio) datos;
-                quicksort((Vector<String>) td.getListaValores());
+                //TODO Mirar si ordena como queremos
+                UtilsFunc.quicksort((Vector<String>) td.getListaValores());
 
                 Vector<Object> v = new Vector();
                 v.add(td);
@@ -731,15 +445,15 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_ABOUT: {
-                about.setActiva(true);
+                factoriaGUI.getAbout().setActiva(true);
                 break;
             }
             case GUI_Principal_MANUAL: {
-                manual.setActiva(true);
+                factoriaGUI.getManual().setActiva(true);
                 break;
             }
             case GUI_Principal_GALERIA: {
-                galeria.setActiva(true);
+                factoriaGUI.getGaleria().setActiva(true);
                 break;
             }
             case GUI_Principal_RESET: {
@@ -765,8 +479,9 @@ public class Controlador {
                 }
                 break;
             }
+            case GUI_Principal_Zoom:
             case GUI_Principal_REPORT: {
-                report.setActiva();
+                factoriaGUI.getGUI(mensaje, datos, true);
                 break;
             }
 
@@ -819,10 +534,6 @@ public class Controlador {
             }
             case GUI_Principal_Vista3: {
                 this.factoriaGUI.getGUIPrincipal().modoDiseno();
-                break;
-            }
-            case GUI_Principal_Zoom: {
-                zoom.setActiva();
                 break;
             }
             case GUI_Principal_Zoom_Aceptar: {
@@ -1051,7 +762,7 @@ public class Controlador {
                 try {
                     if (filetemp.exists()) {
                         File guardado = File.createTempFile("dbcase", "xml");
-                        FileCopy(filetemp.getAbsolutePath(), guardado.getAbsolutePath());
+                        UtilsFunc.FileCopy(filetemp.getAbsolutePath(), guardado.getAbsolutePath());
                         mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Click_Abrir_Lenguaje, guardado.getAbsolutePath());
                         guardado.delete();
                     } else ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
@@ -1073,7 +784,7 @@ public class Controlador {
                 try {
                     if (filetemp.exists()) {
                         File guardado = File.createTempFile("dbcase", "xml");
-                        FileCopy(filetemp.getAbsolutePath(), guardado.getAbsolutePath());
+                        UtilsFunc.FileCopy(filetemp.getAbsolutePath(), guardado.getAbsolutePath());
                         mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Click_Abrir_Tema, guardado.getAbsolutePath());
                         guardado.delete();
                     } else ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
@@ -2059,7 +1770,6 @@ public class Controlador {
         switch (mensaje) {
             case SR_ListarRelaciones_HECHO: {
                 this.factoriaGUI.getGUIPrincipal().setListaRelaciones((Vector) datos);
-                this.setListaRelaciones((Vector) datos);
                 break;
             }
             case SR_InsertarRelacion_HECHO: {
@@ -2400,7 +2110,6 @@ public class Controlador {
         this.factoriaGUI.getGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
     }
     
-    
     public Vector<TransferAtributo> getListaAtributos() {
     	return factoriaServicios.getServicioAtributos().getListaDeAtributos();
     }
@@ -2412,14 +2121,6 @@ public class Controlador {
     public Vector<TransferRelacion> getListaRelaciones() {
     	return factoriaServicios.getServicioRelaciones().ListaDeRelacionesNoVoid();
     }
-    
-    protected void setListaEntidades(Vector<TransferEntidad> listaEntidades) {
-		this.listaEntidades = listaEntidades;
-	}
-
-	protected void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
-		this.listaRelaciones = listaRelaciones;
-	}
 	
 	public boolean isScriptGeneradoCorrectamente() {
 		return factoriaGUI.getGUIPrincipal().getScriptGeneradoCorrectamente();
@@ -2429,228 +2130,6 @@ public class Controlador {
 	public void transferFocusRehacer() {
 		factoriaGUI.getGUIPrincipal().getMyMenu().transferFocusRehacer();
 	}
-
-    /*public GUI_AnadirAtributoEntidad getTheGUIAnadirAtributoEntidad() {
-        return theGUIAnadirAtributoEntidad;
-    }
-
-    public void setTheGUIAnadirAtributoEntidad(GUI_AnadirAtributoEntidad theGUIAnadirAtributoEntidad) {
-        this.theGUIAnadirAtributoEntidad = theGUIAnadirAtributoEntidad;
-    }
-
-    public GUI_InsertarRestriccionAEntidad getTheGUIAnadirRestriccionAEntidad() {
-        return theGUIAnadirRestriccionAEntidad;
-    }
-
-    public void setTheGUIAnadirRestriccionAEntidad(GUI_InsertarRestriccionAEntidad theGUIAnadirRestriccionAEntidad) {
-        this.theGUIAnadirRestriccionAEntidad = theGUIAnadirRestriccionAEntidad;
-    }
-
-    public GUI_InsertarRestriccionAAtributo getTheGUIAnadirRestriccionAAtributo() {
-        return theGUIAnadirRestriccionAAtributo;
-    }
-
-    public GUI_InsertarRestriccionARelacion getTheGUIAnadirRestriccionARelacion() {
-        return theGUIAnadirRestriccionARelacion;
-    }
-
-    public GUI_AnadirAtributoRelacion getTheGUIAnadirAtributoRelacion() {
-        return theGUIAnadirAtributoRelacion;
-    }
-
-    public void setTheGUIAnadirAtributoRelacion(GUI_AnadirAtributoRelacion theGUIAnadirAtributoRelacion) {
-        this.theGUIAnadirAtributoRelacion = theGUIAnadirAtributoRelacion;
-    }
-
-    public GUI_AnadirAtributo getTheGUIAnadirAtributo() {
-        return theGUIAnadirAtributo;
-    }
-
-    public GUI_AnadirEntidadHija getTheGUIAnadirEntidadHija() {
-        return theGUIAnadirEntidadHija;
-    }
-
-    public void setTheGUIAnadirEntidadHija(GUI_AnadirEntidadHija theGUIAnadirEntidadHija) {
-        this.theGUIAnadirEntidadHija = theGUIAnadirEntidadHija;
-    }
-
-    public GUI_AnadirSubAtributoAtributo getTheGUIAnadirSubAtributoAtributo() {
-        return theGUIAnadirSubAtributoAtributo;
-    }
-
-    public void setTheGUIAnadirSubAtributoAtributo(GUI_AnadirSubAtributoAtributo theGUIAnadirSubAtributoAtributo) {
-        this.theGUIAnadirSubAtributoAtributo = theGUIAnadirSubAtributoAtributo;
-    }
-
-    public GUI_EditarDominioAtributo getTheGUIEditarDominioAtributo() {
-        return theGUIEditarDominioAtributo;
-    }
-
-    public void setTheGUIEditarDominioAtributo(GUI_EditarDominioAtributo theGUIEditarDominioAtributo) {
-        this.theGUIEditarDominioAtributo = theGUIEditarDominioAtributo;
-    }
-
-    public GUI_EstablecerEntidadPadre getTheGUIEstablecerEntidadPadre() {
-        return theGUIEstablecerEntidadPadre;
-    }
-
-    public void setTheGUIEstablecerEntidadPadre(GUI_EstablecerEntidadPadre theGUIEstablecerEntidadPadre) {
-        this.theGUIEstablecerEntidadPadre = theGUIEstablecerEntidadPadre;
-    }
-
-    public GUI_InsertarEntidad getTheGUIInsertarEntidad() {
-        return theGUIInsertarEntidad;
-    }
-
-    public void setTheGUIInsertarEntidad(GUI_InsertarEntidad theGUIInsertarEntidad) {
-        this.theGUIInsertarEntidad = theGUIInsertarEntidad;
-    }
-
-    public GUI_ModificarEntidad getTheGUIModificarEntidad() {
-        return theGUIModificarEntidad;
-    }
-
-    public void setTheGUIModificarEntidad(GUI_ModificarEntidad theGUIModificarEntidad) {
-        this.theGUIModificarEntidad = theGUIModificarEntidad;
-    }
-
-    public GUI_ModificarRelacion getTheGUIModificarRelacion() {
-        return theGUIModificarRelacion;
-    }
-
-    public void setTheGUIModificarRelacion(GUI_ModificarRelacion theGUIModificarRelacion) {
-        this.theGUIModificarRelacion = theGUIModificarRelacion;
-    }
-
-    public GUI_ModificarAtributo getTheGUIModificarAtributo() {
-        return theGUIModificarAtributo;
-    }
-
-    public void setTheGUIModificarAtributo(GUI_ModificarAtributo theGUIModificarAtributo) {
-        this.theGUIModificarAtributo = theGUIModificarAtributo;
-    }
-
-    public GUI_InsertarRelacion getTheGUIInsertarRelacion() {
-        return theGUIInsertarRelacion;
-    }
-
-    public void setTheGUIInsertarRelacion(GUI_InsertarRelacion theGUIInsertarRelacion) {
-        this.theGUIInsertarRelacion = theGUIInsertarRelacion;
-    }
-
-    public GUI_InsertarDominio getTheGUIInsertarDominio() {
-        return theGUIInsertarDominio;
-    }
-
-    public GUI_Conexion getTheGUIConfigurarConexionDBMS() {
-        return theGUIConexion;
-    }
-
-    public void setTheGUIConfigurarConexionDBMS(GUI_Conexion theGUIConexion) {
-        this.theGUIConexion = theGUIConexion;
-    }
-
-    public GUI_SeleccionarConexion getTheGuiSeleccionarConexion() {
-        return theGUISeleccionarConexion;
-    }
-
-    public void setTheGuiSelecceionarConexion(GUI_SeleccionarConexion selector) {
-        this.theGUISeleccionarConexion = selector;
-    }*/
-
-    
-/*
-    public GUI_QuitarEntidadHija getTheGUIQuitarEntidadHija() {
-        return theGUIQuitarEntidadHija;
-    }
-
-    public void setTheGUIQuitarEntidadHija(GUI_QuitarEntidadHija theGUIQuitarEntidadHija) {
-        this.theGUIQuitarEntidadHija = theGUIQuitarEntidadHija;
-    }
-
-    public GUI_QuitarEntidadPadre getTheGUIQuitarEntidadPadre() {
-        return theGUIQuitarEntidadPadre;
-    }
-
-    public void setTheGUIQuitarEntidadPadre(GUI_QuitarEntidadPadre theGUIQuitarEntidadPadre) {
-        this.theGUIQuitarEntidadPadre = theGUIQuitarEntidadPadre;
-    }
-
-    public GUI_RenombrarAtributo getTheGUIRenombrarAtributo() {
-        return theGUIRenombrarAtributo;
-    }
-
-    public void setTheGUIRenombrarAtributo(GUI_RenombrarAtributo theGUIRenombrarAtributo) {
-        this.theGUIRenombrarAtributo = theGUIRenombrarAtributo;
-    }
-
-    public GUI_RenombrarEntidad getTheGUIRenombrarEntidad() {
-        return theGUIRenombrarEntidad;
-    }
-
-    public void setTheGUIRenombrarEntidad(GUI_RenombrarEntidad theGUIRenombrarEntidad) {
-        this.theGUIRenombrarEntidad = theGUIRenombrarEntidad;
-    }
-
-    public GUI_RenombrarRelacion getTheGUIRenombrarRelacion() {
-        return theGUIRenombrarRelacion;
-    }
-
-    public void setTheGUIRenombrarRelacion(GUI_RenombrarRelacion theGUIRenombrarRelacion) {
-        this.theGUIRenombrarRelacion = theGUIRenombrarRelacion;
-    }
-
-    public GUI_RenombrarDominio getTheGUIRenombrarDominio() {
-        return theGUIRenombrarDominio;
-    }
-
-    public void setTheGUIRenombrarDominio(GUI_RenombrarDominio theGUIRenombrarDominio) {
-        this.theGUIRenombrarDominio = theGUIRenombrarDominio;
-    }
-
-    public GUI_ModificarDominio getTheGUIModificarElementosDominio() {
-        return theGUIModificarElementosDominio;
-    }
-
-    public void setTheGUIModificarElementosDominio(GUI_ModificarDominio theGUIModificarElementosDominio) {
-        this.theGUIModificarElementosDominio = theGUIModificarElementosDominio;
-    }
-
-    private GUI_Eliminar getTheGUIEliminar() {
-        return theGUIEliminar;
-    }
-
-    public GUI_AnadirEntidadARelacion getTheGUIAnadirEntidadARelacion() {
-        return theGUIAnadirEntidadARelacion;
-    }
-
-    public void setTheGUIAnadirEntidadARelacion(GUI_AnadirEntidadARelacion theGUIAnadirEntidadARelacion) {
-        this.theGUIAnadirEntidadARelacion = theGUIAnadirEntidadARelacion;
-    }
-
-    public GUI_QuitarEntidadARelacion getTheGUIQuitarEntidadARelacion() {
-        return theGUIQuitarEntidadARelacion;
-    }
-
-    public void setTheGUIQuitarEntidadARelacion(GUI_QuitarEntidadARelacion theGUIQuitarEntidadARelacion) {
-        this.theGUIQuitarEntidadARelacion = theGUIQuitarEntidadARelacion;
-    }
-
-    public GUI_EditarCardinalidadEntidad getTheGUIEditarCardinalidadEntidad() {
-        return theGUIEditarCardinalidadEntidad;
-    }
-
-    public void setTheGUIEditarCardinalidadEntidad(GUI_EditarCardinalidadEntidad theGUIEditarCardinalidadEntidad) {
-        this.theGUIEditarCardinalidadEntidad = theGUIEditarCardinalidadEntidad;
-    }
-
-    public GUI_SaveAs getTheGUIWorkSpace() {
-        return theGUIWorkSpace;
-    }
-
-    public void setTheGUIWorkSpace(GUI_SaveAs theGUIWorkSpace) {
-        this.theGUIWorkSpace = theGUIWorkSpace;
-    }*/
 
     public String getPath() {
         return path;
@@ -2690,11 +2169,11 @@ public class Controlador {
         return this.theGUITablaUniqueRelacion;
     }*/
 
-    private int getModoVista() {
+    protected int getModoVista() {
         return modoVista;
     }
 
-    private void setModoVista(int m) {
+    protected void setModoVista(int m) {
         this.modoVista = m;
     }
 
@@ -2803,6 +2282,14 @@ public class Controlador {
 		return copiado;
 	}
 
+	protected ArchivosRecientes getArchivosRecientes() {
+		return archivosRecent;
+	}
+
+	protected void setArchivosRecientes(ArchivosRecientes archivosRecent) {
+		this.archivosRecent = archivosRecent;
+	}
+
 	public void setContFicherosDeshacer(int cont) {
     	this.contFicherosDeshacer = cont;
     }
@@ -2819,7 +2306,6 @@ public class Controlador {
     	this.tiempoGuardado = t;
     }
     
-
 	protected FactoriaServicios getFactoriaServicios() {
 		return factoriaServicios;
 	}
@@ -2831,9 +2317,8 @@ public class Controlador {
 	private void ejecutarComandoDelMensaje(TC mensaje, Object datos) {
     	Comando com = FactoriaComandos.getComando(mensaje, this);
     	if(com != null) com.ejecutar(datos);
-    	else throw new IllegalArgumentException("Comando no encontrado"); //TODO
+    	else throw new IllegalArgumentException("Comando no encontrado");
     }
-    
     
     protected void tratarContexto(Contexto contexto) {
     	if(contexto == null) return;

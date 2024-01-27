@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
+import utils.UtilsFunc;
 import vista.Lenguaje;
 
 public class ComandoWorkspaceNuevo extends Comando {
@@ -26,7 +27,7 @@ public class ComandoWorkspaceNuevo extends Comando {
 	public void ejecutar(Object datos) {
 		try {
             ctrl.setFiletemp(File.createTempFile("dbcase", "xml"));
-            ctrl.creaFicheroXML(ctrl.getFiletemp());
+            UtilsFunc.creaFicheroXML(ctrl.getFiletemp());
             ctrl.setPath(ctrl.getFiletemp().getAbsolutePath());
         
 		} catch (IOException e) {

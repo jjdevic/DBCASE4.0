@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 import controlador.Controlador;
 import controlador.TC;
 import vista.GUIPrincipal;
@@ -72,6 +74,8 @@ public class FactoriaGUI {
             case Controlador_RenombrarAgregacion: gui = new GUI_RenombrarAgregacion(ctrl); break;
             case GUI_WorkSpace: gui = new GUI_SaveAs(ctrl, (Boolean) datos); break;
             case GUI_Recientes: gui = new GUI_Recientes(ctrl, (ArrayList<File>) datos); break;
+            case GUI_Principal_REPORT: gui = new GUI_Report(ctrl); break;
+            case GUI_Principal_Zoom: gui = new GUI_Zoom(ctrl); break;
 			default: gui = null;
 			}
 			
@@ -83,8 +87,19 @@ public class FactoriaGUI {
 		return gui;
 	}
 	
-	
 	public void destroyAll() {
 		map_guis.clear();
+	}
+	
+	public GUI_About getAbout() {
+		return new GUI_About();
+	}
+	
+	public GUI_Manual getManual() {
+		return new GUI_Manual();
+	}
+	
+	public GUI_Galeria getGaleria() {
+		return new GUI_Galeria();
 	}
 }
