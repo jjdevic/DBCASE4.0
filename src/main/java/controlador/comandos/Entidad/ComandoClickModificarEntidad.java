@@ -1,4 +1,4 @@
-package controlador.comandos.Frames;
+package controlador.comandos.Entidad;
 
 import java.util.Objects;
 import java.util.Vector;

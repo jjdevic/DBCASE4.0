@@ -1,4 +1,4 @@
-package controlador.comandos.Frames;
+package controlador.comandos.Agregacion;
 
 import java.util.Vector;
 

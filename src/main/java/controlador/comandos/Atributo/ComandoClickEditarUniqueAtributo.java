@@ -1,4 +1,4 @@
-package controlador.comandos.PanelDiseno;
+package controlador.comandos.Atributo;
 
 import java.util.Vector;
 
@@ -9,21 +9,23 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 
-public class ComandoClickEliminarRefUniqueAtr extends Comando{
+public class ComandoClickEditarUniqueAtributo extends Comando{
 
-	public ComandoClickEliminarRefUniqueAtr(Controlador ctrl) {
+	public ComandoClickEditarUniqueAtributo(Controlador ctrl) {
 		super(ctrl);
 	}
 
 	@Override
 	public void ejecutar(Object datos) {
-		TransferAtributo ta = (TransferAtributo) datos;
+		Vector<Object> ve = (Vector<Object>) datos;
+        TransferAtributo ta = (TransferAtributo) ve.get(0);
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         tratarContexto(ctxt);
 
-        //ctrl.getTheServiciosEntidades().ListaDeEntidades();
-        //ctrl.getTheServiciosAtributos().ListaDeAtributos();
-        //ctrl.getTheServiciosRelaciones().ListaDeRelaciones();
+        //TODO Cabiar los getListas, no tomarlas de controller sino de modelo
+        getFactoriaServicios().getServicioEntidades().ListaDeEntidades();
+        getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
+        getFactoriaServicios().getServicioRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
         Vector<TransferRelacion> relaciones = ctrl.getFactoriaGUI().getGUIPrincipal().getListaRelaciones();
         Vector<TransferEntidad> entidades = ctrl.getFactoriaGUI().getGUIPrincipal().getListaEntidades();
@@ -53,12 +55,12 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
                 Vector v = new Vector();
                 v.add(te);
                 v.add(ta);
-                getFactoriaServicios().getServicioEntidades().eliminarReferenciasUnitario(v);
+                getFactoriaServicios().getServicioEntidades().setUniqueUnitario(v);
             } else {//esRelacion
                 Vector v = new Vector();
                 v.add(tr);
                 v.add(ta);
-                getFactoriaServicios().getServicioRelaciones().eliminarReferenciasUnitario(v);
+                getFactoriaServicios().getServicioRelaciones().setUniqueUnitario(v);
             }
         }
 	}

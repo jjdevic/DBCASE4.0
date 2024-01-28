@@ -1,4 +1,4 @@
-package controlador.comandos.PanelDiseno;
+package controlador.comandos.Dominio;
 
 import java.util.Vector;
 

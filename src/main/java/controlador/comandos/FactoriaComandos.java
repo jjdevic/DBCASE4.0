@@ -3,27 +3,28 @@ package controlador.comandos;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Frames.ComandoAnadirEntidadARelacion;
-import controlador.comandos.Frames.ComandoAnadirUniquesEntidad;
-import controlador.comandos.Frames.ComandoAnadirUniquesRelacion;
-import controlador.comandos.Frames.ComandoClickInsertarAgregacion;
-import controlador.comandos.Frames.ComandoClickModificarAtributo;
-import controlador.comandos.Frames.ComandoClickModificarEntidad;
-import controlador.comandos.Frames.ComandoQuitarEntidadPadre;
-import controlador.comandos.GUI_Workspace.ComandoClickAbrir;
-import controlador.comandos.GUI_Workspace.ComandoClickGuardar;
-import controlador.comandos.GUI_Workspace.ComandoClickGuardarBackup;
-import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
-import controlador.comandos.PanelDiseno.ComandoClickDebilitarRelacion;
-import controlador.comandos.PanelDiseno.ComandoClickEditarCompuestoAtrib;
-import controlador.comandos.PanelDiseno.ComandoClickEditarUniqueAtributo;
-import controlador.comandos.PanelDiseno.ComandoClickEliminarAtributo;
-import controlador.comandos.PanelDiseno.ComandoClickEliminarDominio;
-import controlador.comandos.PanelDiseno.ComandoClickEliminarEntidad;
-import controlador.comandos.PanelDiseno.ComandoClickEliminarRefUniqueAtr;
-import controlador.comandos.PanelDiseno.ComandoClickEliminarRelacionNormal;
-import controlador.comandos.PanelDiseno.ComandoClickModificarUniqueAtrib;
-import controlador.comandos.PanelDiseno.ComandoClickPegar;
+import controlador.comandos.Agregacion.ComandoClickInsertarAgregacion;
+import controlador.comandos.Atributo.ComandoClickEditarCompuestoAtrib;
+import controlador.comandos.Atributo.ComandoClickEditarUniqueAtributo;
+import controlador.comandos.Atributo.ComandoClickEliminarAtributo;
+import controlador.comandos.Atributo.ComandoClickEliminarRefUniqueAtr;
+import controlador.comandos.Atributo.ComandoClickModificarAtributo;
+import controlador.comandos.Atributo.ComandoClickModificarUniqueAtrib;
+import controlador.comandos.Dominio.ComandoClickEliminarDominio;
+import controlador.comandos.Entidad.ComandoAnadirUniquesEntidad;
+import controlador.comandos.Entidad.ComandoClickEliminarEntidad;
+import controlador.comandos.Entidad.ComandoClickModificarEntidad;
+import controlador.comandos.Otros.ComandoEditarElemento;
+import controlador.comandos.Relacion.ComandoAnadirEntidadARelacion;
+import controlador.comandos.Relacion.ComandoAnadirUniquesRelacion;
+import controlador.comandos.Relacion.ComandoClickDebilitarRelacion;
+import controlador.comandos.Relacion.ComandoClickEliminarRelacionNormal;
+import controlador.comandos.Relacion.ComandoQuitarEntidadPadre;
+import controlador.comandos.Vistas.ComandoClickAbrir;
+import controlador.comandos.Vistas.ComandoClickGuardar;
+import controlador.comandos.Vistas.ComandoClickGuardarBackup;
+import controlador.comandos.Vistas.ComandoClickPegar;
+import controlador.comandos.Vistas.ComandoWorkspaceNuevo;
 
 public class FactoriaComandos {
 
@@ -31,13 +32,11 @@ public class FactoriaComandos {
 		Comando res = null;
 		switch(mensaje) {
 		
-		/* GUI_WorkSpace */
 		case GUI_WorkSpace_Nuevo: res = new ComandoWorkspaceNuevo(ctrl); break;
 		case GUI_WorkSpace_Click_Abrir: res = new ComandoClickAbrir(ctrl); break;
 		case GUI_WorkSpace_Click_Guardar: res = new ComandoClickGuardar(ctrl); break;
 		case GUI_WorkSpace_Click_Guardar_Backup: res = new ComandoClickGuardarBackup(ctrl); break;
 		
-		/* Panel diseno */
 		case PanelDiseno_Click_EliminarEntidad: res = new ComandoClickEliminarEntidad(ctrl); break;
         case PanelDiseno_Click_EliminarAtributo: res = new ComandoClickEliminarAtributo(ctrl); break;
         case PanelDiseno_Click_DebilitarRelacion: res = new ComandoClickDebilitarRelacion(ctrl); break;
@@ -49,7 +48,6 @@ public class FactoriaComandos {
         case PanelDiseno_Click_EliminarRelacionNormal: res = new ComandoClickEliminarRelacionNormal(ctrl); break;
         case PanelDiseno_Click_EliminarDominio: res = new ComandoClickEliminarDominio(ctrl); break;
         
-        /* Frames */
         case GUIInsertarAgregacion: res = new ComandoClickInsertarAgregacion(ctrl); break;
         case GUIModificarAtributo_Click_ModificarAtributo: res = new ComandoClickModificarAtributo(ctrl); break;
         case GUIAnadirEntidadARelacion_ClickBotonAnadir: res = new ComandoAnadirEntidadARelacion(ctrl); break;
@@ -57,7 +55,7 @@ public class FactoriaComandos {
         case GUIModificarEntidad_Click_ModificarEntidad: res = new ComandoClickModificarEntidad(ctrl); break;
         case GUIQuitarEntidadPadre_ClickBotonSi: res = new ComandoQuitarEntidadPadre(ctrl); break;
         case GUIPonerUniquesARelacion_Click_BotonAceptar: res = new ComandoAnadirUniquesRelacion(ctrl); break;
-		
+        case GUI_Principal_EditarElemento: res = new ComandoEditarElemento(ctrl); break;
 		default: break;
 		}
 		return res;

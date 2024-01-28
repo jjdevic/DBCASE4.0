@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
-import controlador.comandos.GUI_Workspace.ComandoWorkspaceNuevo;
+import controlador.comandos.Vistas.ComandoWorkspaceNuevo;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
@@ -406,10 +406,6 @@ public class Controlador {
         }
     }
 
-    /*private GUI_RenombrarAgregacion getTheGUIRenombrarAgregacion() {
-        return theGUIModificarAgregacion;
-    }*/
-
     // Mensajes que manda la GUIPrincipal al Controlador
     @SuppressWarnings("static-access")
     public void mensajeDesde_GUIPrincipal(TC mensaje, Object datos) {
@@ -419,29 +415,6 @@ public class Controlador {
                 Vector<TransferConexion> vtc =
                 		factoriaServicios.getServicioSistema().obtenerTiposDeConexion();
                 this.factoriaGUI.getGUIPrincipal().setListaConexiones(vtc);
-                break;
-            }
-            case GUIPrincipal_ActualizameLaListaDeEntidades: {
-            	factoriaServicios.getServicioEntidades().ListaDeEntidades();
-                break;
-            }
-            case GUIPrincipal_ActualizameLaListaDeAtributos: {
-            	//TODO Provisional
-                this.factoriaGUI.getGUIPrincipal().setListaAtributos(factoriaServicios.getServicioAtributos().getListaDeAtributos());
-                break;
-            }
-            case GUIPrincipal_ActualizameLaListaDeRelaciones: {
-            	factoriaServicios.getServicioRelaciones().ListaDeRelaciones();
-                break;
-            }
-
-            case GUIPrincipal_ActualizameLaListaDeAgregaciones: {
-            	factoriaServicios.getServicioAgregaciones().ListaDeAgregaciones();
-                break;
-            }
-
-            case GUIPrincipal_ActualizameLaListaDeDominios: {
-            	factoriaServicios.getServicioDominios().ListaDeDominios();
                 break;
             }
             case GUI_Principal_ABOUT: {
@@ -481,7 +454,7 @@ public class Controlador {
             }
             case GUI_Principal_Zoom:
             case GUI_Principal_REPORT: {
-                factoriaGUI.getGUI(mensaje, datos, true);
+                factoriaGUI.getGUI(mensaje, datos, true).setActiva();
                 break;
             }
 
@@ -523,25 +496,13 @@ public class Controlador {
                 this.factoriaGUI.getGUIPrincipal().getPanelDiseno().grabFocus();
                 break;
             }
-
-            case GUI_Principal_Vista1: {
-                this.factoriaGUI.getGUIPrincipal().modoProgramador();
-                break;
-            }
-            case GUI_Principal_Vista2: {
-                this.factoriaGUI.getGUIPrincipal().modoVerTodo();
-                break;
-            }
-            case GUI_Principal_Vista3: {
-                this.factoriaGUI.getGUIPrincipal().modoDiseno();
-                break;
-            }
             case GUI_Principal_Zoom_Aceptar: {
                 this.factoriaGUI.getGUIPrincipal().cambiarZoom((int) datos);
                 this.setZoom((int) datos);
                 break;
             }
             case GUI_Principal_IniciaFrames: {
+            	//Al destruir todos los frames almacenados, cuando se haga una petición de tomar un frame, se creará desde cero.
                 factoriaGUI.destroyAll();
                 break;
             }
@@ -581,7 +542,6 @@ public class Controlador {
                 try {
                     this.factoriaGUI.getGUIPrincipal().modoCuadricula(!cuadricula);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 setCuadricula(!cuadricula);
@@ -592,16 +552,19 @@ public class Controlador {
                 this.factoriaGUI.getGUIPrincipal().imprimir();
                 break;
             }
+            case GUI_Principal_Vista1:
             case GUI_Principal_Click_ModoProgramador: {
                 this.factoriaGUI.getGUIPrincipal().modoProgramador();
                 break;
             }
-            case GUI_Principal_Click_ModoDiseno: {
-                this.factoriaGUI.getGUIPrincipal().modoDiseno();
-                break;
-            }
+            case GUI_Principal_Vista2:
             case GUI_Principal_Click_ModoVerTodo: {
                 this.factoriaGUI.getGUIPrincipal().modoVerTodo();
+                break;
+            }
+            case GUI_Principal_Vista3:
+            case GUI_Principal_Click_ModoDiseno: {
+                this.factoriaGUI.getGUIPrincipal().modoDiseno();
                 break;
             }
             case GUI_Principal_Click_Salir: {
@@ -668,56 +631,7 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_EditarElemento: {
-                if (datos instanceof TransferEntidad) {
-                    TransferEntidad te = (TransferEntidad) datos;
-                    Parent_GUI gui = factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarEntidad), datos, false);
-                    gui.setDatos(te);
-                    gui.setActiva();
-                } 
-                else if (datos instanceof TransferRelacion) {
-                    Parent_GUI gui = factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarRelacion), datos, false);
-                    TransferRelacion tr = (TransferRelacion) datos;
-                    gui.setDatos(tr);
-                    gui.setActiva();
-                } 
-                else if (datos instanceof TransferAtributo) {
-                    Vector<TransferDominio> lista = factoriaServicios.getServicioDominios().getListaDeDominios();
-                    Parent_GUI gui = factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarAtributo), datos, false);
-                    //this.getTheGUIModificarAtributo().setListaDominios(lista);
-                    TransferAtributo ta = (TransferAtributo) datos;
-                    
-                    //Buscamos a quien pertenece este atributo
-                    String nombrePadre = "";
-                    DAOEntidades daoEntidades = new DAOEntidades(this.getPath());
-                    Vector<TransferEntidad> listaE = daoEntidades.ListaDeEntidades();
-
-                    DAORelaciones daoRelaciones = new DAORelaciones(this.getPath());
-                    Vector<TransferRelacion> listaR = daoRelaciones.ListaDeRelaciones();
-
-                    for (TransferEntidad transferE : listaE) {
-                        Vector<String> listaA = transferE.getListaAtributos();
-                        for (String s : listaA) {
-                            if (s.equals(Integer.toString(ta.getIdAtributo()))) {
-                                nombrePadre = transferE.getNombre();
-                            }
-                        }
-                    }
-                    for (TransferRelacion transferR : listaR) {
-                        Vector<String> listaA = transferR.getListaAtributos();
-                        for (String s : listaA) {
-                            if (s.equals(Integer.toString(ta.getIdAtributo()))) {
-                                nombrePadre = transferR.getNombre();
-                            }
-                        }
-                    }
-
-                    //Establecer datos para la gui correspondiente y activarla
-                    Vector<Object> v = new Vector<Object>();
-                    v.add(ta);
-                    v.add(nombrePadre);
-                    gui.setDatos(ta);
-                    gui.setActiva();
-                }
+                ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             case GUI_Principal_Click_Submenu_GuardarComo: {
@@ -902,10 +816,6 @@ public class Controlador {
                 factoriaServicios.getServicioRelaciones().anadirAtributo(vectorTransfers);
                 ActualizaArbol(vectorTransfers.get(1));
                 factoriaServicios.getServicioSistema().reset();
-                break;
-            }
-            case GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios: {
-            	factoriaServicios.getServicioDominios().ListaDeDominios();
                 break;
             }
             case GUIPonerRestriccionesAEntidad_Click_BotonAceptar: {

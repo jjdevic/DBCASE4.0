@@ -1,4 +1,4 @@
-package controlador.comandos.PanelDiseno;
+package controlador.comandos.Relacion;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;

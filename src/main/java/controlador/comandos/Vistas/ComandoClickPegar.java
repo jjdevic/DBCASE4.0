@@ -1,4 +1,4 @@
-package controlador.comandos.PanelDiseno;
+package controlador.comandos.Vistas;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;

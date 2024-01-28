@@ -1,4 +1,4 @@
-package controlador.comandos.GUI_Workspace;
+package controlador.comandos.Vistas;
 
 import static vista.utils.Otros.DIRECTORY;
 import static vista.utils.Otros.INCIDENCES;

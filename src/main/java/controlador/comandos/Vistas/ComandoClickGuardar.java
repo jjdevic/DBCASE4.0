@@ -1,4 +1,4 @@
-package controlador.comandos.GUI_Workspace;
+package controlador.comandos.Vistas;
 
 import static vista.utils.Otros.DIRECTORY;
 import static vista.utils.Otros.INCIDENCES;
@@ -11,21 +11,22 @@ import controlador.Controlador;
 import controlador.TC;
 import utils.UtilsFunc;
 
-public class ComandoClickGuardarBackup extends Comando {
+public class ComandoClickGuardar extends Comando{
 
-	public ComandoClickGuardarBackup(Controlador ctrl) {
+	public ComandoClickGuardar(Controlador ctrl) {
 		super(ctrl);
 	}
 
 	@Override
 	public void ejecutar(Object datos) {
+		
 		String guardarPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
         UtilsFunc.FileCopy(tempPath, guardarPath);
         ctrl.getFactoriaGUI().getGUI(TC.GUI_WorkSpace, null, false).setInactiva();
         ctrl.setCambios(false);
         
-        //this.tiempoGuardado = System.currentTimeMillis()/1000;
+        ctrl.setTiempoGuardado(System.currentTimeMillis() / 1000);
         if (ctrl.getFileguardar().getPath() != datos) {
             File directory = new File(System.getProperty("user.dir") + DIRECTORY + INCIDENCES);
             if (directory.exists()) {
@@ -36,10 +37,10 @@ public class ComandoClickGuardarBackup extends Comando {
                 }
             }
             File temp = new File(guardarPath);
-            //this.setFileguardar(temp);
-            //this.contFicherosDeshacer = 0;
-            //this.limiteFicherosDeshacer = 0;
-            //this.guardarDeshacer();
+            ctrl.setFileguardar(temp);
+            ctrl.setContFicherosDeshacer(0);
+            ctrl.setLimiteFicherosDeshacer(0);
+            ctrl.guardarDeshacer();
         }
 	}
 
