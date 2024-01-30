@@ -8,10 +8,13 @@ import javax.swing.JOptionPane;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickDebilitarRelacion extends Comando{
 
@@ -33,25 +36,28 @@ public class ComandoClickDebilitarRelacion extends Comando{
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
             } 
             else {
-	            int respuesta1 = -1;//-1 no hay conflicto, 0 el usuario dice SI, 1 el usuario dice NO
-	            int respuesta2 = -1;
+	            Boolean respuesta1 = null;//-1 no hay conflicto, 0 el usuario dice SI, 1 el usuario dice NO
+	            Boolean respuesta2 = null;
+	            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
 	            // ...y tiene atributos y se quiere debilitar hay que eliminar sus atributos
-	            if (!tr.getListaAtributos().isEmpty()) {
-	                respuesta1 = ctrl.getPanelOpciones().setActiva(
-	                        Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
+	            if (!tr.getListaAtributos().isEmpty()) {	
+	                gui.setDatos(
+	                        UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING2) + "\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE));
+	                        Lenguaje.text(Lenguaje.DBCASE), null));
+	                respuesta1 = gui.setActiva(0);
 	            }
 	            // ...y tiene una entidad débil hay que cambiar la cardinalidad
-	            if (numDebiles == 1 && respuesta1 != 1) {
-	                respuesta2 = ctrl.getPanelOpciones().setActiva(
-	                        Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
+	            if (numDebiles == 1 && respuesta1 != true) {
+	                gui.setDatos(
+	                		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.MODIFYING_CARDINALITY) + ".\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE));
+	                        Lenguaje.text(Lenguaje.DBCASE), null));
+	                respuesta2 = gui.setActiva(0);
 	            }
-	            if (respuesta2 == 0 && respuesta1 != 1) {
+	            if (!respuesta2 && respuesta1) {
 	                //Aqui se fija la cardinalidad de la entidad débil como de 1 a 1.
 	                Vector<Object> v = new Vector<Object>();
 	                EntidadYAridad informacion;
@@ -91,7 +97,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                    i++;
 	                }
 	            }
-	            if (respuesta1 == 0 && respuesta2 != 1) {
+	            if (!respuesta1 && respuesta2) {
 	                // Eliminamos sus atributos
 	                Vector lista_atributos = tr.getListaAtributos();
 	                int cont = 0;
@@ -105,7 +111,7 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                    cont++;
 	                }
 	            }
-	            if (respuesta1 != 1 && respuesta2 != 1) {
+	            if (respuesta1 && respuesta2) {
 	                // Modificamos la relacion
 	                tr.getListaAtributos().clear();
 	                getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);

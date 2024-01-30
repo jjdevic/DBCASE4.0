@@ -1,7 +1,5 @@
 package controlador;
 
-
-import modelo.Modelo;
 import modelo.servicios.*;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
@@ -9,12 +7,7 @@ import org.w3c.dom.Document;
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
-import controlador.comandos.Vistas.ComandoWorkspaceNuevo;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
-import persistencia.EntidadYAridad;
 import utils.UtilsFunc;
-import vista.GUIPrincipal;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
 import vista.frames.*;
@@ -33,33 +26,28 @@ import static vista.utils.Otros.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {
-    //Recientes
+ 
     private ArchivosRecientes archivosRecent;
     private int valorZoom;
     private static Stack<Document> pilaDeshacer;
     
-    //Otros
-    private String path;
-    private Vector<TransferAtributo> listaAtributos;
+    //TODO Mirar este atributo
+    /** Indica si ha habido cambios */
     private boolean cambios;
+    /** Indica si se permite atributo nullable */
     private boolean nullAttrs;
     private boolean confirmarEliminaciones;
     private boolean cuadricula;
-    private boolean ocultarConceptual;
-    private boolean ocultarLogico;
-    private boolean ocultarFisico;
-    private boolean ocultarDominios;
     private File filetemp;
     private File fileguardar;
-    private GUI_Pregunta panelOpciones;
     private final Theme theme;
     private int modoVista;
     private Contexto ctxt;
     private boolean modoSoporte;
 
     //Para boton Deshacer solo afecta a acciones con elementos
-    private TC ultimoMensaje;
-    private Object ultimosDatos;
+    //private TC ultimoMensaje;
+    //private Object ultimosDatos;
     //private TransferEntidad auxTransferEntidad;
     /*
     private Vector auxTransferAtributos;
@@ -82,7 +70,8 @@ public class Controlador {
 
     private Transfer copiado;
 
-    private long tiempoGuardado = System.currentTimeMillis() / 1000;//ultima vez que se guardo el documento en milisegudos
+    /** ultima vez que se guardo el documento en milisegudos */
+    private long tiempoGuardado = System.currentTimeMillis() / 1000;
 
     private int contFicherosDeshacer = 0;
     private int limiteFicherosDeshacer = 0;
@@ -294,15 +283,17 @@ public class Controlador {
                 Vector<Object> v = (Vector<Object>) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
                 boolean preguntar = (Boolean) v.get(1);
-                int respuesta = 0;
+                boolean respuesta = false;
                 if (!confirmarEliminaciones) preguntar = false;
                 if (preguntar) {
-                    respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.ISA_RELATION_DELETE) + "\n" +
-                                    Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                            Lenguaje.text(Lenguaje.DELETE_ISA_RELATION));
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.ISA_RELATION_DELETE) + "\n" +
+                            Lenguaje.text(Lenguaje.WISH_CONTINUE),
+                    Lenguaje.text(Lenguaje.DELETE_ISA_RELATION), null));
+                    respuesta = gui.setActiva(0);
                 }
-                if (respuesta == 0) {
+                //TODO Mirar como funciona esto
+                if (respuesta) {
                 	factoriaServicios.getServicioRelaciones().eliminarRelacionIsA(tr);
                     factoriaServicios.getServicioEntidades().eliminarRelacionDeEntidad(tr);
                 }
@@ -405,6 +396,8 @@ public class Controlador {
                 break;
         }
     }
+    
+    
 
     // Mensajes que manda la GUIPrincipal al Controlador
     @SuppressWarnings("static-access")
@@ -431,14 +424,14 @@ public class Controlador {
             }
             case GUI_Principal_RESET: {
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) {
                         filetemp.delete();
                         ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
                         setCambios(false);
-                    } else if (respuesta == 0) {
+                    } else if (respuesta) {
                         if (factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setActiva(2)) {
                             filetemp.delete();
                             ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
@@ -511,14 +504,13 @@ public class Controlador {
              */
             case GUI_Principal_Click_Submenu_Salir: {
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) guardarYSalir();
-                    else if (respuesta == 0) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                	
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) guardarYSalir();
+                    else if (!respuesta) {
                         if (factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setActiva(2)) salir();
-                    } else if (respuesta == 2) {
-
                     }
                 } else guardarYSalir();
                 break;
@@ -569,27 +561,27 @@ public class Controlador {
             }
             case GUI_Principal_Click_Salir: {
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) guardarYSalir();
-                    else if (respuesta == 0) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                	
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) guardarYSalir();
+                    else if (!respuesta) {
                         if (factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setActiva(2)) salir();
-                    } else if (respuesta == 2) {
-
-                    }
+                    } 
                 } else guardarYSalir();
                 break;
             }
             case GUI_Principal_Click_Submenu_Abrir: {
             	factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setDatos(this.getModoSoporte());
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                	
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) {
                     	factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(1);
-                    } else if (respuesta == 0) {
+                    } else if (!respuesta) {
                         boolean guardado = factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(2);
                         if (guardado) {
                         	factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(1);
@@ -604,12 +596,13 @@ public class Controlador {
             case GUI_Principal_Click_Submenu_Abrir_Casos: {
                 factoriaGUI.getGUI(TC.GUI_WorkSpace, false, true).setDatos(this.getModoSoporte());
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                	
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) {
                     	factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(4);
-                    } else if (respuesta == 0) {
+                    } else if (!respuesta) {
                         boolean guardado = factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(2);
                         if (guardado) {
                         	factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(4);
@@ -641,14 +634,15 @@ public class Controlador {
             }
             case GUI_Principal_Click_Submenu_Nuevo: {
                 if (cambios) {
-                    int respuesta = panelOpciones.setActiva(
-                            Lenguaje.text(Lenguaje.WISH_SAVE),
-                            Lenguaje.text(Lenguaje.DBCASE), true);
-                    if (respuesta == 1) {
+                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
+                	gui.setDatos(UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
+                	
+                    boolean respuesta = gui.setActiva(0);
+                    if (respuesta) {
                         filetemp.delete();
                         ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
                         setCambios(false);
-                    } else if (respuesta == 0) {
+                    } else if (!respuesta) {
                         if (factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setActiva(2)) {
                             filetemp.delete();
                             ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
@@ -1072,7 +1066,7 @@ public class Controlador {
                 TransferDominio td = (TransferDominio) v.get(0);
                 String nuevoNombre = (String) v.get(1);
                 String dominioRenombrado = td.getNombre();
-                factoriaServicios.getServicioAtributos().getListaDeAtributos();
+                Vector<TransferAtributo> listaAtributos = factoriaServicios.getServicioAtributos().getListaDeAtributos();
                 int cont = 0;
                 TransferAtributo ta = new TransferAtributo();
                 while (cont < listaAtributos.size()) {
@@ -1212,16 +1206,6 @@ public class Controlador {
 
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
                 factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setInactiva();
-                //meter un if para cuando ya este
-                TransferAtributo ta = (TransferAtributo) v.get(1);
-                boolean esta = false;
-                for (TransferAtributo listaAtributo : this.listaAtributos) {
-                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
-                        esta = true;
-                        break;
-                    }
-                }
-                if (!esta) this.listaAtributos.add(ta);
                 break;
             }
             case SE_EliminarEntidad_HECHO: {
@@ -1611,17 +1595,6 @@ public class Controlador {
 
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAAgregacion, v);
                 //this.getTheGUIAnadirAtributoEntidad().setInactiva();
-
-                //meter un if para cuando ya este
-                TransferAtributo ta = (TransferAtributo) v.get(1);
-                boolean esta = false;
-                for (TransferAtributo listaAtributo : this.listaAtributos) {
-                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
-                        esta = true;
-                        break;
-                    }
-                }
-                if (!esta) this.listaAtributos.add(ta);
                 break;
             }
 
@@ -1746,17 +1719,6 @@ public class Controlador {
 
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
                 factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setInactiva();
-                //meter un if para cuando ya este
-                TransferAtributo ta = (TransferAtributo) v.get(1);
-                boolean esta = false;
-                for (TransferAtributo listaAtributo : this.listaAtributos) {
-                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
-                        esta = true;
-                        break;
-                    }
-                }
-
-                if (!esta) this.listaAtributos.add(ta);
                 break;
             }
             case SR_EstablecerEntidadPadre_HECHO: {
@@ -2042,12 +2004,10 @@ public class Controlador {
 	}
 
     public String getPath() {
-        return path;
+        return Config.getPath();
     }
 
     public void setPath(String path) {
-        this.path = path;
-        //TODO Provisional
         Config.setPath(path);
     }
 
@@ -2066,18 +2026,6 @@ public class Controlador {
     public void setFileguardar(File guardar) {
         this.fileguardar = guardar;
     }
-
-    public GUI_Pregunta getPanelOpciones() {
-        return this.panelOpciones;
-    }
-
-    /* private GUI_TablaUniqueEntidad getTheGUITablaUniqueEntidad() {
-        return this.theGUITablaUniqueEntidad;
-    }
-
-    private GUI_TablaUniqueRelacion getTheGUITablaUniqueRelacion() {
-        return this.theGUITablaUniqueRelacion;
-    }*/
 
     protected int getModoVista() {
         return modoVista;
@@ -2134,38 +2082,6 @@ public class Controlador {
 
     public boolean getCaudricula() {
         return cuadricula;
-    }
-
-    public boolean getOcultarConceptual() {
-        return ocultarConceptual;
-    }
-
-    public void setOcultarConceptual(boolean c) {
-        this.ocultarConceptual = c;
-    }
-
-    public boolean getOcultarLogico() {
-        return ocultarLogico;
-    }
-
-    public void setOcultarLogico(boolean l) {
-        this.ocultarLogico = l;
-    }
-
-    public boolean getOcultarFisico() {
-        return ocultarFisico;
-    }
-
-    public void setOcultarFisico(boolean f) {
-        this.ocultarFisico = f;
-    }
-
-    public boolean getOcultarDominios() {
-        return ocultarDominios;
-    }
-
-    public void setOcultarDominios(boolean d) {
-        this.ocultarDominios = d;
     }
 
     public int getZoom() {

@@ -26,8 +26,16 @@ import controlador.comandos.Vistas.ComandoClickGuardarBackup;
 import controlador.comandos.Vistas.ComandoClickPegar;
 import controlador.comandos.Vistas.ComandoWorkspaceNuevo;
 
+/**
+ * Esta factoría devuelve el comando asociado a un mensaje TC.
+ */
 public class FactoriaComandos {
 
+	/**
+	 * @param mensaje Mensaje TC cuyo comando asociado se quiere obtener
+	 * @param ctrl Controlador
+	 * @return Comando asociado a mensaje si existe, null en caso contrario
+	 */
 	public static Comando getComando(TC mensaje, Controlador ctrl) {
 		Comando res = null;
 		switch(mensaje) {

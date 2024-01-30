@@ -5,11 +5,14 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickEliminarEntidad extends Comando {
 
@@ -24,7 +27,7 @@ public class ComandoClickEliminarEntidad extends Comando {
             TransferEntidad te = (TransferEntidad) v.get(0);
             boolean preguntar = (Boolean) v.get(1);
             int intAux = (int) v.get(2);
-            int respuesta = 0;
+            boolean respuesta = false;
             
             if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
             if (preguntar) {
@@ -33,15 +36,18 @@ public class ComandoClickEliminarEntidad extends Comando {
                     tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
                 String tieneRelacion = "";
                 if (te.isDebil()) tieneRelacion = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_RELATION) + "\n";
-                respuesta = ctrl.getPanelOpciones().setActiva(
-                        Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+                Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+                
+                gui.setDatos(
+                		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                                 tieneAtributos + tieneRelacion + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                        Lenguaje.text(Lenguaje.DELETE_ENTITY));
+                        Lenguaje.text(Lenguaje.DELETE_ENTITY), null));
+                respuesta = gui.setActiva(0);
             }
             //Si quiere borrar la entidad
             /*Se entrará con preguntar a false si se viene de eliminar una relación débil
              * (para borrar también la entidad y sus atributos)*/
-            if ((respuesta == 0) || (!preguntar)) {
+            if (!respuesta || !preguntar) {
                 // Eliminamos sus atributos
 	            Vector lista_atributos = te.getListaAtributos();
 	            int conta = 0;

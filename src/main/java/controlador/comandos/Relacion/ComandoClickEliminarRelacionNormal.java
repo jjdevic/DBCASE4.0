@@ -10,7 +10,9 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickEliminarRelacionNormal extends Comando{
 
@@ -43,7 +45,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
         }
 
         boolean preguntar = (Boolean) v.get(1);
-        int respuesta = 0;
+        boolean respuesta = false;
         if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
         if (preguntar) {
             String tieneAtributos = "";
@@ -53,15 +55,17 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             //Informar de que también se va a eliminar la entidad débil asociada
             if (tr.getTipo().equals("Debil"))
                 tieneEntidad = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_ENTITY) + "\n";
-            respuesta = ctrl.getPanelOpciones().setActiva(
-                    Lenguaje.text(Lenguaje.THE_RELATION) + " \"" + tr.getNombre() + "\" " +
+            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+            gui.setDatos(
+            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.THE_RELATION) + " \"" + tr.getNombre() + "\" " +
                             Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             tieneAtributos + tieneEntidad +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DELETE_RELATION));
+                    Lenguaje.text(Lenguaje.DELETE_RELATION), null));
+            respuesta = gui.setActiva(0);
         }
         //Si se desea eliminar la relación
-        if (respuesta == 0) {
+        if (!respuesta) {
             // Eliminamos sus atributos
             Vector lista_atributos = tr.getListaAtributos();
             int conta = 0;

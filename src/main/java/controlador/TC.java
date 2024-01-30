@@ -588,5 +588,5 @@ public enum TC {
     GUI_Principal_EditarEntidad,
     GUI_Principal_EditarRelacion,
     GUI_Principal_EditarAtributo, GUISeleccionarConexion_ClickNueva, Controlador_ConfigurarConexionDBMS, GUISeleccionarConexion_ClickEditar, GUIConexion_ClickConectar,
-    GUI_WorkSpace, GUI_Recientes, GetNombreAtributo,
+    GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta,
 }

@@ -1,8 +1,20 @@
 package controlador;
 
+
 public class Contexto {
+	/**
+	 * Mensaje asociado al contexto de ejecución.
+	 */
 	private TC mensaje;
+	
+	/**
+	 * Indica si el contexto corresponde a una operación exitosa o no
+	 */
 	private boolean exito;
+	
+	/**
+	 * Datos asociados al contexto.
+	 */
 	private Object datos;
 	
 	public Contexto(boolean exito, TC mensaje) {

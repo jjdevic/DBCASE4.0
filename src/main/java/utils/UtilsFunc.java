@@ -89,4 +89,12 @@ public class UtilsFunc {
             //TODO mirar esto
         }
     }
+	
+	public static Vector<Object> crearVectorSinNulls(Object o1, Object o2, Object o3) {
+    	Vector<Object> v = new Vector<Object>();
+    	if(o1 != null) v.add(o1);
+    	if(o2 != null) v.add(o2);
+    	if(o3 != null) v.add(o3);
+    	return v;
+    }
 }

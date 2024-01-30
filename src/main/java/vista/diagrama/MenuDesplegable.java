@@ -9,7 +9,9 @@ import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 import vista.tema.Theme;
 
 import javax.swing.*;
@@ -799,15 +801,17 @@ public class MenuDesplegable extends JPopupMenu {
         PickedState<Transfer> p = vv.getPickedVertexState();
         int seleccionados = 0;
         for (@SuppressWarnings("unused") Transfer t : p.getPicked()) seleccionados++;
-        int respuesta = 1;
+        boolean respuesta = true;
         Vector<TransferAtributo> vta = new Vector<TransferAtributo>();
         if (seleccionados > 1) {
 
-            respuesta = this.controlador.getPanelOpciones().setActiva(
-                    Lenguaje.text(Lenguaje.DELETE_ALL_NODES) + "\n" + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DBCASE_DELETE));
+        	Parent_GUI gui = controlador.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+            gui.setDatos(
+            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.DELETE_ALL_NODES) + "\n" + Lenguaje.text(Lenguaje.WISH_CONTINUE),
+                    Lenguaje.text(Lenguaje.DBCASE_DELETE), null));
+            respuesta = gui.setActiva(0);
         }
-        if (respuesta == 0 || seleccionados == 1) {
+        if (!respuesta || seleccionados == 1) {
             PickedState<Transfer> ps = vv.getPickedVertexState();
             int cont = 0; //contador para identificar eliminaciones de entidades/relaciones debiles
             //si se elimina una entidad debil se elimina automaticamente la relacion debil y viceversa
@@ -816,7 +820,7 @@ public class MenuDesplegable extends JPopupMenu {
             for (Transfer t : ps.getPicked()) {
                 Vector<Object> v = new Vector<Object>();
                 v.add(t);
-                v.add(respuesta == 1);
+                v.add(respuesta == true);
                 if (cont2 == 0) v.add(0);
                 else v.add(1);
                 if (t instanceof TransferEntidad) {

@@ -5,8 +5,11 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickEditarCompuestoAtrib extends Comando{
 
@@ -31,12 +34,14 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
 				null,
 				options,
 				options[1]);*/
-            int respuesta = ctrl.getPanelOpciones().setActiva(
-                    Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
+        	Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+            gui.setDatos(
+            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
                             Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING3) + "\n" +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DBCASE));
-            if (respuesta == 0) {
+                    Lenguaje.text(Lenguaje.DBCASE), null));
+            Boolean respuesta = gui.setActiva(0);
+            if (!respuesta) {
                 // Eliminamos sus subatributos
                 Vector lista_atributos = ta.getListaComponentes();
                 int cont = 0;

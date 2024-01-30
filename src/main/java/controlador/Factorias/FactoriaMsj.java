@@ -3,8 +3,16 @@ package controlador.Factorias;
 import controlador.TC;
 import vista.Lenguaje;
 
+/**
+ * Esta factoría se encarga de devolver la cadena de texto de error asociada a un mensaje TC de error
+ */
+
 public class FactoriaMsj {
 
+	/**
+	 * @param tc Mensaje TC de error
+	 * @return Cadena de texto de error asociada a tc si existe, null en caso contrario
+	 */
 	public static String getMsj(TC tc) {
 		Integer msj;
 		switch(tc) {

@@ -56,7 +56,7 @@ public class Main {
         Controlador controlador = new Controlador();
 
         if (conf.existeFichero()) {
-            controlador.getArchivosRecientes().recibeRecientes(conf.darRecientes());
+            controlador.getArchivosRecientes().setRecientes(conf.darRecientes());
             Vector<String> lengs = Lenguaje.obtenLenguajesDisponibles();
             boolean encontrado = false;
             int k = 0;

@@ -76,6 +76,7 @@ public class FactoriaGUI {
             case GUI_Recientes: gui = new GUI_Recientes(ctrl, (ArrayList<File>) datos); break;
             case GUI_Principal_REPORT: gui = new GUI_Report(ctrl); break;
             case GUI_Principal_Zoom: gui = new GUI_Zoom(ctrl); break;
+            case GUI_Pregunta: gui = new GUI_Pregunta(ctrl); break;
 			default: gui = null;
 			}
 			

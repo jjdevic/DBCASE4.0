@@ -7,7 +7,9 @@ import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.TransferAtributo;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickEliminarAtributo extends Comando{
 
@@ -21,18 +23,21 @@ public class ComandoClickEliminarAtributo extends Comando{
         TransferAtributo ta = (TransferAtributo) v.get(0);
         int intAux = (int) v.get(2);
         boolean preguntar = (Boolean) v.get(1);
-        int respuesta = 0;
+        Boolean respuesta = false;
         if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
         if (preguntar) {
             String eliminarSubatributos = "";
             if (!ta.getListaComponentes().isEmpty())
                 eliminarSubatributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
-            respuesta = ctrl.getPanelOpciones().setActiva(
-                    Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+            
+            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+            gui.setDatos(
+            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DELETE_ATTRIB));
+                    Lenguaje.text(Lenguaje.DELETE_ATTRIB), null));
+            respuesta = gui.setActiva(0);
         }
-        if (respuesta == 0) {
+        if (!respuesta) {
             if (ta.getUnique()) {
                 Vector<Object> ve = new Vector<Object>();
                 TransferAtributo clon_atributo = ta.clonar();

@@ -2,12 +2,16 @@ package controlador.Factorias;
 
 import controlador.TC;
 
-/* Esta factoría se encarga de devolver el TC "Controlador_" que corresponde a un mensaje que proviene de los servicios o de las vistas. 
+/** Esta factoría se encarga de devolver el TC "Controlador_" que corresponde a un mensaje que proviene de los servicios o de las vistas. 
  * No están los mensajes de error que provienen de servicios, porque la FactoriaMsj se encarga directamente de 
- * traducirlos a cadenas de texto que se muestran después en un JOptionPane. */
+ * traducirlos a cadenas de texto que se muestran después. */
 
 public class FactoriaTCCtrl {
 
+	/** 
+	 * @param mensaje Mensaje que se desea traducir
+	 * @return Mensaje traducido si existe, null en caso contrario
+	 */
 	public static TC getTCCtrl(TC mensaje) {
 		TC resultado = null; 
 		switch(mensaje) {

@@ -5,9 +5,12 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferDominio;
+import utils.UtilsFunc;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 
 public class ComandoClickEliminarDominio extends Comando{
 
@@ -18,12 +21,16 @@ public class ComandoClickEliminarDominio extends Comando{
 	@Override
 	public void ejecutar(Object datos) {
 		TransferDominio td = (TransferDominio) datos;
-        int respuesta = ctrl.getPanelOpciones().setActiva(
-                Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+		
+        gui.setDatos(
+        		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                         Lenguaje.text(Lenguaje.MODIFYING_ATTRIBUTES_WARNING4) + "\n" +
                         Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                Lenguaje.text(Lenguaje.DELETE_DOMAIN));
-        if (respuesta == 0) {
+                Lenguaje.text(Lenguaje.DELETE_DOMAIN), null));
+        
+        Boolean respuesta = gui.setActiva(0);
+        if (!respuesta) {
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
             //TODO Tomarlas de modelos

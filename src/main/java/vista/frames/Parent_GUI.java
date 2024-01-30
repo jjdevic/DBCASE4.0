@@ -58,49 +58,48 @@ public abstract class Parent_GUI extends javax.swing.JDialog implements KeyListe
         return boton;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        this.requestFocus();
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
     protected abstract void initComponents();
     
     public abstract void setDatos(Object datos);
     
     public abstract void setActiva();
     
-    /*
-     * @param op Opciones de activacion de la gui 
-     * */
+    /**
+     * @param op Opciones de activacion
+     */
     public abstract boolean setActiva(int op);
     
     public abstract void setInactiva();
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
 }
