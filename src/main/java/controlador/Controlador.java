@@ -373,7 +373,7 @@ public class Controlador {
             case PanelDiseno_Click_EditarAgregacion:
             case PanelDiseno_Click_InsertarEntidad: 
             case PanelDiseno_Click_RenombrarEntidad:{
-            	factoriaGUI.getGUI(mensaje, datos, false).setActiva();
+            	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setActiva();
                 break;
             }
             
@@ -1815,63 +1815,7 @@ public class Controlador {
                 tratarContexto(ctxt);
                 cont++;
             }
-    	} case ModificarCardinalidadRelacion_1a1: {
-    		TransferRelacion tr = (TransferRelacion) datos;
-    		Vector<Object> v = new Vector<Object>();
-            EntidadYAridad informacion;
-            int i = 0;
-            boolean actualizado = false;
-            while ((!actualizado) && (i < tr.getListaEntidadesYAridades().size())) {
-                informacion = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(i));
-                int idEntidad = informacion.getEntidad();
-                if (getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
-                    actualizado = true;
-                    int idRelacion = tr.getIdRelacion();
-                    int finRango = 1;
-                    int iniRango = 1;
-                    String nombre = tr.getNombre();
-                    Point2D posicion = tr.getPosicion();
-                    Vector<Object> listaEnti = tr.getListaEntidadesYAridades();
-                    EntidadYAridad aux = (EntidadYAridad) listaEnti.get(i);
-                    aux.setFinalRango(1);
-                    aux.setPrincipioRango(1);
-                    listaEnti.remove(i);
-                    listaEnti.add(aux);
-                    Vector<Object> listaAtri = tr.getListaAtributos();
-                    String tipo = tr.getTipo();
-                    String rol = tr.getRol();
-                    v.add(idRelacion);
-                    v.add(idEntidad);
-                    v.add(iniRango);
-                    v.add(finRango);
-                    v.add(nombre);
-                    v.add(listaEnti);
-                    v.add(listaAtri);
-                    v.add(tipo);
-                    v.add(rol);
-                    v.add(posicion);
-                    //TODO Creo que esto no estaba implementado (el método al que se llama está vacío)
-                    getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
-                }
-                i++;
-            }
-    	} case EliminarSubatributosAtributo: {
-    		TransferAtributo ta = (TransferAtributo) datos;
-    		Vector lista_atributos = ta.getListaComponentes();
-            int cont = 0;
-            TransferAtributo tah = new TransferAtributo();
-            while (cont < lista_atributos.size()) {
-                String idAtributo = (String) lista_atributos.get(cont);
-                tah.setIdAtributo(Integer.parseInt(idAtributo));
-                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(tah, 1);
-                tratarContexto(ctxt);
-                cont++;
-            }
-            // Modificamos el atributo
-            ta.getListaComponentes().clear();
-            Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
-            tratarContexto(ctxt);
-    	}
+    	} 
     	case ObtenerListaEntidades: {
     		resultado = factoriaServicios.getServicioEntidades().ListaDeEntidadesNOVoid();
     		break;
@@ -1887,6 +1831,10 @@ public class Controlador {
     	case ObtenerListaDominios: {
     		resultado = factoriaServicios.getServicioDominios().getListaDeDominios();
     		break;
+    	}
+    	case ModificarCardinalidadRelacion_1a1:
+    	case EliminarSubatributosAtributo: {
+    		ejecutarComandoDelMensaje(msj, datos);
     	}
     	default: break;
     	

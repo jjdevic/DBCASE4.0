@@ -10,6 +10,7 @@ import controlador.comandos.Atributo.ComandoClickEliminarAtributo;
 import controlador.comandos.Atributo.ComandoClickEliminarRefUniqueAtr;
 import controlador.comandos.Atributo.ComandoClickModificarAtributo;
 import controlador.comandos.Atributo.ComandoClickModificarUniqueAtrib;
+import controlador.comandos.Atributo.ComandoEliminarSubatributos;
 import controlador.comandos.Dominio.ComandoClickEliminarDominio;
 import controlador.comandos.Entidad.ComandoAnadirUniquesEntidad;
 import controlador.comandos.Entidad.ComandoClickEliminarEntidad;
@@ -19,6 +20,7 @@ import controlador.comandos.Relacion.ComandoAnadirEntidadARelacion;
 import controlador.comandos.Relacion.ComandoAnadirUniquesRelacion;
 import controlador.comandos.Relacion.ComandoClickDebilitarRelacion;
 import controlador.comandos.Relacion.ComandoClickEliminarRelacionNormal;
+import controlador.comandos.Relacion.ComandoModificarCardinalidadRelacion1a1;
 import controlador.comandos.Relacion.ComandoQuitarEntidadPadre;
 import controlador.comandos.Vistas.ComandoClickAbrir;
 import controlador.comandos.Vistas.ComandoClickGuardar;
@@ -64,6 +66,8 @@ public class FactoriaComandos {
         case GUIQuitarEntidadPadre_ClickBotonSi: res = new ComandoQuitarEntidadPadre(ctrl); break;
         case GUIPonerUniquesARelacion_Click_BotonAceptar: res = new ComandoAnadirUniquesRelacion(ctrl); break;
         case GUI_Principal_EditarElemento: res = new ComandoEditarElemento(ctrl); break;
+        case ModificarCardinalidadRelacion_1a1:	res = new ComandoModificarCardinalidadRelacion1a1(ctrl); break;
+    	case EliminarSubatributosAtributo: res = new ComandoEliminarSubatributos(ctrl); break;
 		default: break;
 		}
 		return res;
