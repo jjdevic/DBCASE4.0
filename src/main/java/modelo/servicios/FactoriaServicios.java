@@ -57,5 +57,4 @@ public class FactoriaServicios {
 	public ServiciosAgregaciones getServicioAgregaciones() {
 		return servicioAgregaciones;
 	}
-
 }

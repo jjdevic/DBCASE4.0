@@ -48,7 +48,7 @@ public class GUI_EditarDominioAtributo extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva() {
-        controlador.mensajeDesde_GUI(TC.GUIEditarDominioAtributo_ActualizameLaListaDeDominios, null);
+    	listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         Object[] nuevos = new Object[this.listaDominios.size()];
         this.generaItems(nuevos);
         String[] s = atributo.getDominio().split("\\(");

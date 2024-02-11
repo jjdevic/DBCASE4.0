@@ -32,7 +32,6 @@ public class GUI_AnadirAtributo extends Parent_GUI {
     private JLabel jTextPane2;
     private JLabel explicacion;
     private JLabel eligeTransfer;
-    private Vector<TransferDominio> listaDominios;
     private Vector<Transfer> listaTransfers;
 
     public GUI_AnadirAtributo(Controlador controlador) {
@@ -251,7 +250,8 @@ public class GUI_AnadirAtributo extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva() {
-        Object[] nuevos = new Object[this.listaDominios.size()];
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
+        Object[] nuevos = new Object[listaDominios.size()];
         this.centraEnPantalla();
         this.opcionClavePrimaria.setSelected(false);
         this.opcionCompuesto.setSelected(false);
@@ -262,10 +262,9 @@ public class GUI_AnadirAtributo extends Parent_GUI {
         this.comboTransfers.setEnabled(true);
         this.cajaTamano.setText("");
         this.cajaNombre.setText("");
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
-
+        
         //Genera Transfers
-        this.comboTransfers.setModel(new javax.swing.DefaultComboBoxModel(listaTransfers));
+        this.comboTransfers.setModel(new javax.swing.DefaultComboBoxModel(this.listaTransfers));
 
         //Genera Dominios
         this.generaItems(nuevos);
@@ -541,9 +540,10 @@ public class GUI_AnadirAtributo extends Parent_GUI {
     }
 
     private Object[] generaItems(Object[] items) {
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         int cont = 0;
-        while (cont < this.listaDominios.size()) {
-            TransferDominio td = this.listaDominios.get(cont);
+        while (cont < listaDominios.size()) {
+            TransferDominio td = listaDominios.get(cont);
             items[cont] = td.getNombre();
             cont++;
         }
@@ -570,22 +570,6 @@ public class GUI_AnadirAtributo extends Parent_GUI {
             return false;
 
         }
-    }
-
-    public Vector<TransferDominio> getListaDominios() {
-        return listaDominios;
-    }
-
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
-
-    public Vector<Transfer> getListaTransfers() {
-        return listaTransfers;
-    }
-
-    public void setListaTransfers(Vector<Transfer> lista) {
-        this.listaTransfers = lista;
     }
 
     public void keyPressed(KeyEvent e) {

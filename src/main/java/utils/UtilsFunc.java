@@ -90,11 +90,18 @@ public class UtilsFunc {
         }
     }
 	
-	public static Vector<Object> crearVectorSinNulls(Object o1, Object o2, Object o3) {
+	/**
+	 * Crea un vector con los objetos pasados como parametros.
+	 * @return Vector resultante.
+	 */
+	public static Vector<Object> crearVector(Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
     	Vector<Object> v = new Vector<Object>();
-    	if(o1 != null) v.add(o1);
-    	if(o2 != null) v.add(o2);
-    	if(o3 != null) v.add(o3);
+    	v.add(o1);
+    	v.add(o2);
+    	v.add(o3);
+    	v.add(o4);
+    	v.add(o5);
+    	v.add(o6);
     	return v;
     }
 }

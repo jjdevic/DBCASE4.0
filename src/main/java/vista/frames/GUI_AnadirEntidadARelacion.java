@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -84,8 +85,8 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
      */
 
     public void setActiva() {
-        // Le pedimos al controlador que nos actualice la lista de entidades
-        this.controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ActualizameListaEntidades, null);
+        // Actualizar la lista de entidades
+    	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
         // Generamos los items del comboEntidades
         items = this.generaItems();
         //Los ordenamos alfabéticamente

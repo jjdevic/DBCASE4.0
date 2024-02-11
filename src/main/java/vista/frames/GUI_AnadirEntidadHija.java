@@ -3,6 +3,7 @@ package vista.frames;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -116,7 +117,7 @@ public class GUI_AnadirEntidadHija extends Parent_GUI {
                     Lenguaje.text(Lenguaje.INSERT_NEW_DAUGTHER),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items (ya filtrados)
             String[] items = this.generaItems();
             if (items.length == 0)

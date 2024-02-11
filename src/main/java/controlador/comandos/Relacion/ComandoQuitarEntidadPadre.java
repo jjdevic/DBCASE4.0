@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -22,7 +23,7 @@ public class ComandoQuitarEntidadPadre extends Comando {
         EntidadYAridad eya = eyaV.get(0);
         int idPadre = eya.getEntidad();
         TransferEntidad te = new TransferEntidad();
-        Vector<TransferEntidad> listaEntidades = ctrl.getListaEntidades();
+        Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
         for (TransferEntidad listaEntidade : listaEntidades) {
             if (idPadre == listaEntidade.getIdEntidad());
                 //this.padreAntiguo = listaEntidade;

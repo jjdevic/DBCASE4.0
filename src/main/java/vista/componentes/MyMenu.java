@@ -32,6 +32,9 @@ import static vista.utils.ImagesPath.*;
 
 // ICONOS: https://icon-icons.com/es/
 
+/**
+ * Clase dedicada al menú principal de la aplicación.
+ */
 @SuppressWarnings("serial")
 public class MyMenu extends JMenuBar {
 
@@ -226,7 +229,6 @@ public class MyMenu extends JMenuBar {
         try {
             saveAs.setImage(ImageIO.read(classLoader.getResourceAsStream(SAVE_AS)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuGuardarComo.setIcon(saveAs);
@@ -272,7 +274,6 @@ public class MyMenu extends JMenuBar {
         try {
             exportar.setImage(ImageIO.read(classLoader.getResourceAsStream(EXPORT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuExportarJPEG.setIcon(exportar);
@@ -451,7 +452,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista2.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA2)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista2.setIcon(vista2);
@@ -471,7 +471,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista3.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA3)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista3.setIcon(vista3);
@@ -491,7 +490,6 @@ public class MyMenu extends JMenuBar {
         try {
             cuadricula.setImage(ImageIO.read(classLoader.getResourceAsStream(CUADRICULA)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuCuadricula.setIcon(cuadricula);
@@ -513,7 +511,6 @@ public class MyMenu extends JMenuBar {
         try {
             zoom.setImage(ImageIO.read(classLoader.getResourceAsStream(ZOOM)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuZoom.setIcon(zoom);

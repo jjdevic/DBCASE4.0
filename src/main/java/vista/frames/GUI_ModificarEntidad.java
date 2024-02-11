@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -123,7 +124,7 @@ public class GUI_ModificarEntidad extends Parent_GUI {
             CasillaEsDebil.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
                     if (CasillaEsDebil.isSelected()) {
-                        controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ActualizameListaEntidades, null);
+                    	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
 
                         //Generamos los items del comboEntidades
                         items = generaItems();

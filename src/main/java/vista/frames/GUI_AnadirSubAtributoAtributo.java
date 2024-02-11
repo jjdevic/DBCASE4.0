@@ -233,7 +233,7 @@ public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
         this.cajaNombre.setText("");
         this.cajaTamano.setText("");
 
-        controlador.mensajeDesde_GUI(TC.GUIAnadirSubAtributoAtributo_ActualizameLaListaDeDominios, null);
+        listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         Object[] nuevos = new Object[this.listaDominios.size()];
         this.generaItems(nuevos);
 

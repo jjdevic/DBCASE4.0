@@ -178,7 +178,7 @@ public class GUI_ModificarAtributo extends Parent_GUI {
         this.cajaTamano.setText(cadenaTamano);
         this.cajaNombre.setText(ta.getNombre());
         this.elementoPadre.setText(this.nombrePadre);
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
+        listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
 
         //Genera Transfers
 

@@ -3,6 +3,7 @@ package vista.frames;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -58,7 +59,7 @@ public class GUI_EstablecerEntidadPadre extends Parent_GUI {
                     Lenguaje.text(Lenguaje.SET_PARENT_ENTITY),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items
             String[] items = this.generaItems();
             if (items.length == 0)

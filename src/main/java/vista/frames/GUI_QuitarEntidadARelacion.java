@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -63,7 +64,7 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
                     Lenguaje.text(Lenguaje.QUIT_ENTITY),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIQuitarEntidadARelacion_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items (ya filtrados)
             this.items = this.generaItems();
             comboEntidades.setModel(new javax.swing.DefaultComboBoxModel(this.items));

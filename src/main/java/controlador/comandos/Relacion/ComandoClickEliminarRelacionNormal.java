@@ -32,14 +32,16 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
 
         for (Object aux : vtaAux) {
             int id = Integer.parseInt((String) aux);
-            for (TransferAtributo listaAtributo : ctrl.getListaAtributos()) {
+            Vector<TransferAtributo> lista_atrib = (Vector<TransferAtributo>) ctrl.mensaje(TC.ObtenerListaAtributos, null);
+            for (TransferAtributo listaAtributo : lista_atrib) {
                 if (id == listaAtributo.getIdAtributo()) vta.add(listaAtributo);
             }
         }
 
         for (EntidadYAridad entidadYAridad : veya) {
             int id = entidadYAridad.getEntidad();
-            for (TransferEntidad listaEntidade : ctrl.getListaEntidades()) {
+            Vector<TransferEntidad> lista_entidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
+            for (TransferEntidad listaEntidade : lista_entidades) {
                 if (id == listaEntidade.getIdEntidad()) vte.add(listaEntidade);
             }
         }
@@ -88,7 +90,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                     te.setIdEntidad(idEntidad);
                     //Tengo que rellenar los atributos de te
                     Vector<TransferEntidad> auxiliar = null/* TODO ctrl.getTheGUIQuitarEntidadARelacion().getListaEntidades()*/; //falla aqui				if (auxiliar == null)
-                    auxiliar = ctrl.getListaEntidades();
+                    auxiliar = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
                     boolean encontrado = false;
                     int i = 0;
                     if (auxiliar != null) {

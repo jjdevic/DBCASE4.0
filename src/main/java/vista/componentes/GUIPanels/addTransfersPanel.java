@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
 import java.util.Random;
 import java.util.Vector;
 
+/** Panel desde el que se pueden añadir elementos al panel de diseño */
 @SuppressWarnings("serial")
 public class addTransfersPanel extends JPanel {
     private Controlador controlador;

@@ -33,12 +33,11 @@ public class ComandoClickEliminarDominio extends Comando{
         if (!respuesta) {
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
-            //TODO Tomarlas de modelos
-            getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
             int cont = 0;
             TransferAtributo ta = new TransferAtributo();
-            while (cont < ctrl.getListaAtributos().size()) {
-                ta = ctrl.getListaAtributos().get(cont);
+            Vector<TransferAtributo> lista_atrib = (Vector<TransferAtributo>) ctrl.mensaje(TC.ObtenerListaAtributos, null);
+            while (cont < lista_atrib.size()) {
+                ta = lista_atrib.get(cont);
                 if (ta.getDominio().equals(dominioEliminado)) {
                     Vector<Object> v = new Vector();
                     v.add(ta);

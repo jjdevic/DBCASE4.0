@@ -35,7 +35,6 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     private JTextField cajaTamano;
     private JLabel jTextPane2;
     private JLabel explicacion;
-    private Vector<TransferDominio> listaDominios;
 
     public GUI_AnadirAtributoEntidad(Controlador controlador) {
         super(controlador);
@@ -270,9 +269,9 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
         this.comboDominios.setEnabled(true);
         this.cajaTamano.setText("");
         this.cajaNombre.setText("");
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
+        Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
 
-        Object[] nuevos = new Object[this.listaDominios.size()];
+        Object[] nuevos = new Object[listaDominios.size()];
         this.generaItems(nuevos);
 
 
@@ -532,24 +531,17 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     }
 
     private Object[] generaItems(Object[] items) {
-        // Generamos los items
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
+    	// Generamos los items
         int cont = 0;
-        while (cont < this.listaDominios.size()) {
-            TransferDominio td = this.listaDominios.get(cont);
+        while (cont < listaDominios.size()) {
+            TransferDominio td = listaDominios.get(cont);
             items[cont] = td.getNombre();
             cont++;
         }
         return items;
     }
-
-    public Vector<TransferDominio> getListaDominios() {
-        return listaDominios;
-    }
-
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
-
+    
     /**
      * Metodos privados
      */

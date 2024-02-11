@@ -283,7 +283,7 @@ public class GUI_SaveAs extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		this.modoSoporte = (Boolean) datos;
+		if(datos != null) this.modoSoporte = (Boolean) datos;
 	}
 
 	@Override

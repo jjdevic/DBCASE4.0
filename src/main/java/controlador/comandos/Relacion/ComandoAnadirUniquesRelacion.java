@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
@@ -25,7 +26,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
         Vector<String> vUniques = relacion.getListaUniques();
         Vector<String> vAtributos = relacion.getListaAtributos();
         
-        Vector<TransferAtributo> listaAtributos = ctrl.getListaAtributos();
+        Vector<TransferAtributo> listaAtributos = (Vector<TransferAtributo>) ctrl.mensaje(TC.ObtenerListaAtributos, null);
         
         for (int i = 0; i < vUniques.size(); i++) {
             for (int j = 0; j < vAtributos.size(); j++)

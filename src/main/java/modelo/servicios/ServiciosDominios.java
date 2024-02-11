@@ -31,7 +31,6 @@ public class ServiciosDominios {
             td.setListaValores(null);
             lista_dominios.add(td);
         }
-        controlador.mensajeDesde_SD(TC.SD_ListarDominios_HECHO, lista_dominios);
     }
 
     public Vector<TransferDominio> getListaDeDominios() {

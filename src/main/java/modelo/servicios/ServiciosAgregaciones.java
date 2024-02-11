@@ -24,7 +24,6 @@ public class ServiciosAgregaciones {
         DAOAgregaciones dao = new DAOAgregaciones(this.controlador.getPath());
         // Utilizando el DAO obtenemos la lista de agregaciones
         Vector<TransferAgregacion> lista_agregaciones = dao.ListaDeAgregaciones();
-        controlador.mensajeDesde_AG(TC.SAG_ListarAgregacion_HECHO, lista_agregaciones);
         // Se lo devolvemos al controlador
         return lista_agregaciones;
     }

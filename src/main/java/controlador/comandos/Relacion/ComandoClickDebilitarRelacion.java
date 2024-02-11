@@ -36,86 +36,32 @@ public class ComandoClickDebilitarRelacion extends Comando{
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
             } 
             else {
-	            Boolean respuesta1 = null;//-1 no hay conflicto, 0 el usuario dice SI, 1 el usuario dice NO
+	            Boolean respuesta1 = null;
 	            Boolean respuesta2 = null;
 	            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
 	            // ...y tiene atributos y se quiere debilitar hay que eliminar sus atributos
 	            if (!tr.getListaAtributos().isEmpty()) {	
 	                gui.setDatos(
-	                        UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
+	                        UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING2) + "\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null));
-	                respuesta1 = gui.setActiva(0);
+	                        Lenguaje.text(Lenguaje.DBCASE), null, TC.EliminarAtributosRelacion, tr, null));
+	                gui.setActiva(0);
 	            }
 	            // ...y tiene una entidad débil hay que cambiar la cardinalidad
-	            if (numDebiles == 1 && respuesta1 != true) {
+	            else if (numDebiles == 1 && respuesta1 != true) {
 	                gui.setDatos(
-	                		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
+	                		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.MODIFYING_CARDINALITY) + ".\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null));
-	                respuesta2 = gui.setActiva(0);
-	            }
-	            if (!respuesta2 && respuesta1) {
-	                //Aqui se fija la cardinalidad de la entidad débil como de 1 a 1.
-	                Vector<Object> v = new Vector<Object>();
-	                EntidadYAridad informacion;
-	                int i = 0;
-	                boolean actualizado = false;
-	                while ((!actualizado) && (i < tr.getListaEntidadesYAridades().size())) {
-	                    informacion = (EntidadYAridad) (tr.getListaEntidadesYAridades().get(i));
-	                    int idEntidad = informacion.getEntidad();
-	                    if (getFactoriaServicios().getServicioEntidades().esDebil(idEntidad)) {
-	                        actualizado = true;
-	                        int idRelacion = tr.getIdRelacion();
-	                        int finRango = 1;
-	                        int iniRango = 1;
-	                        String nombre = tr.getNombre();
-	                        Point2D posicion = tr.getPosicion();
-	                        Vector<Object> listaEnti = tr.getListaEntidadesYAridades();
-	                        EntidadYAridad aux = (EntidadYAridad) listaEnti.get(i);
-	                        aux.setFinalRango(1);
-	                        aux.setPrincipioRango(1);
-	                        listaEnti.remove(i);
-	                        listaEnti.add(aux);
-	                        Vector<Object> listaAtri = tr.getListaAtributos();
-	                        String tipo = tr.getTipo();
-	                        String rol = tr.getRol();
-	                        v.add(idRelacion);
-	                        v.add(idEntidad);
-	                        v.add(iniRango);
-	                        v.add(finRango);
-	                        v.add(nombre);
-	                        v.add(listaEnti);
-	                        v.add(listaAtri);
-	                        v.add(tipo);
-	                        v.add(rol);
-	                        v.add(posicion);
-	                        getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
-	                    }
-	                    i++;
-	                }
-	            }
-	            if (!respuesta1 && respuesta2) {
-	                // Eliminamos sus atributos
-	                Vector lista_atributos = tr.getListaAtributos();
-	                int cont = 0;
-	                TransferAtributo ta = new TransferAtributo();
-	                while (cont < lista_atributos.size()) {
-	                    String idAtributo = (String) lista_atributos.get(cont);
-	                    ta.setIdAtributo(Integer.parseInt(idAtributo));
-	                    
-	                    Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-	                    tratarContexto(ctxt);
-	                    cont++;
-	                }
-	            }
-	            if (respuesta1 && respuesta2) {
-	                // Modificamos la relacion
-	                tr.getListaAtributos().clear();
+	                        Lenguaje.text(Lenguaje.DBCASE), null, TC.ModificarCardinalidadRelacion_1a1, tr, null));
+	                gui.setActiva(0);
+	            } else {
+	            	//Modificamos la relacion
+	            	tr.getListaAtributos().clear();
 	                getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
 	            }
+
             }
         } else {
             getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);

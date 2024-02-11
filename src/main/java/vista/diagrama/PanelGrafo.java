@@ -488,10 +488,10 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
         }
 
         // Inserta las agregaciones con su id como clave
-        for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
+        /*for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
             TransferAgregacion agregacion = it.next();
             this.agregaciones.put(agregacion.getIdAgregacion(), agregacion);
-        }
+        }*/
 
         creaArrayTablas();
     }

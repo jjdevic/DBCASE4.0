@@ -32,7 +32,7 @@ public class ComandoClickEliminarAtributo extends Comando{
             
             Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
             gui.setDatos(
-            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+            		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
                     Lenguaje.text(Lenguaje.DELETE_ATTRIB), null));
             respuesta = gui.setActiva(0);

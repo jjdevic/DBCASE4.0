@@ -20,7 +20,6 @@ public class ServiciosEntidades {
     public void ListaDeEntidades() {
         DAOEntidades dao = new DAOEntidades(this.controlador.getPath());
         Vector<TransferEntidad> lista_entidades = dao.ListaDeEntidades();
-        controlador.mensajeDesde_SE(TC.SE_ListarEntidades_HECHO, lista_entidades);
     }
 
     //Devuelve actualizada la lista de entidades

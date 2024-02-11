@@ -10,6 +10,7 @@ import modelo.transfers.Transfer;
 import javax.swing.*;
 import java.awt.*;
 
+/** Clase destinada al panel de diseño "en miniatura" que aparece en la pantalla. */
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class PanelThumbnail extends JPanel {
 

@@ -5,6 +5,7 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
@@ -24,13 +25,9 @@ public class ComandoClickModificarUniqueAtrib extends Comando{
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         tratarContexto(ctxt);
 
-        //TODO modelo
-        getFactoriaServicios().getServicioEntidades().ListaDeEntidades();
-        getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
-        getFactoriaServicios().getServicioRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
-        Vector<TransferRelacion> relaciones = ctrl.getFactoriaGUI().getGUIPrincipal().getListaRelaciones();
-        Vector<TransferEntidad> entidades = ctrl.getFactoriaGUI().getGUIPrincipal().getListaEntidades();
+        Vector<TransferRelacion> relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
+        Vector<TransferEntidad> entidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
         boolean encontrado = false;
         boolean esEntidad = false;
         TransferEntidad te = null;

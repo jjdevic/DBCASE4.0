@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -29,7 +30,7 @@ public class ComandoAnadirUniquesEntidad extends Comando {
         //Recorrer cada unique de la entidad seleccionada, buscando casos en los que estén marcados en la lista vUniques
         //mientras que según el controlador no figuren como uniques en la aplicación (este sería el caso en el que
         //se ha seleccionado un nuevo unique)
-        Vector<TransferAtributo> listaAtributos = ctrl.getListaAtributos();
+        Vector<TransferAtributo> listaAtributos = (Vector<TransferAtributo>) ctrl.mensaje(TC.ObtenerListaAtributos, null);
         
         for (int i = 0; i < vUniques.size(); i++) {
             for (int j = 0; j < vAtributos.size(); j++) 

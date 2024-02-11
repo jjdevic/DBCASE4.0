@@ -3,6 +3,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -94,7 +95,7 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
                     (Lenguaje.text(Lenguaje.EDIT_ARITY)),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIEditarCardinalidadEntidad_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             this.cajaInicio.setText("");
             this.cajaFinal.setText("");
             this.cajaFinal.setEnabled(true);

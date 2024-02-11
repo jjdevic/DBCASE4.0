@@ -1,5 +1,6 @@
 package modelo.servicios;
 
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.*;
@@ -19,8 +20,6 @@ public class ServiciosRelaciones {
         DAORelaciones dao = new DAORelaciones(this.controlador.getPath());
         // Utilizando el DAO obtenemos la lista de Relaciones
         Vector<TransferRelacion> lista_relaciones = dao.ListaDeRelaciones();
-        // Se lo devolvemos al controlador
-        controlador.mensajeDesde_SR(TC.SR_ListarRelaciones_HECHO, lista_relaciones);
     }
 
     //Devuelve actualizada la lista de relaciones
@@ -1013,7 +1012,7 @@ public class ServiciosRelaciones {
         }
         return false;
     }
-
+    
     public Controlador getControlador() {
         return controlador;
     }

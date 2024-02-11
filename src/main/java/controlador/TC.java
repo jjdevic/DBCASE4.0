@@ -7,15 +7,6 @@ public enum TC {
     //---------------------------------------------------------------------------------
     // Obtención de DBMS
     GUIPrincipal_ObtenDBMSDisponibles,
-
-    // Actualizaciones de listas
-    GUIPrincipal_ActualizameLaListaDeEntidades,
-    GUIPrincipal_ActualizameLaListaDeAtributos,
-    GUIPrincipal_ActualizameLaListaDeRelaciones,
-
-    GUIPrincipal_ActualizameLaListaDeAgregaciones,
-
-    GUIPrincipal_ActualizameLaListaDeDominios,
     //about
     GUI_Principal_ABOUT,
     //report
@@ -95,15 +86,11 @@ public enum TC {
     GUIModificarEntidad_Click_ModificarEntidad,
     GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos,
     GUIAnadirAtributoEntidad_Click_BotonAnadir,
-    GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios,
     GUIRenombrarAtributo_Click_BotonRenombrar,
     GUIEditarDominioAtributo_Click_BotonEditar,
-    GUIEditarDominioAtributo_ActualizameLaListaDeDominios,
     GUIEditarCompuestoAtributo_Click_BotonAceptar,
     GUIEditarMultivaloradoAtributo_Click_BotonAceptar,
     GUIAnadirSubAtributoAtributo_Click_BotonAnadir,
-    GUIEditarClavePrimariaAtributo_ActualizameListaEntidades,
-    GUIEditarClavePrimariaAtributo_ActualizameListaAtributos,
     GUIEditarClavePrimariaAtributo_Click_BotonAceptar,
     GUIInsertarRelacion_Click_BotonInsertar,
     GUIInsertarRelacionDebil_Click_BotonInsertar,
@@ -119,22 +106,15 @@ public enum TC {
     GUIPonerUniquesARelacion_Click_BotonAceptar,
     GUIModificarAtributo_Click_ModificarAtributo,
     // Relaciones IsA
-    GUIEstablecerEntidadPadre_ActualizameListaEntidades,
     GUIEstablecerEntidadPadre_ClickBotonAceptar,
     GUIQuitarEntidadPadre_ClickBotonSi,
-    GUIAnadirEntidadHija_ActualizameListaEntidades,
     GUIAnadirEntidadHija_ClickBotonAnadir,
-    GUIQuitarEntidadHija_ActualizameListaEntidades,
     GUIQuitarEntidadHija_ClickBotonQuitar,
     // Relaciones Normales
-    GUIAnadirEntidadARelacion_ActualizameListaEntidades,
     GUIAnadirEntidadARelacion_ClickBotonAnadir,
-    GUIQuitarEntidadARelacion_ActualizameListaEntidades,
     GUIQuitarEntidadARelacion_ClickBotonQuitar,
-    GUIEditarCardinalidadEntidad_ActualizameListaEntidades,
     GUIEditarCardinalidadEntidad_ClickBotonEditar,
     GUIAnadirAtributoRelacion_Click_BotonAnadir,
-    GUIAnadirAtributoRelacion_ActualizameLaListaDeDominios,
     GUIInsertarRestriccionARelacion_Click_BotonAnadir,
     GUIQuitarRestriccionARelacion_Click_BotonAnadir,
     // Dominios
@@ -142,8 +122,6 @@ public enum TC {
     GUIRenombrarDominio_Click_BotonRenombrar,
     GUIModificarValoresDominio_Click_BotonEditar,
     GUIModificarDominio_Click_BotonEditar,
-
-    GUIAnadirSubAtributoAtributo_ActualizameLaListaDeDominios,
 
     // Conexión a DBMS
     GUIConfigurarConexionDBMS_Click_BotonEjecutar,
@@ -273,8 +251,6 @@ public enum TC {
     SE_QuitarUniqueAEntidad_HECHO,
     SE_setUniquesAEntidad_HECHO,
     SE_setUniqueUnitarioAEntidad_HECHO,
-    // Listar entidades
-    SE_ListarEntidades_HECHO,
     // Mover posicion Entidad en el panel de diseño
     SE_MoverPosicionEntidad_ERROR_DAOEntidades,
     SE_MoverPosicionEntidad_HECHO,
@@ -294,8 +270,6 @@ public enum TC {
     SA_AnadirAtributo_HECHO,
     SA_AnadirAtributo_ERROR_NombreDeAtributoEsVacio,
     SA_AnadirAtributo_ERROR_DAOAtributos,
-    // Listar atributos
-    SA_ListarAtributos_HECHO,
     // Eliminar atributo
     SA_EliminarAtributo_ERROR_DAOAtributos,
     SA_EliminarAtributo_HECHO,
@@ -350,7 +324,6 @@ public enum TC {
     SAG_InsertarAgregacion_ERROR_DAO,
     SAG_RenombrarAgregacion_ERROR_NombreVacio,
     SAG_RenombrarAgregacion_HECHO,
-    SAG_ListarAgregacion_HECHO,
     SAG_InsertarAgregacion_HECHO,
     SAG_AnadirAtributoAAgregacion_HECHO,
     SAG_EliminarAgregacion_HECHO,
@@ -361,8 +334,6 @@ public enum TC {
     //---------------------------------------------------------------------------------
     // Mensajes desde los Servicios de Relaciones
     //---------------------------------------------------------------------------------
-    // Listar relaciones
-    SR_ListarRelaciones_HECHO,
     // Insertar relacion
     SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio,
     SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste,
@@ -489,9 +460,6 @@ public enum TC {
     SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio,
     SD_ModificarElementosDominio_ERROR_ValorNoValido,
     SD_ModificarElementosDominio_HECHO,
-    // Listar dominios
-    SD_ListarDominios_HECHO,
-
 
     //---------------------------------------------------------------------------------
     // Mensajes desde los Servicios de Relaciones al Controlador
@@ -588,5 +556,6 @@ public enum TC {
     GUI_Principal_EditarEntidad,
     GUI_Principal_EditarRelacion,
     GUI_Principal_EditarAtributo, GUISeleccionarConexion_ClickNueva, Controlador_ConfigurarConexionDBMS, GUISeleccionarConexion_ClickEditar, GUIConexion_ClickConectar,
-    GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta,
+    GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta, EliminarRelacionIsA, Reset, GuardarYSalir, Abrir, AbrirCasos, NuevoWorkSpace, 
+    Salir, EliminarAtributosRelacion, ModificarCardinalidadRelacion_1a1, EliminarSubatributosAtributo, ObtenerListaEntidades, ObtenerListaAtributos, ObtenerListaRelaciones, ObtenerListaDominios,
 }

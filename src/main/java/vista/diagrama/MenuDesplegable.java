@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+/** Menu que se abre al pulsar sobre un elemento en el panel de diseño */
 @SuppressWarnings("serial")
 public class MenuDesplegable extends JPopupMenu {
     public Transfer nodo; // Nodo sobre el que se ha pulsado

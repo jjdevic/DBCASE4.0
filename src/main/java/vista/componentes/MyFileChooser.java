@@ -6,7 +6,7 @@ import javax.accessibility.AccessibleContext;
 import javax.swing.*;
 import java.awt.*;
 
-/*
+/**
  * Clase que modifica los colores de fuente del JFileChooser
  * */
 @SuppressWarnings("serial")

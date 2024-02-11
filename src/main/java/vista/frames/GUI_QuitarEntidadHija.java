@@ -78,7 +78,7 @@ public class GUI_QuitarEntidadHija extends Parent_GUI {
                     Lenguaje.text(Lenguaje.QUIT_DAUGHTER_ENTITY),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIQuitarEntidadHija_ActualizameListaEntidades, null);
+            listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items (ya filtrados)
             String[] items = this.generaItems();
             comboEntidades.setModel(new javax.swing.DefaultComboBoxModel(items));

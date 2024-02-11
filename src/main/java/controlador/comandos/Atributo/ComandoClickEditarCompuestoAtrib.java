@@ -36,28 +36,11 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
 				options[1]);*/
         	Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
             gui.setDatos(
-            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
+            		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
                             Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING3) + "\n" +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DBCASE), null));
-            Boolean respuesta = gui.setActiva(0);
-            if (!respuesta) {
-                // Eliminamos sus subatributos
-                Vector lista_atributos = ta.getListaComponentes();
-                int cont = 0;
-                TransferAtributo tah = new TransferAtributo();
-                while (cont < lista_atributos.size()) {
-                    String idAtributo = (String) lista_atributos.get(cont);
-                    tah.setIdAtributo(Integer.parseInt(idAtributo));
-                    Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(tah, 1);
-                    tratarContexto(ctxt);
-                    cont++;
-                }
-                // Modificamos el atributo
-                ta.getListaComponentes().clear();
-                Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
-                tratarContexto(ctxt);
-            }
+                    Lenguaje.text(Lenguaje.DBCASE), null, TC.EliminarSubatributosAtributo, ta, null));
+            gui.setActiva(0);
         }
         // Si no es compuesto o es compuesto pero no tiene subatributos
         else {

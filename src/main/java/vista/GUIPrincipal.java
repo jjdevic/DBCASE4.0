@@ -33,12 +33,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     private TransferConexion conexionActual = null;
     private boolean scriptGeneradoCorrectamente = false;
     private Vector<TransferConexion> listaConexiones;
-    private Vector<TransferEntidad> listaEntidades;
-    private Vector<TransferAtributo> listaAtributos;
-    private Vector<TransferRelacion> listaRelaciones;
-    private Vector<TransferAgregacion> listaAgregaciones;
-
-    private Vector<TransferDominio> listaDominios;
+   
     private TablaVolumenes tablaVolumenes;
     private JPanel panelTablas;
     private JButton botonLimpiarPantalla;
@@ -159,12 +154,13 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         JSplitPane splitTabMapa = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitTabMapa.add(infoTabPane, JSplitPane.RIGHT);
         infoTabPane.setFocusable(false);
-        // Actualizacion de listas y creacion del grafo
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeEntidades, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAtributos, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeRelaciones, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAgregaciones, null);
-        panelDiseno = new PanelGrafo(listaEntidades, listaAtributos, listaRelaciones, listaAgregaciones);
+        
+        Vector<TransferAtributo> lista_atrib = (Vector<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null);
+        Vector<TransferEntidad> lista_entidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
+        Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null);
+        
+        //Creacion del grafo
+        panelDiseno = new PanelGrafo(lista_entidades, lista_atrib, lista_relaciones, null/*c.getListaAgregaciones*/);
         panelDiseno.setControlador(this.getControlador());
 
         panelInfo = new JPanel();
@@ -236,9 +232,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         tituloDiseno.add(title, BorderLayout.CENTER);
         Vector<Transfer> listaTransfers = new Vector<Transfer>();
-        listaTransfers.addAll(listaEntidades);
-        listaTransfers.addAll(listaRelaciones);
-        listaTransfers.addAll(listaAgregaciones);
+        listaTransfers.addAll(lista_entidades);
+        listaTransfers.addAll(lista_relaciones);
+        //listaTransfers.addAll(listaAgregaciones);
 
         addTransfersPanel botonesAnadir = new addTransfersPanel(c, listaTransfers);
         /*Listener del tamano del panel*/
@@ -844,45 +840,10 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         this.listaConexiones = listaConexiones;
     }
 
-    public Vector getListaEntidades() {
-        return listaEntidades;
-    }
-
-    public void setListaEntidades(Vector<TransferEntidad> listaEntidades) {
-        this.listaEntidades = listaEntidades;
-    }
-
-    public void setListaAgregaciones(Vector<TransferAgregacion> listaAgregaciones) {
-        this.listaAgregaciones = listaAgregaciones;
-    }
-
-    public Vector getListaAtributos() {
-        return listaAtributos;
-    }
-
-    public void setListaAtributos(Vector<TransferAtributo> listaAtributos) {
-        this.listaAtributos = listaAtributos;
-    }
-
-    public Vector getListaRelaciones() {
-        return listaRelaciones;
-    }
-
-    public void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
-        this.listaRelaciones = listaRelaciones;
-    }
-
-    public Vector getListaDominios() {
-        return listaDominios;
-    }
-
     public TransferConexion getConexionActual() {
         return conexionActual;
     }
 
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
 
     public void escribeEnModelo(String mensaje) {
         try {
@@ -917,9 +878,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
      * ARBOL DOMINIOS
      */
     public void actualizaArbolDominio(String expandir) {
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeDominios, null);
+    	Vector<TransferDominio> lista_dominios = (Vector<TransferDominio>) c.mensaje(TC.ObtenerListaDominios, null);
         this.panelArbolDom.setVisible(true);
-        this.arbolDom = generaArbolDominio(this.listaDominios, expandir);
+        this.arbolDom = generaArbolDominio(lista_dominios, expandir);
         this.panelArbolDom.setViewportView(arbolDom);
         this.repaint();
     }
@@ -1004,6 +965,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
         private void muestraMenu(MouseEvent e, TreePath selPath) {
             popup.removeAll();
+            Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) c.mensaje(TC.ObtenerListaDominios, null);
             if (selPath.getPathCount() == 2) {//Nodo principal de un dominio
                 String nombre = selPath.getLastPathComponent().toString();
                 if (!esDominioDefecto(nombre)) {
@@ -1196,9 +1158,11 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
         private void muestraMenu(MouseEvent e, TreePath selPath) {
             popup.removeAll();
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeEntidades, null);
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAtributos, null);
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeRelaciones, null);
+            
+            
+            Vector<TransferAtributo> listaAtributos = (Vector<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null);
+            Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
+            Vector<TransferRelacion> listaRelaciones = (Vector<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null);
 
             //if(selPath.getPathCount()==1){//Nodo The entity, the attribute, the relation...
             String nombre = selPath.getPathComponent(0).toString();
@@ -1702,7 +1666,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     };
 
     private TransferEntidad esAtributoDirecto(TransferAtributo ta) {
-        //Collection<TransferEntidad> listaEntidades = this.entidades.values();
+        Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
         for (Iterator<TransferEntidad> it = listaEntidades.iterator(); it.hasNext(); ) {
             TransferEntidad te = it.next();
             if (te.getListaAtributos().contains(String.valueOf(ta.getIdAtributo()))) return te;
