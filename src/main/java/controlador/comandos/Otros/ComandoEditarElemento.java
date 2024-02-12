@@ -10,8 +10,6 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
 import vista.frames.Parent_GUI;
 
 public class ComandoEditarElemento extends Comando{
@@ -42,11 +40,8 @@ public class ComandoEditarElemento extends Comando{
             
             //Buscamos a quien pertenece este atributo
             String nombrePadre = "";
-            DAOEntidades daoEntidades = new DAOEntidades(ctrl.getPath());
-            Vector<TransferEntidad> listaE = daoEntidades.ListaDeEntidades();
-
-            DAORelaciones daoRelaciones = new DAORelaciones(ctrl.getPath());
-            Vector<TransferRelacion> listaR = daoRelaciones.ListaDeRelaciones();
+            Vector<TransferEntidad> listaE = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
+            Vector<TransferRelacion> listaR = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
 
             for (TransferEntidad transferE : listaE) {
                 Vector<String> listaA = transferE.getListaAtributos();

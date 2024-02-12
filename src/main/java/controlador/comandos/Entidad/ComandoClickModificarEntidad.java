@@ -5,10 +5,10 @@ import java.util.Vector;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
 
 public class ComandoClickModificarEntidad extends Comando{
@@ -70,8 +70,7 @@ public class ComandoClickModificarEntidad extends Comando{
             }
         } else if (eraDebil) {
         	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
-            DAORelaciones dao = new DAORelaciones(ctrl.getPath());
-            Vector<TransferRelacion> lista_relaciones = dao.ListaDeRelaciones();
+            Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
             //getFactoriaServicios().getServicioRelaciones().restablecerDebilidadRelaciones();
             for (TransferRelacion tr : lista_relaciones) {
                 Vector<EntidadYAridad> eya = tr.getListaEntidadesYAridades();

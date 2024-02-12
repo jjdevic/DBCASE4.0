@@ -467,14 +467,24 @@ public class GUI_InsertarEntidad extends Parent_GUI {
     }
 
 	@Override
+	/**
+	 * @param datos 
+	 */
 	public void setDatos(Object datos) {
-		this.posicionEntidad = (Point2D) datos;
+		//Se espera un vector con tres componentes: Valor para la posicion de la entidad, entidad comprobada, relacion comprobada.
+		//Si alguna componente es null, no se actualiza el atributo correspondiente.
+		Vector<Object> v = (Vector<Object>) datos;
+		if(v.size() == 3) {
+			if(v.get(0) != null) this.posicionEntidad = (Point2D) v.get(0);
+			if(v.get(1) != null) comprobadaEntidad((boolean) v.get(1));
+			if(v.get(2) != null) comprobadaRelacion((boolean) v.get(2));
+		}
 	}
 
 	@Override
-	public boolean setActiva(int op) {
+	public int setActiva(int op) {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
 	}
 
 }

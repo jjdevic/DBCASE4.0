@@ -39,8 +39,16 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
             		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.MODIFY_ATTRIBUTE) + "\"" + ta.getNombre() + "\"" +
                             Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING3) + "\n" +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DBCASE), null, TC.EliminarSubatributosAtributo, ta, null));
-            gui.setActiva(0);
+                    Lenguaje.text(Lenguaje.DBCASE), null));
+            int respuesta = gui.setActiva(0);
+            
+            if(respuesta == 0) {
+            	
+            } else if (respuesta == 1) {
+            	
+            } else {
+            	
+            }
         }
         // Si no es compuesto o es compuesto pero no tiene subatributos
         else {

@@ -146,8 +146,8 @@ public class GUI_AnadirAgregacion extends Parent_GUI {
 	}
 
 	@Override
-	public boolean setActiva(int op) {
-		return false;
+	public int setActiva(int op) {
+		return 0;
 	}
     
 }

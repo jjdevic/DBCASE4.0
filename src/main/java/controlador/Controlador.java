@@ -316,7 +316,6 @@ public class Controlador {
             }
             case PanelDiseno_Click_OrdenarValoresDominio: {
                 TransferDominio td = (TransferDominio) datos;
-                //TODO Mirar si ordena como queremos
                 UtilsFunc.quicksort((Vector<String>) td.getListaValores());
 
                 Vector<Object> v = new Vector();
@@ -716,7 +715,7 @@ public class Controlador {
             case GUIInsertarEntidadDebil_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
                 boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te);
-                //TODO this.getTheGUIInsertarEntidad().comprobadaEntidad(exito);
+                factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, exito, null) ,false);
                 ActualizaArbol(te);
                 factoriaServicios.getServicioSistema().reset();
                 break;
@@ -906,7 +905,7 @@ public class Controlador {
             case GUIInsertarRelacionDebil_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
                 boolean exito = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr);
-                //TODO mirar esto: this.getTheGUIInsertarEntidad().comprobadaRelacion(exito);
+                factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, null, exito) ,false);
                 ActualizaArbol(tr);
                 factoriaServicios.getServicioSistema().reset();
                 break;
@@ -1217,7 +1216,6 @@ public class Controlador {
         }
 
         switch (mensaje) {
-            //TODO Revisar este caso, se puede usar lo que se devuelve desde neogocio para meterlo en el ctxt y no se necesita pasar por FactoriaMsj en este caso
             case SD_InsertarDominio_ERROR_ValorNoValido: {
                 Vector v = (Vector) datos;
                 String error = (String) v.get(1);
@@ -1831,6 +1829,9 @@ public class Controlador {
     	case ObtenerListaDominios: {
     		resultado = factoriaServicios.getServicioDominios().getListaDeDominios();
     		break;
+    	}
+    	case ObtenerListaAgregaciones: {
+    		resultado = factoriaServicios.getServicioAgregaciones().ListaDeAgregaciones();
     	}
     	case ModificarCardinalidadRelacion_1a1:
     	case EliminarSubatributosAtributo: {

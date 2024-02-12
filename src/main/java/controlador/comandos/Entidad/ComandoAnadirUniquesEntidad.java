@@ -23,7 +23,6 @@ public class ComandoAnadirUniquesEntidad extends Comando {
         ActualizaArbol(entidad);
         getFactoriaServicios().getServicioSistema().reset();
         
-        //TODO Es necesario esto?
         Vector<String> vUniques = entidad.getListaUniques();
         Vector<String> vAtributos = entidad.getListaAtributos();
         

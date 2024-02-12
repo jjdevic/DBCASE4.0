@@ -67,7 +67,7 @@ public abstract class Parent_GUI extends javax.swing.JDialog implements KeyListe
     /**
      * @param op Opciones de activacion
      */
-    public abstract boolean setActiva(int op);
+    public abstract int setActiva(int op);
     
     public abstract void setInactiva();
 

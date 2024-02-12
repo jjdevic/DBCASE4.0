@@ -160,8 +160,8 @@ public class GUI_RenombrarEntidad extends Parent_GUI {
 	}
 
 	@Override
-	public boolean setActiva(int op) {
+	public int setActiva(int op) {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
 	}
 }

@@ -77,9 +77,9 @@ public class GUI_SaveAs extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
 
-    //devuelve siempre true, salvo si se ha pulsado en cancelar
-    public boolean setActiva(int b) {
-        actuado = false;
+    //devuelve siempre 1, salvo si se ha pulsado en cancelar
+    public int setActiva(int b) {
+        int actuado = 0;
         switch (b) {
             case 1: {//abrir
                 if (this.modoSoporte) {
@@ -89,6 +89,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
             case 2: {//guardar
@@ -98,9 +99,10 @@ public class GUI_SaveAs extends Parent_GUI {
                     this.centraEnPantalla();
                     this.setVisible(true);
                 } else {
-                    actuado = true;
+                	actuado = 1;
                     guardarProyecto();
                 }
+                
                 break;
             }
             case 3: {//guardarComo
@@ -108,6 +110,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
             case 4: {
@@ -115,6 +118,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
         }

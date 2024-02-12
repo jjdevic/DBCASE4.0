@@ -157,12 +157,12 @@ public class GUI_Pregunta extends Parent_GUI {
     }
 
     private void botonSiActionPerformed(ActionEvent evt) {
-        controlador.mensajeDesde_GUI(mensCasoAceptar, datosCasoAceptar);
+        respuesta = 0;
         setInactiva();
     }
 
     private void botonSiActionPerformed(KeyEvent evt) {
-    	controlador.mensajeDesde_GUI(mensCasoAceptar, datosCasoAceptar);
+    	respuesta = 0;
         setInactiva();
     }
 
@@ -225,12 +225,12 @@ public class GUI_Pregunta extends Parent_GUI {
 	}
 
 	@Override
-	public boolean setActiva(int op) {
-		boolean result = false;
+	public int setActiva(int op) {
+		int result = 0;
 		if(op == 0) {
 			this.centraEnPantalla();
 	        this.setVisible(true);
-	        result = true;
+	        result = 1;
 		}
 		return result;
 	}

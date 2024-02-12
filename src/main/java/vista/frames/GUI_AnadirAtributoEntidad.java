@@ -571,8 +571,8 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
 	public TransferEntidad getEntidad() { return entidad; }
 
 	@Override
-	public boolean setActiva(int op) {
+	public int setActiva(int op) {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
 	}
 }

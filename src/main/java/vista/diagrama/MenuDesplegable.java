@@ -58,7 +58,7 @@ public class MenuDesplegable extends JPopupMenu {
                 public void actionPerformed(ActionEvent e) {
                     MenuDesplegable menu = (MenuDesplegable) ((JMenuItem) e.getSource()).getParent();
                     Point2D p = menu.punto;
-                    controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, p);
+                    controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, UtilsFunc.crearVector(p, null, null));
                 }
             });
             this.add(j1);

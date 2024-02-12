@@ -15,7 +15,7 @@ public abstract class Comando {
 	
 	/**
 	 * Toma la factoria de servicios. Todos los comandos deben usar este método para tomar la 
-	 * factoría de servicios, al ser un método protected del controlador.
+	 * factoría de servicios.
 	 * @return Factoria de servicios
 	 */
 	protected FactoriaServicios getFactoriaServicios() {

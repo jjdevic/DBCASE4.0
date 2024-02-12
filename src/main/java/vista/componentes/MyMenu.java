@@ -4,11 +4,12 @@ package vista.componentes;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferAgregacion;
+import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferConexion;
-import persistencia.DAOAgregaciones;
-import persistencia.DAOAtributos;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
+import modelo.transfers.TransferEntidad;
+import modelo.transfers.TransferRelacion;
+import utils.UtilsFunc;
 import vista.Lenguaje;
 import vista.iconos.IconLabel;
 import vista.iconos.perspective.allIcon;
@@ -25,6 +26,7 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Vector;
 
 import static vista.utils.ImagesPath.*;
@@ -538,7 +540,7 @@ public class MyMenu extends JMenuBar {
         submenuAnadirEntidad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 Point2D p = new Point2D.Double(coords[0], coords[1]);
-                c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, p);
+                c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, UtilsFunc.crearVector(p, null, null));
                 aumentaCoords();
             }
         });
@@ -577,14 +579,10 @@ public class MyMenu extends JMenuBar {
         submenuAnadirAtributo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 listaTransfers = new Vector<Transfer>();
-                DAORelaciones daoRelaciones = new DAORelaciones(c.getPath());
-                listaTransfers.addAll(daoRelaciones.ListaDeRelaciones());
-                DAOEntidades daoEntidades = new DAOEntidades(c.getPath());
-                listaTransfers.addAll(daoEntidades.ListaDeEntidades());
-                DAOAtributos daoAtributos = new DAOAtributos();
-                listaTransfers.addAll(daoAtributos.ListaDeAtributos());
-                DAOAgregaciones daoAgregaciones = new DAOAgregaciones(c.getPath());
-                listaTransfers.addAll(daoAgregaciones.ListaDeAgregaciones());
+                listaTransfers.addAll((Collection<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null));
+                listaTransfers.addAll((Collection<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null));
+                listaTransfers.addAll((Collection<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null));
+                listaTransfers.addAll((Collection<TransferAgregacion>) c.mensaje(TC.ObtenerListaAgregaciones, null));
                 c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarAtributo, listaTransfers);
             }
         });

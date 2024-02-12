@@ -35,7 +35,6 @@ public class ComandoClickEliminarAtributo extends Comando{
             		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
                     Lenguaje.text(Lenguaje.DELETE_ATTRIB), null));
-            respuesta = gui.setActiva(0);
         }
         if (!respuesta) {
             if (ta.getUnique()) {

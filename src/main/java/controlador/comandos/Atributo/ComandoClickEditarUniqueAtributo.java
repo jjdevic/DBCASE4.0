@@ -23,10 +23,6 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         tratarContexto(ctxt);
 
-        //TODO Cabiar los getListas, no tomarlas de controller sino de modelo
-        getFactoriaServicios().getServicioEntidades().ListaDeEntidades();
-        getFactoriaServicios().getServicioAtributos().getListaDeAtributos();
-        getFactoriaServicios().getServicioRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
         Vector<TransferRelacion> relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
         Vector<TransferEntidad> entidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);

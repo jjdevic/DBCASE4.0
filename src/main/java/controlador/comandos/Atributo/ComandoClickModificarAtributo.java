@@ -5,9 +5,9 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
-import persistencia.DAOEntidades;
 
 public class ComandoClickModificarAtributo extends Comando {
 
@@ -60,8 +60,7 @@ public class ComandoClickModificarAtributo extends Comando {
         tratarContexto(ctxt);
         //Buscamos si el atributo pertenece a una entidad y si es asi a cual
 
-        DAOEntidades daoEntidades = new DAOEntidades(ctrl.getPath());
-        Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
+        Vector<TransferEntidad> entidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
         TransferEntidad te = new TransferEntidad();
         boolean encontrado = false;
         for (TransferEntidad entidade : entidades) {

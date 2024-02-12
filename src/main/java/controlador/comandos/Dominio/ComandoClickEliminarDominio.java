@@ -24,13 +24,13 @@ public class ComandoClickEliminarDominio extends Comando{
 		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
 		
         gui.setDatos(
-        		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+        		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                         Lenguaje.text(Lenguaje.MODIFYING_ATTRIBUTES_WARNING4) + "\n" +
                         Lenguaje.text(Lenguaje.WISH_CONTINUE),
                 Lenguaje.text(Lenguaje.DELETE_DOMAIN), null));
         
-        Boolean respuesta = gui.setActiva(0);
-        if (!respuesta) {
+        int respuesta = gui.setActiva(0);
+        if (respuesta == 0) {
             modelo.transfers.TipoDominio valorBase = td.getTipoBase();
             String dominioEliminado = td.getNombre();
             int cont = 0;
