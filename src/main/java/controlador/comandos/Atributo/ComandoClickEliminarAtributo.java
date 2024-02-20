@@ -23,7 +23,7 @@ public class ComandoClickEliminarAtributo extends Comando{
         TransferAtributo ta = (TransferAtributo) v.get(0);
         int intAux = (int) v.get(2);
         boolean preguntar = (Boolean) v.get(1);
-        Boolean respuesta = false;
+        int respuesta = 0;
         if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
         if (preguntar) {
             String eliminarSubatributos = "";
@@ -35,8 +35,8 @@ public class ComandoClickEliminarAtributo extends Comando{
             		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
                     Lenguaje.text(Lenguaje.DELETE_ATTRIB), null));
-        }
-        if (!respuesta) {
+            respuesta = gui.setActiva(0);        }
+        if (respuesta == 0) {
             if (ta.getUnique()) {
                 Vector<Object> ve = new Vector<Object>();
                 TransferAtributo clon_atributo = ta.clonar();

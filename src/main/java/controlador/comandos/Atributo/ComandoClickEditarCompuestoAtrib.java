@@ -43,7 +43,8 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
             int respuesta = gui.setActiva(0);
             
             if(respuesta == 0) {
-            	
+            	Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
+                tratarContexto(ctxt);
             } else if (respuesta == 1) {
             	
             } else {

@@ -1,7 +1,8 @@
 package persistencia;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.sun.org.apache.xml.internal.serialize.*;
 import modelo.transfers.TransferEntidad;
 import org.w3c.dom.*;
 import vista.Lenguaje;
@@ -398,7 +399,7 @@ public class DAOEntidades {
         return doc;
     }
 
-    private void guardaDoc() {
+	private void guardaDoc() {
         OutputFormat formato = new OutputFormat(doc.toString(), "UTF-8", true);
         StringWriter s = new StringWriter();
         XMLSerializer ser = new XMLSerializer(s, formato);

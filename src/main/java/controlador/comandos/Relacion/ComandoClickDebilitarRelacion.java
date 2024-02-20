@@ -36,8 +36,8 @@ public class ComandoClickDebilitarRelacion extends Comando{
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.RELATION_WEAK_ENTITIES), Lenguaje.text(Lenguaje.ERROR), 0);
             } 
             else {
-	            Boolean respuesta1 = null;
-	            Boolean respuesta2 = null;
+	            int respuesta1 = 1;
+	            int respuesta2 = 1;
 	            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
 	            // ...y tiene atributos y se quiere debilitar hay que eliminar sus atributos
 	            if (!tr.getListaAtributos().isEmpty()) {	
@@ -45,16 +45,16 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	                        UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING2) + "\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null, TC.EliminarAtributosRelacion, tr, null));
-	                gui.setActiva(0);
+	                        Lenguaje.text(Lenguaje.DBCASE), null/*, TC.EliminarAtributosRelacion, tr, null*/));
+	                respuesta1  = gui.setActiva(0);
 	            }
 	            // ...y tiene una entidad débil hay que cambiar la cardinalidad
-	            else if (numDebiles == 1 && respuesta1 != true) {
+	            else if (numDebiles == 1 && respuesta1 == 0) {
 	                gui.setDatos(
 	                		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.MODIFYING_CARDINALITY) + ".\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null, TC.ModificarCardinalidadRelacion_1a1, tr, null));
+	                        Lenguaje.text(Lenguaje.DBCASE), null/*, TC.ModificarCardinalidadRelacion_1a1, tr, null*/));
 	                gui.setActiva(0);
 	            } else {
 	            	//Modificamos la relacion

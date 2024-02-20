@@ -22,9 +22,6 @@ public class GUI_Pregunta extends Parent_GUI {
     private JButton botonNo;
     private JButton botonSi;
     private JButton botonCancelar;
-    private TC mensCasoAceptar;
-    private Object datosCasoAceptar;
-    private TC mensCasoCancelar;
 
     public GUI_Pregunta(Controlador controlador) {
         super(controlador);
@@ -206,9 +203,6 @@ public class GUI_Pregunta extends Parent_GUI {
 			String mensaje = (String) v.get(0);
 			String titulo = (String) v.get(1);
 			boolean cancelar = (boolean) v.get(2);
-			this.mensCasoAceptar = (TC) v.get(3);
-			this.datosCasoAceptar = v.get(4);
-			this.mensCasoCancelar = (TC) v.get(5);
 			
 			pregunta.setText(mensaje);
 	        setTitle(titulo);

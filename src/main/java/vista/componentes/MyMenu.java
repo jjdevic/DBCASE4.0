@@ -123,7 +123,7 @@ public class MyMenu extends JMenuBar {
         try {
             nuevo.setImage(ImageIO.read(classLoader.getResourceAsStream(NUEVO)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
+            
             System.out.println(e1);
         }
         submenuNuevo.setIcon(nuevo);

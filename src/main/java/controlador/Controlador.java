@@ -138,7 +138,7 @@ public class Controlador {
                 String tempPath = this.filetemp.getAbsolutePath();
                 UtilsFunc.FileCopy(tempPath, guardarPath);
 
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setInactiva();
+                factoriaGUI.getGUI(TC.GUI_WorkSpace, datos, false).setInactiva();
                 setCambios(false);
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
                 break;
@@ -291,7 +291,7 @@ public class Controlador {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
                 	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ISA_RELATION_DELETE) + "\n" +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DELETE_ISA_RELATION), false, TC.EliminarRelacionIsA, tr, null));
+                    Lenguaje.text(Lenguaje.DELETE_ISA_RELATION), false/*, TC.EliminarRelacionIsA, tr, null*/));
                     gui.setActiva();
                 } 
                 else this.mensaje(TC.EliminarRelacionIsA, tr);
@@ -423,8 +423,7 @@ public class Controlador {
             case GUI_Principal_RESET: {
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.Reset, null, TC.Reset));  
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));  
                 	gui.setActiva();
                 } else this.mensaje(TC.Reset, null);
                 break;
@@ -489,8 +488,7 @@ public class Controlador {
             case GUI_Principal_Click_Submenu_Salir: {
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.GuardarYSalir, null, TC.Salir));
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true));
                 	gui.setActiva();
                 } else this.mensaje(TC.GuardarYSalir, null);
                 break;
@@ -542,8 +540,8 @@ public class Controlador {
             case GUI_Principal_Click_Salir: {
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.GuardarYSalir, null, TC.Salir));
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true/*, 
+                			TC.GuardarYSalir, null, TC.Salir*/));
                 	gui.setActiva();
                 } else this.mensaje(TC.GuardarYSalir, null);
                 break;
@@ -552,8 +550,8 @@ public class Controlador {
             	factoriaGUI.getGUI(TC.GUI_WorkSpace, true, true).setDatos(this.getModoSoporte());
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.Abrir, null, TC.Abrir));
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true/*, 
+                			TC.Abrir, null, TC.Abrir*/));
                 	gui.setActiva();
                 } else this.mensaje(TC.Abrir, null);
                 break;
@@ -563,8 +561,8 @@ public class Controlador {
                 factoriaGUI.getGUI(TC.GUI_WorkSpace, false, true).setDatos(this.getModoSoporte());
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.AbrirCasos, null, TC.AbrirCasos));
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true/*, 
+                			TC.AbrirCasos, null, TC.AbrirCasos*/));
                 	gui.setActiva();
                 } else this.mensaje(TC.AbrirCasos, null);
                 break;
@@ -591,8 +589,8 @@ public class Controlador {
             case GUI_Principal_Click_Submenu_Nuevo: {
                 if (cambios) {
                 	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, null, false);
-                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true, 
-                			TC.NuevoWorkSpace, null, TC.NuevoWorkSpace));
+                	gui.setDatos(UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true/*, 
+                			TC.NuevoWorkSpace, null, TC.NuevoWorkSpace*/));
                 	gui.setActiva();
                 } else this.mensaje(TC.NuevoWorkSpace, null);
                 break;

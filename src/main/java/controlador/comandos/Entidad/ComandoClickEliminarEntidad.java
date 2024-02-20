@@ -27,7 +27,7 @@ public class ComandoClickEliminarEntidad extends Comando {
             TransferEntidad te = (TransferEntidad) v.get(0);
             boolean preguntar = (Boolean) v.get(1);
             int intAux = (int) v.get(2);
-            boolean respuesta;
+            int respuesta = 0;
             
             if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
             if (preguntar) {
@@ -39,15 +39,16 @@ public class ComandoClickEliminarEntidad extends Comando {
                 Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
                 
                 gui.setDatos(
-                		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+                		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                                 tieneAtributos + tieneRelacion + Lenguaje.text(Lenguaje.WISH_CONTINUE),
                         Lenguaje.text(Lenguaje.DELETE_ENTITY), null));
+                respuesta = gui.setActiva(0);
                 
             }
             //Si quiere borrar la entidad
             /*Se entrará con preguntar a false si se viene de eliminar una relación débil
              * (para borrar también la entidad y sus atributos)*/
-            if (!respuesta || !preguntar) {
+            if (respuesta == 0 || !preguntar) {
                 // Eliminamos sus atributos
 	            Vector lista_atributos = te.getListaAtributos();
 	            int conta = 0;

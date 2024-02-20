@@ -47,7 +47,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
         }
 
         boolean preguntar = (Boolean) v.get(1);
-        boolean respuesta = false;
+        int respuesta = 0;
         if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
         if (preguntar) {
             String tieneAtributos = "";
@@ -59,7 +59,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                 tieneEntidad = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_ENTITY) + "\n";
             Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
             gui.setDatos(
-            		UtilsFunc.crearVectorSinNulls(Lenguaje.text(Lenguaje.THE_RELATION) + " \"" + tr.getNombre() + "\" " +
+            		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.THE_RELATION) + " \"" + tr.getNombre() + "\" " +
                             Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             tieneAtributos + tieneEntidad +
                             Lenguaje.text(Lenguaje.WISH_CONTINUE),
@@ -67,7 +67,7 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             respuesta = gui.setActiva(0);
         }
         //Si se desea eliminar la relación
-        if (!respuesta) {
+        if (respuesta == 0) {
             // Eliminamos sus atributos
             Vector lista_atributos = tr.getListaAtributos();
             int conta = 0;
