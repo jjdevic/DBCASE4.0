@@ -138,7 +138,7 @@ public class Controlador {
                 String tempPath = this.filetemp.getAbsolutePath();
                 UtilsFunc.FileCopy(tempPath, guardarPath);
 
-                factoriaGUI.getGUI(TC.GUI_WorkSpace, datos, false).setInactiva();
+                factoriaGUI.getGUI(TC.GUI_WorkSpace, true, false).setInactiva();
                 setCambios(false);
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
                 break;

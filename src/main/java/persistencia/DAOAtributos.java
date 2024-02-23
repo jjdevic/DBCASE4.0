@@ -1,9 +1,5 @@
 package persistencia;
 
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
 import controlador.Config;
 import controlador.Controlador;
 import modelo.transfers.TransferAtributo;
@@ -20,19 +16,14 @@ import java.io.StringWriter;
 import java.util.Vector;
 
 @SuppressWarnings("rawtypes")
-public class DAOAtributos {
+public class DAOAtributos extends DAO {
 
     // Atributos
     private Document doc;
-    private String path;
-    //private Controlador c;
 
     // Constructora del DAO
     public DAOAtributos() {
-        this.path = Config.getPath();
-        //this.path += "\\persistencia.xml";
-        this.path = this.path.replace(" ", "%20");
-        this.path = this.path.replace('\\', '/');
+        super(Config.getPath());
         this.doc = dameDoc();
     }
 
@@ -104,7 +95,7 @@ public class DAOAtributos {
         // Actualizamos el resultado
         resultado = proximoID;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         // Devolvemos el resultado de la operacion
         return resultado;
@@ -176,7 +167,7 @@ public class DAOAtributos {
         } else
             respuesta = false;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         // Devolvemos la respuesta
         return respuesta;
@@ -193,7 +184,7 @@ public class DAOAtributos {
             raiz.removeChild(atributoBuscado);
             borrado = true;
         }
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         return borrado;
     }
@@ -382,58 +373,4 @@ public class DAOAtributos {
         return p;
 
     }
-
-    // Metodos para el tratamiento del fichero xml
-    private Document dameDoc() {
-        Document doc = null;
-        DocumentBuilder parser = null;
-        try {
-            DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
-            parser = factoria.newDocumentBuilder();
-            doc = parser.parse(this.path);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    Lenguaje.text(Lenguaje.ERROR) + ":\n" +
-                            Lenguaje.text(Lenguaje.UNESPECTED_XML_ERROR) + " \"" + path + ".xml\"",
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.ERROR_MESSAGE);
-
-        }
-        return doc;
-    }
-
-    private void guardaDoc() {
-        OutputFormat formato = new OutputFormat(doc.toString(), "utf-8", true);
-        StringWriter s = new StringWriter();
-        XMLSerializer ser = new XMLSerializer(s, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // El FileWriter necesita espacios en la ruta
-        this.path = this.path.replace("%20", " ");
-        FileWriter f = null;
-        /*debido a que la funcion FileWriter da un error de acceso
-         * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
-        boolean centinela = true;
-        while (centinela == true) {
-            try {
-                f = new FileWriter(this.path);
-                centinela = false;
-            } catch (IOException e) {
-                centinela = true;
-            }
-        }
-        this.path = this.path.replace(" ", "%20");
-        ser = new XMLSerializer(f, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
-
