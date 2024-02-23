@@ -5,7 +5,7 @@ import modelo.transfers.Transfer;
 
 
 public abstract class Comando {
-	public Controlador ctrl;
+	protected Controlador ctrl;
 	
 	public Comando(Controlador ctrl) {
 		this.ctrl = ctrl;

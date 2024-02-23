@@ -86,7 +86,7 @@ public class UtilsFunc {
             in.close();
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 	

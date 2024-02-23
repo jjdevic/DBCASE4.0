@@ -25,6 +25,8 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	/*Aunque desde el panel de diseño no se puede debilitar una relación este caso sigue
      * utilizándose cuando se crea una entidad débil ya que debe generarse también una
      * relación débil asociada a ella.*/
+	
+	//TODO Mirar este comando
 	@Override
 	public void ejecutar(Object datos) {
 		TransferRelacion tr = (TransferRelacion) datos;
@@ -38,23 +40,23 @@ public class ComandoClickDebilitarRelacion extends Comando{
             else {
 	            int respuesta1 = 1;
 	            int respuesta2 = 1;
-	            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+	            
 	            // ...y tiene atributos y se quiere debilitar hay que eliminar sus atributos
 	            if (!tr.getListaAtributos().isEmpty()) {	
-	                gui.setDatos(
-	                        UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
+	            	Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
+	            			UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + " \"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING2) + "\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null/*, TC.EliminarAtributosRelacion, tr, null*/));
+	                        Lenguaje.text(Lenguaje.DBCASE), null), false);
 	                respuesta1  = gui.setActiva(0);
 	            }
 	            // ...y tiene una entidad débil hay que cambiar la cardinalidad
 	            else if (numDebiles == 1 && respuesta1 == 0) {
-	                gui.setDatos(
-	                		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
+	            	Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
+	            			UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WEAK_RELATION) + "\"" + tr.getNombre() + "\"" +
 	                                Lenguaje.text(Lenguaje.MODIFYING_CARDINALITY) + ".\n" +
 	                                Lenguaje.text(Lenguaje.WISH_CONTINUE),
-	                        Lenguaje.text(Lenguaje.DBCASE), null/*, TC.ModificarCardinalidadRelacion_1a1, tr, null*/));
+	                        Lenguaje.text(Lenguaje.DBCASE), null), false);
 	                gui.setActiva(0);
 	            } else {
 	            	//Modificamos la relacion

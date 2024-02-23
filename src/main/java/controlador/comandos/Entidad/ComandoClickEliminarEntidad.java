@@ -36,14 +36,11 @@ public class ComandoClickEliminarEntidad extends Comando {
                     tieneAtributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
                 String tieneRelacion = "";
                 if (te.isDebil()) tieneRelacion = Lenguaje.text(Lenguaje.WARNING_DELETE_WEAK_RELATION) + "\n";
-                Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
-                
-                gui.setDatos(
+                Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
                 		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ENTITY) + " \"" + te.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                                 tieneAtributos + tieneRelacion + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                        Lenguaje.text(Lenguaje.DELETE_ENTITY), null));
+                        Lenguaje.text(Lenguaje.DELETE_ENTITY), null), false);
                 respuesta = gui.setActiva(0);
-                
             }
             //Si quiere borrar la entidad
             /*Se entrará con preguntar a false si se viene de eliminar una relación débil

@@ -30,12 +30,13 @@ public class ComandoClickEliminarAtributo extends Comando{
             if (!ta.getListaComponentes().isEmpty())
                 eliminarSubatributos = Lenguaje.text(Lenguaje.DELETE_ATTRIBUTES_WARNING) + "\n";
             
-            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
-            gui.setDatos(
+            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
             		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.ATTRIBUTE) + " \"" + ta.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                             eliminarSubatributos + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DELETE_ATTRIB), null));
-            respuesta = gui.setActiva(0);        }
+                    Lenguaje.text(Lenguaje.DELETE_ATTRIB), null), false);
+            respuesta = gui.setActiva(0);        
+        }
+        
         if (respuesta == 0) {
             if (ta.getUnique()) {
                 Vector<Object> ve = new Vector<Object>();

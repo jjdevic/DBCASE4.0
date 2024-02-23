@@ -21,13 +21,11 @@ public class ComandoClickEliminarDominio extends Comando{
 	@Override
 	public void ejecutar(Object datos) {
 		TransferDominio td = (TransferDominio) datos;
-		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
-		
-        gui.setDatos(
-        		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
+		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
+				UtilsFunc.crearVector(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
                         Lenguaje.text(Lenguaje.MODIFYING_ATTRIBUTES_WARNING4) + "\n" +
                         Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                Lenguaje.text(Lenguaje.DELETE_DOMAIN), null));
+                Lenguaje.text(Lenguaje.DELETE_DOMAIN), null), false);
         
         int respuesta = gui.setActiva(0);
         if (respuesta == 0) {

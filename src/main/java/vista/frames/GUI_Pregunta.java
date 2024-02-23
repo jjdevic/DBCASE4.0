@@ -220,12 +220,9 @@ public class GUI_Pregunta extends Parent_GUI {
 
 	@Override
 	public int setActiva(int op) {
-		int result = 0;
-		if(op == 0) {
-			this.centraEnPantalla();
-	        this.setVisible(true);
-	        result = 1;
-		}
-		return result;
+		respuesta = -1;
+		this.centraEnPantalla();
+	    this.setVisible(true);
+		return respuesta;
 	}
 }
