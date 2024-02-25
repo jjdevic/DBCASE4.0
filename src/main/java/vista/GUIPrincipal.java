@@ -1178,7 +1178,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                     if (listaEntidades.get(i).getNombre().equals(nombre)) {
                         index = i;
                     }
-
                 }
                 final TransferEntidad entidad = listaEntidades.get(index);
 

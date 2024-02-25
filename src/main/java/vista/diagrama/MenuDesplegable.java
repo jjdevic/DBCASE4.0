@@ -134,6 +134,7 @@ public class MenuDesplegable extends JPopupMenu {
                         MenuDesplegable menu = (MenuDesplegable) ((JMenuItem) e.getSource()).getParent();
                         TransferEntidad entidad = (TransferEntidad) menu.nodo;
                         TransferEntidad clon_entidad = entidad.clonar();
+                        clon_entidad.getIdEntidad();
                         controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_AnadirAtributoEntidad, clon_entidad);
                     }
                 });

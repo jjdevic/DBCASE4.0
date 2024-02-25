@@ -341,7 +341,6 @@ public class Controlador {
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MostrarDatosEnTablaDeVolumenes, datos);
                 break;
             }
-
             case PanelDiseno_Click_Copiar: {
                 this.copiado = (Transfer) datos;
                 break;
@@ -349,16 +348,16 @@ public class Controlador {
 
             //Casos que solo activan una GUI
             case PanelDiseno_Click_AnadirRestriccionAEntidad:
-	        case PanelDiseno_Click_AnadirRestriccionAAtributo: //
+	        case PanelDiseno_Click_AnadirRestriccionAAtributo:
 	        case PanelDiseno_Click_AnadirRestriccionARelacion:
 	        case PanelDiseno_Click_TablaUniqueAEntidad:
 	        case PanelDiseno_Click_TablaUniqueARelacion:
 	        case PanelDiseno_Click_AnadirAtributoEntidad: 
-	        case PanelDiseno_Click_RenombrarAtributo: //
+	        case PanelDiseno_Click_RenombrarAtributo:
 	        case PanelDiseno_Click_InsertarRelacionNormal: 
 	        case PanelDiseno_Click_RenombrarRelacion:
-	        case PanelDiseno_Click_EditarDominioAtributo: //
-	        case PanelDiseno_Click_AnadirSubAtributoAAtributo: //
+	        case PanelDiseno_Click_EditarDominioAtributo:
+	        case PanelDiseno_Click_AnadirSubAtributoAAtributo:
 	        case PanelDiseno_Click_EstablecerEntidadPadre: 
 	        case PanelDiseno_Click_QuitarEntidadPadre:
 	        case PanelDiseno_Click_AnadirEntidadHija:
@@ -1292,241 +1291,6 @@ public class Controlador {
         }
     }
 
-    // Mensajes que mandan los Servicios de Atributos al Controlador
-    public void mensajeDesde_SA(TC mensaje, Object datos) {
-        int intAux = 2;
-        if (mensaje == TC.SA_EliminarAtributo_HECHO) {
-            Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion del atributo venga de otra eliminacion
-            intAux = (int) aux.get(2);
-        }
-
-		/*if (mensaje == TC.SA_EditarClavePrimariaAtributo_HECHO){
-			Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion del atributo venga de otra eliminacion
-			intAux = (int) aux.get(2);
-		}
-
-		if (mensaje == TC.SA_EditarUniqueAtributo_HECHO){
-			Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion del atributo venga de otra eliminacion
-			intAux = (int) aux.get(1);
-		}*/
-
-
-        if (mensaje == TC.SA_MoverPosicionAtributo_HECHO || (mensaje == TC.SA_EliminarAtributo_HECHO && intAux == 0) || mensaje == TC.SA_EditarUniqueAtributo_HECHO || mensaje == TC.SA_EditarDominioAtributo_HECHO || mensaje == TC.SA_EditarCompuestoAtributo_HECHO || mensaje == TC.SA_EditarMultivaloradoAtributo_HECHO || mensaje == TC.SA_EditarNotNullAtributo_HECHO || mensaje == TC.SA_AnadirSubAtributoAtributo_HECHO || mensaje == TC.SA_EditarClavePrimariaAtributo_HECHO) {
-            //this.ultimoMensaje = mensaje;
-            //this.ultimosDatos = datos;
-
-            this.guardarDeshacer();
-            this.auxDeshacer = true;
-            if (this.getContFicherosDeshacer() == 1)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
-
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
-        }
-
-
-        switch (mensaje) {
-            case SA_EliminarAtributo_HECHO: {
-                setCambios(true);
-                Vector<Transfer> vectorAtributoYElemMod = (Vector<Transfer>) datos;
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarAtributo, vectorAtributoYElemMod);
-                ActualizaArbol(null);
-                break;
-            }
-            case SA_RenombrarAtributo_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-                TransferAtributo ta = (TransferAtributo) v.get(0);
-                //String antiguoNombre = (String) v.get(2);
-
-                /*TransferAtributo clon_atributo = ta.clonar();
-                Vector v1 = new Vector();
-                v1.add(clon_atributo);
-                v1.add(antiguoNombre);
-                this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_ModificarUniqueAtributo, v1);*/
-
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarAtributo, ta);
-                factoriaGUI.getGUI(TC.Controlador_RenombrarAtributo, null, false).setInactiva();
-                break;
-            }
-            case SA_EditarDominioAtributo_HECHO: {
-                setCambios(true);
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarDominioAtributo, ta);
-                factoriaGUI.getGUI(TC.Controlador_EditarDominioAtributo, null, false).setInactiva();
-                break;
-            }
-            case SA_EditarCompuestoAtributo_HECHO: {
-                setCambios(true);
-                TransferAtributo ta = (TransferAtributo) datos;
-                ta.getNombre();
-                ActualizaArbol(ta);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarCompuestoAtributo, ta);
-                break;
-            }
-            case SA_EditarMultivaloradoAtributo_HECHO: {
-                setCambios(true);
-                TransferAtributo ta = (TransferAtributo) datos;
-                ActualizaArbol(ta);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarMultivaloradoAtributo, ta);
-                break;
-            }
-            case SA_EditarNotNullAtributo_HECHO: {
-                setCambios(true);
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarNotNullAtributo, ta);
-                ActualizaArbol(ta);
-                break;
-            }
-            case SA_EditarUniqueAtributo_ERROR_DAOAtributos: {
-		/*	TransferAtributo ta = (TransferAtributo) datos;
-			//JOptionPane.showMessageDialog(null, Lenguaje.getMensaje(Lenguaje.ATTRIBUTES_FILE_ERROR), Lenguaje.getMensaje(Lenguaje.ERROR), 0);
-			this.factoriaGUI.getGUIPrincipal().anadeMensajeAreaDeSucesos(
-					"ERROR: No se ha podido editar el caracter unique del atributo \""+ ta.getNombre() + "\". " +
-			"Se ha producido un error en el acceso al fichero de atributos.");*/
-                break;
-            }
-            case SA_EditarUniqueAtributo_HECHO: {
-                setCambios(true);
-                Vector<Object> ve = (Vector<Object>) datos;
-                TransferAtributo ta = (TransferAtributo) ve.get(0);
-                ActualizaArbol(ta);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarUniqueAtributo, ta);
-                break;
-            }
-            case SA_AnadirSubAtributoAtributo_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirSubAtributoAAtributo, v);
-                factoriaGUI.getGUI(TC.Controlador_AnadirSubAtributoAAtributo, null, false).setInactiva();
-                /*TransferAtributo ta = (TransferAtributo) v.get(1);
-                boolean esta = false;
-                for (TransferAtributo listaAtributo : this.listaAtributos) {
-                    if (ta.getIdAtributo() == listaAtributo.getIdAtributo()) {
-                        esta = true;
-                        break;
-                    }
-                }
-                if (!esta) this.listaAtributos.add(ta);*/
-                break;
-            }
-            case SA_EditarClavePrimariaAtributo_HECHO: {
-                setCambios(true);
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarClavePrimariaAtributo, vt);
-                break;
-            }
-            /*
-             * Restricciones a Atributo
-             */
-            case SA_AnadirRestriccionAAtributo_HECHO: {
-                Vector v = (Vector) datos;
-                TransferAtributo te = (TransferAtributo) v.get(0);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionAtributo, te);
-                break;
-            }
-            case SA_QuitarRestriccionAAtributo_HECHO: {
-                Vector v = (Vector) datos;
-                TransferAtributo te = (TransferAtributo) v.get(0);
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionAtributo, te);
-                break;
-            }
-            case SA_setRestriccionesAAtributo_HECHO: {
-                Vector v = (Vector) datos;
-                TransferAtributo te = (TransferAtributo) v.get(1);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesAtributo, te);
-                break;
-            }
-            case SA_MoverPosicionAtributo_HECHO: {
-                setCambios(true);
-                TransferAtributo ta = (TransferAtributo) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverAtributo_HECHO, ta);
-                break;
-            }
-            default: {
-            	String msj_error = FactoriaMsj.getMsj(mensaje);
-            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
-            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-        }
-    }
-
-    //mensajes que manda el ServivioAgregaciones al controlador
-    public void mensajeDesde_AG(TC mensaje, Object datos) {
-    	Integer n_error = null;
-    	
-        if (mensaje == TC.SAG_RenombrarAgregacion_HECHO || mensaje == TC.SAG_InsertarAgregacion_HECHO || mensaje == TC.SAG_AnadirAtributoAAgregacion_HECHO || mensaje == TC.SAG_EliminarAgregacion_HECHO) {
-            //this.ultimoMensaje = mensaje;
-            //this.ultimosDatos = datos;
-            this.guardarDeshacer();
-
-            this.auxDeshacer = true;
-            if (this.getContFicherosDeshacer() == 1)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
-
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
-        }
-
-        switch (mensaje) {
-            /*case SAG_ListarAgregacion_HECHO: { // igual hay mas clases en las que hay que cambiar la lista de agregaciones
-                //this.factoriaGUI.getGUIPrincipal().setListaAgregaciones((Vector) datos);
-                break;
-            }*/
-
-            case SAG_InsertarAgregacion_HECHO: {
-                setCambios(true);
-                //this.getTheGUIInsertarRelacion().setInactiva();
-                TransferAgregacion ta = (TransferAgregacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarAgregacion, ta);
-                break;
-            }
-
-            case SAG_RenombrarAgregacion_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-                TransferAgregacion tr = (TransferAgregacion) v.get(0);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarAgregacion, tr);
-                break;
-            }
-
-            case SAG_AnadirAtributoAAgregacion_HECHO: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAAgregacion, v);
-                //this.getTheGUIAnadirAtributoEntidad().setInactiva();
-                break;
-            }
-
-            case SAG_EliminarAgregacion_HECHO: {
-                TransferAgregacion tagre = (TransferAgregacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarAgregacion, tagre);
-                ActualizaArbol(null);
-                break;
-            }
-            default: {
-            	String msj_error = FactoriaMsj.getMsj(mensaje);
-            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
-            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-        }
-    }
-
     // Mensajes que mandan los Servicios de Relaciones al Controlador
     public void mensajeDesde_SR(TC mensaje, Object datos) {
         int intAux = 2;
@@ -2120,20 +1884,22 @@ public class Controlador {
             
             Vector v = null;
             Transfer tr = null;
+            Object ob = null;
             
             if(contexto.getDatos() != null) {
             	v = (Vector) contexto.getDatos();
             	tr = (Transfer) v.get(0);
+            	ob = v.size() > 1 ? v : tr; //Si hay más de un componente, ob será todo el vector, si no será tr
             }
             
             //Actualizar el árbol del panel de información
-            ActualizaArbol(tr); //ActualizaArbol en realidad nunca usa el transfer, solo lo usa para ver si no es nulo.
+            ActualizaArbol(tr);
             
-            //Actualizar la GUI
-            this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), tr);
+            //Actualizar la GUI Principal
+            this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), ob);
             
             //Desactivar la GUI específica correspondiente (si existe)
-            Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), tr, false);
+            Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), null, false);
             if(gui != null) gui.setInactiva();
     	}
     }

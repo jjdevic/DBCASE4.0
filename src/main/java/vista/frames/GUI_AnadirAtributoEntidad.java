@@ -212,6 +212,7 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
             clon_atributo2.setClavePrimaria(false);
             v1.add(clon_atributo2);
             v1.add(entidad);
+            entidad.getIdEntidad();
             v1.add(1);
             controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo, v1);
         }
@@ -565,7 +566,9 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     
 	@Override
 	public void setDatos(Object datos) {
-		this.entidad = (TransferEntidad) datos;
+		if(datos != null) {
+			this.entidad = (TransferEntidad) datos;
+		}
 	}
 	
 	public TransferEntidad getEntidad() { return entidad; }

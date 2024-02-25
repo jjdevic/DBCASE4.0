@@ -652,9 +652,9 @@ public class ServiciosAtributos {
 
         // Persistimos la entidad y devolvemos el mensaje
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
-        if (daoEntidades.modificarEntidad(te) == false) return new Contexto(false,  TC.SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades);
+        if (daoEntidades.modificarEntidad(te) == false) return new Contexto(false,  TC.SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades, v);
             //controlador.mensajeDesde_SA(TC.SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades, v);
-        else return new Contexto(true,  TC.SA_EditarClavePrimariaAtributo_HECHO);
+        else return new Contexto(true,  TC.SA_EditarClavePrimariaAtributo_HECHO, v);
         	//controlador.mensajeDesde_SA(TC.SA_EditarClavePrimariaAtributo_HECHO, v);
     }
 
