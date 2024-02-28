@@ -1,6 +1,8 @@
 package modelo.servicios;
 
 
+import controlador.Config;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.TipoDominio;
@@ -17,12 +19,9 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosDominios {
 
-    // Controlador
-    Controlador controlador;
-
     public void ListaDeDominios() {
         Object[] items = modelo.transfers.TipoDominio.values();
-        DAODominios dao = new DAODominios(this.controlador.getPath());
+        DAODominios dao = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista_dominios = dao.ListaDeDominios();
         for (int i = 0; i < items.length; i++) {
             TransferDominio td = new TransferDominio();
@@ -35,7 +34,7 @@ public class ServiciosDominios {
 
     public Vector<TransferDominio> getListaDeDominios() {
         Object[] items = modelo.transfers.TipoDominio.values();
-        DAODominios dao = new DAODominios(this.controlador.getPath());
+        DAODominios dao = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista_dominios = dao.ListaDeDominios();
         for (int i = 0; i < items.length; i++) {
             TransferDominio td = new TransferDominio();
@@ -55,74 +54,70 @@ public class ServiciosDominios {
      * Si el nombre ya existe -> SD_InsertarDominio_ERROR_NombreDeDominioYaExiste
      * Si al usar el DAODominio se produce un error -> SD_InsertarDominio_ERROR_DAO
      */
-    public void anadirDominio(TransferDominio td) {
+    public Contexto anadirDominio(TransferDominio td) {
         if (td.getNombre().isEmpty()) {
-            controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_NombreDeDominioEsVacio, null);
-            return;
+            return new Contexto(false, TC.SD_InsertarDominio_ERROR_NombreDeDominioEsVacio);
         }
         for (int i = 0; i < td.getListaValores().size(); i++) {
             if (td.getListaValores().get(i).toString().equals("")) {
                 Vector v = new Vector();
                 v.add(td);
                 v.add(Lenguaje.text(Lenguaje.EMPTY_VALUE));
-                controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                return;
+                return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_10, v);
             }
         }
-        DAODominios daoDominios = new DAODominios(this.controlador.getPath());
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista = daoDominios.ListaDeDominios();
         for (Iterator it = lista.iterator(); it.hasNext(); ) {
             TransferDominio elem_td = (TransferDominio) it.next();
             if (elem_td.getNombre().toLowerCase().equals(td.getNombre().toLowerCase())) {
-                controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_NombreDeDominioYaExiste, td);
-                return;
+            	return new Contexto(false, TC.SD_InsertarDominio_ERROR_NombreDeDominioYaExiste, td);
             }
         }
         //comprobamos que todos los valores se correspondan con el tipo base
-        if (comprobarTipoBase(td)) {
-            int id = daoDominios.anadirDominio(td);
-            if (id == -1) controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_DAO, null);
+        Contexto ctxt_aux = comprobarTipoBase(td);
+        if (ctxt_aux.isExito()) {
+        	int id = daoDominios.anadirDominio(td);
+            if (id == -1) return new Contexto(false, TC.SD_InsertarDominio_ERROR_DAO);
             else {
                 td.setIdDominio(id);
-                controlador.mensajeDesde_SD(TC.SD_InsertarDominio_HECHO, daoDominios.consultarDominio(td));
+                return new Contexto(true, TC.SD_InsertarDominio_HECHO, daoDominios.consultarDominio(td));
             }
+        } else {
+        	return ctxt_aux;
         }
-
     }
 
     /*
      * Renombrar un dominio
      * -> Recibe el dominio y el nuevo nombre
      */
-    public void renombrarDominio(Vector v) {
+    public Contexto renombrarDominio(Vector v) {
         TransferDominio td = (TransferDominio) v.get(0);
         String nuevoNombre = (String) v.get(1);
         String antiguoNombre = td.getNombre();
         // Si nombre es vacio -> ERROR
         if (nuevoNombre.isEmpty()) {
-            controlador.mensajeDesde_SD(TC.SD_RenombrarDominio_ERROR_NombreDeDominioEsVacio, v);
-            return;
+        	return new Contexto(false, TC.SD_RenombrarDominio_ERROR_NombreDeDominioEsVacio, v);
         }
-        DAODominios daoDominio = new DAODominios(this.controlador.getPath());
+        DAODominios daoDominio = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista = daoDominio.ListaDeDominios();
         if (lista == null) {
-            controlador.mensajeDesde_SD(TC.SD_RenombrarDominio_ERROR_DAODominios, v);
-            return;
+        	return new Contexto(false, TC.SD_RenombrarDominio_ERROR_DAODominios, v);
         }
         for (Iterator it = lista.iterator(); it.hasNext(); ) {
             TransferDominio elem_td = (TransferDominio) it.next();
             if (elem_td.getNombre().toLowerCase().equals(nuevoNombre.toLowerCase()) && (elem_td.getIdDominio() != td.getIdDominio())) {
-                controlador.mensajeDesde_SD(TC.SD_RenombrarDominio_ERROR_NombreDeDominioYaExiste, v);
-                return;
+            	return new Contexto(false, TC.SD_RenombrarDominio_ERROR_NombreDeDominioYaExiste, v);
             }
         }
         td.setNombre(nuevoNombre);
         if (daoDominio.modificarDominio(td) == false) {
             td.setNombre(antiguoNombre);
-            controlador.mensajeDesde_SD(TC.SD_RenombrarDominio_ERROR_DAODominios, v);
+            return new Contexto(false, TC.SD_RenombrarDominio_ERROR_DAODominios, v);
         } else {
             v.add(antiguoNombre);
-            controlador.mensajeDesde_SD(TC.SD_RenombrarDominio_HECHO, v);
+            return new Contexto(true, TC.SD_RenombrarDominio_HECHO, v);
         }
     }
 
@@ -133,21 +128,20 @@ public class ServiciosDominios {
      * Condiciones:
      * Se produce un error al usar el DAODominios -> SD_EliminarDominio_ERROR_DAODominios
      */
-    public void eliminarDominio(TransferDominio td) {
-        DAODominios daoDominios = new DAODominios(this.controlador.getPath());
+    public Contexto eliminarDominio(TransferDominio td) {
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         // Eliminamos el Dominio
         if (daoDominios.borrarDominio(td) == false)
-            controlador.mensajeDesde_SD(TC.SD_EliminarDominio_ERROR_DAODominios, td);
+        	return new Contexto(false, TC.SD_EliminarDominio_ERROR_DAODominios, td);
         else {
             Vector<Object> vector = new Vector<Object>();
             //Vector<Object> vectorAtributosModificados = new Vector<Object>();
             vector.add(td);
-            controlador.mensajeDesde_SD(TC.SD_EliminarDominio_HECHO, vector);
+            return new Contexto(true, TC.SD_EliminarDominio_HECHO, vector);
         }
-        return;
     }
 
-    public void modificarDominio(Vector<Object> v) {
+    public Contexto modificarDominio(Vector<Object> v) {
         TransferDominio td = (TransferDominio) v.get(0);
         Vector<String> nuevosValores = (Vector<String>) v.get(1);
         Vector<String> antiguosValores = td.getListaValores();
@@ -155,78 +149,78 @@ public class ServiciosDominios {
         modelo.transfers.TipoDominio antiguoTipoB = td.getTipoBase();
         // Si nombre es vacio -> ERROR
         if (nuevosValores == null) {
-            controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio, v);
-            return;
+            return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio, v);
         }
         if (nuevoTipoB == null) {
-            controlador.mensajeDesde_SD(TC.SD_ModificarTipoBaseDominio_ERROR_TipoBaseDominioEsVacio, v);
-            return;
+            return new Contexto(false, TC.SD_ModificarTipoBaseDominio_ERROR_TipoBaseDominioEsVacio, v);
         }
         for (int i = 0; i < nuevosValores.size(); i++) {
             if (nuevosValores.get(i).toString().equals("")) {
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_ValorNoValido, v);
-                return;
+                return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_ValorNoValido, v);
             }
         }
-        DAODominios daoDominio = new DAODominios(this.controlador.getPath());
+        DAODominios daoDominio = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista = daoDominio.ListaDeDominios();
         if (lista == null) {
-            controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
-            return;
+            return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
         }
         td.setTipoBase(nuevoTipoB);
         td.setListaValores(nuevosValores);
-        if (comprobarTipoBase(td)) {
+        
+        Contexto ctxt_aux = comprobarTipoBase(td);
+        if (ctxt_aux.isExito()) {
             if (daoDominio.modificarDominio(td) == false) {
                 td.setListaValores(antiguosValores);
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
+                return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
             } else {
                 v.add(antiguosValores);
                 v.add(antiguoTipoB);
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_HECHO, v);
+                return new Contexto(true, TC.SD_ModificarElementosDominio_HECHO, v);
             }
         } else {
             td.setListaValores(antiguosValores);
             td.setTipoBase(antiguoTipoB);
+            return ctxt_aux;
         }
     }
 
     //Se usa para ordenar los valores
-    public void modificarElementosDominio(Vector<Object> v) {
+    public Contexto modificarElementosDominio(Vector<Object> v) {
         TransferDominio td = (TransferDominio) v.get(0);
         Vector<String> nuevosValores = (Vector<String>) v.get(1);
         Vector<String> antiguosValores = td.getListaValores();
         // Si nombre es vacio -> ERROR
         if (nuevosValores == null) {
-            controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio, v);
-            return;
+            return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio, v);
         }
         for (int i = 0; i < nuevosValores.size(); i++) {
             if (nuevosValores.get(i).toString().equals("")) {
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_ValorNoValido, v);
-                return;
+                return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_ValorNoValido, v);
             }
         }
-        DAODominios daoDominio = new DAODominios(this.controlador.getPath());
+        DAODominios daoDominio = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista = daoDominio.ListaDeDominios();
         if (lista == null) {
-            controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
-            return;
+            return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
         }
 
         td.setListaValores(nuevosValores);
-        if (comprobarTipoBase(td)) {
+        Contexto ctxt_aux = comprobarTipoBase(td);
+        if (ctxt_aux.isExito()) {
             if (daoDominio.modificarDominio(td) == false) {
                 td.setListaValores(antiguosValores);
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
+                return new Contexto(false, TC.SD_ModificarElementosDominio_ERROR_DAODominios, v);
             } else {
                 v.add(antiguosValores);
-                controlador.mensajeDesde_SD(TC.SD_ModificarElementosDominio_HECHO, v);
+                return new Contexto(true, TC.SD_ModificarElementosDominio_HECHO, v);
             }
-        } else td.setListaValores(antiguosValores);
+        } else {
+        	td.setListaValores(antiguosValores);
+        	return ctxt_aux;
+        }
     }
 
-    private boolean comprobarTipoBase(TransferDominio td) {
+    private Contexto comprobarTipoBase(TransferDominio td) {
         Vector listaValores = td.getListaValores();
         modelo.transfers.TipoDominio tipoBase = td.getTipoBase();
         switch (tipoBase) {
@@ -240,8 +234,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.INCORRECT_NUMBER));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_11, v);
                     }
                 }
                 break;
@@ -264,8 +257,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5, 1.5E100, -1, -0.5");
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_1, v);
                     }
                 }
                 break;
@@ -278,16 +270,14 @@ public class ServiciosDominios {
                             Vector v = new Vector();
                             v.add(td);
                             v.add(Lenguaje.text(Lenguaje.INCORRECT_BIT_VALUE));
-                            controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                            return false;
+                            return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_2, v);
                         }
 
                     } catch (Exception e) {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.INCORRECT_BIT_VALUE));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_2, v);
                     }
                 }
                 break;
@@ -299,8 +289,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                     } else {
                         s = s.replaceAll("'", "");
                         try {
@@ -311,15 +300,13 @@ public class ServiciosDominios {
                                 Vector v = new Vector();
                                 v.add(td);
                                 v.add(Lenguaje.text(Lenguaje.INCORRECT_DATE));
-                                controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                                return false;
+                                return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_4, v);
                             }
                         } catch (Exception e) {
                             Vector v = new Vector();
                             v.add(td);
                             v.add(Lenguaje.text(Lenguaje.INCORRECT_DATE));
-                            controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                            return false;
+                            return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_4, v);
                         }
                     }
                 }
@@ -332,8 +319,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                     } else {
                         s = s.replaceAll("'", "");
                         // comprueba que sean correctos
@@ -344,8 +330,7 @@ public class ServiciosDominios {
                             Vector v = new Vector();
                             v.add(td);
                             v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '00:00:00.999', '22', '22:05', '22:59:59'");
-                            controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                            return false;
+                            return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_5, v);
                         }
                     }
                 }
@@ -360,8 +345,7 @@ public class ServiciosDominios {
                             Vector v = new Vector();
                             v.add(td);
                             v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                            controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                            return false;
+                            return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                         } else {
                             s = s.replaceAll("'", "");
                             //separo hasta el espacio, la fecha y la hora
@@ -396,8 +380,7 @@ public class ServiciosDominios {
                                     v.add(td);
                                     v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) +
                                             " '20201125','281125 12','281125 12:34:00','281125 12:34:00.200' ");
-                                    controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                                    return false;
+                                    return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_6, v);
                                 }
                             } else {//es sólo la fecha
                                 try {
@@ -410,8 +393,7 @@ public class ServiciosDominios {
                                     v.add(td);
                                     v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) +
                                             " '20231125','20231125 12','20201125 12:34:00','20191125 12:34:00.200' ");
-                                    controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                                    return false;
+                                    return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_7, v);
                                 }
                             }
                         }
@@ -420,8 +402,7 @@ public class ServiciosDominios {
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) +
                                 " '20191125','20251125 12','20121125 12:34:00','20081125 12:34:00.200' ");
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_8, v);
                     }
                 }
 
@@ -441,8 +422,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                     }
                 }
                 break;
@@ -454,8 +434,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                     }
                 }
                 break;
@@ -467,8 +446,7 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.QUOTATION_MARKS));
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_3, v);
                     }
                 }
                 break;
@@ -484,21 +462,12 @@ public class ServiciosDominios {
                         Vector v = new Vector();
                         v.add(td);
                         v.add(Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5");
-                        controlador.mensajeDesde_SD(TC.SD_InsertarDominio_ERROR_ValorNoValido, v);
-                        return false;
+                        return new Contexto(false, TC.SD_InsertarDominio_ERROR_ValorNoValido_9, v);
                     }
                 }
                 break;
             }
         }
-        return true;
-    }
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
+        return new Contexto(true, null);
     }
 }

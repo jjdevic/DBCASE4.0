@@ -20,7 +20,6 @@ public class FactoriaServicios {
         servicioRelaciones = new ServiciosRelaciones();
         servicioRelaciones.setControlador(controlador);
         servicioDominios = new ServiciosDominios();
-        servicioDominios.setControlador(controlador);
         servicioSistema = new GeneradorEsquema();
         servicioSistema.reset();
         servicioSistema.setControlador(controlador);
