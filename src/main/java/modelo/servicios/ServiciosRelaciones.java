@@ -274,8 +274,7 @@ public class ServiciosRelaciones {
     public boolean esDebil(TransferEntidad te) {
         DAORelaciones daoRelaciones = new DAORelaciones(this.controlador.getPath());
         Vector<TransferRelacion> listaRelaciones = daoRelaciones.ListaDeRelaciones();
-        ServiciosEntidades sEntidades = new ServiciosEntidades();
-        sEntidades.setControlador(controlador);
+        
         for (int i = 0; i < listaRelaciones.size(); i++) {//para cada relación en el sistema
             TransferRelacion tr = listaRelaciones.get(i);
             if (tr.getTipo().equals("Debil")) {//si esta relación es débil
@@ -289,7 +288,7 @@ public class ServiciosRelaciones {
         DAORelaciones daoRelaciones = new DAORelaciones(this.controlador.getPath());
         Vector<TransferRelacion> listaRelaciones = daoRelaciones.ListaDeRelaciones();
         ServiciosEntidades sEntidades = new ServiciosEntidades();
-        sEntidades.setControlador(controlador);
+        
         for (int i = 0; i < listaRelaciones.size(); i++) {//para cada relación en el sistema
             TransferRelacion tr = listaRelaciones.get(i);
             if (tr.getTipo().equals("Debil")) {//si esta relación es débil
@@ -316,7 +315,7 @@ public class ServiciosRelaciones {
         Vector<EntidadYAridad> vectorEntidadesAridades = tr.getListaEntidadesYAridades();
         int numero = 0;
         ServiciosEntidades sEntidades = new ServiciosEntidades();
-        sEntidades.setControlador(controlador);
+        
         for (int j = 0; j < vectorEntidadesAridades.size(); j++) {
             int entidad = vectorEntidadesAridades.get(j).getEntidad();
             if (sEntidades.esDebil(entidad))
@@ -329,7 +328,7 @@ public class ServiciosRelaciones {
         Vector<EntidadYAridad> vectorEntidadesAridades = tr.getListaEntidadesYAridades();
         int entidad = 0;
         ServiciosEntidades sEntidades = new ServiciosEntidades();
-        sEntidades.setControlador(controlador);
+        
         boolean encontrado = false;
         int j = 0;
         while ((j < vectorEntidadesAridades.size()) && (!encontrado)) {
@@ -347,7 +346,7 @@ public class ServiciosRelaciones {
             rel.add(tr.getIdRelacion()); //si no, se a�ade y exploramos las entidades que tiene para ver sus relaciones
             Vector<EntidadYAridad> entidadesRelacionadas = tr.getListaEntidadesYAridades();
             ServiciosEntidades serEn = new ServiciosEntidades();
-            serEn.setControlador(controlador);
+            
             Vector<TransferEntidad> entidades = serEn.ListaDeEntidadesNOVoid();
             Vector<TransferRelacion> relaciones = this.ListaDeRelacionesNoVoid();
             for (int i = 0; i < entidadesRelacionadas.size(); ++i) {//recorremos entidades que participan en la relacion que estamos estudiando

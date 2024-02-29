@@ -735,7 +735,7 @@ public class Controlador {
             }
             case GUIInsertarEntidadDebil_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
-                boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te);
+                boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te).isExito();
                 factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, exito, null) ,false);
                 ActualizaArbol(te);
                 factoriaServicios.getServicioSistema().reset();
@@ -1072,148 +1072,6 @@ public class Controlador {
                     String str = file.getAbsolutePath();
                     file.delete();
                 }
-            }
-        }
-    }
-
-    // Mensajes que mandan los Servicios de Entidades al Controlador
-    public void mensajeDesde_SE(TC mensaje, Object datos) {
-        int intAux = 2;
-        if (mensaje == TC.SE_EliminarEntidad_HECHO) {
-            Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion de la relacion venga de eliminar entidad debil
-            intAux = (int) aux.get(2);
-        }
-
-        if (mensaje == TC.SE_MoverPosicionEntidad_HECHO || mensaje == TC.SE_InsertarEntidad_HECHO || mensaje == TC.SE_RenombrarEntidad_HECHO || mensaje == TC.SE_AnadirAtributoAEntidad_HECHO || (mensaje == TC.SE_EliminarEntidad_HECHO && intAux == 0)) {
-            //this.ultimoMensaje = mensaje;
-            //this.ultimosDatos = datos;
-
-            //this.borrarSiguientesDeshacer();
-
-            this.guardarDeshacer();
-
-            this.auxDeshacer = true;
-
-            if (this.getContFicherosDeshacer() == 1)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
-
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
-        }
-
-        switch (mensaje) {
-            case SE_InsertarEntidad_HECHO: {
-            	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                setCambios(true);
-                TransferEntidad te = (TransferEntidad) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarEntidad, te);
-                break;
-            }
-            case SE_RenombrarEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarEntidad, te);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SE_DebilitarEntidad_HECHO: {
-                TransferEntidad te = (TransferEntidad) datos;
-                setCambios(true);
-                ActualizaArbol(te);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_DebilitarEntidad, te);
-                break;
-            }
-            case SE_AnadirAtributoAEntidad_HECHO: {
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SE_EliminarEntidad_HECHO: {
-                setCambios(true);
-                ActualizaArbol(null);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarEntidad, datos);
-                break;
-            }
-            case SE_MoverPosicionEntidad_HECHO: {
-                setCambios(true);
-                TransferEntidad te = (TransferEntidad) datos;
-                /*this.posAux = te.getPosicion();
-                for (TransferEntidad listaEntidade : this.listaEntidades) {
-                    if (Objects.equals(te.getNombre(), listaEntidade.getNombre())) {
-                        posAux = listaEntidade.getPosicion();
-                    }
-                }*/
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverEntidad_HECHO, te);
-                break;
-            }
-            case SE_AnadirRestriccionAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionEntidad, te);
-                //this.getTheGUIAnadirRestriccionAEntidad().setInactiva();
-                break;
-            }
-            case SE_QuitarRestriccionAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionEntidad, te);
-                break;
-            }
-            case SE_setRestriccionesAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(1);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesEntidad, te);
-                break;
-            }
-            case SE_AnadirUniqueAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                TransferEntidad clon_entidad = te.clonar();
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirUniqueEntidad, clon_entidad);
-                //this.getTheGUIAnadirRestriccionAEntidad().setInactiva();
-                break;
-            }
-            case SE_QuitarUniqueAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                TransferEntidad clon_entidad = te.clonar();
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarUniqueEntidad, clon_entidad);
-                break;
-            }
-            case SE_setUniquesAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(1);
-                TransferEntidad clon_entidad = te.clonar();
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniquesEntidad, clon_entidad);
-                break;
-            }
-            case SE_setUniqueUnitarioAEntidad_HECHO: {
-                Vector v = (Vector) datos;
-                TransferEntidad te = (TransferEntidad) v.get(0);
-                TransferEntidad clon_entidad = te.clonar();
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniqueUnitarioEntidad, clon_entidad);
-                break;
-            }
-            default: {
-            	String msj_error = FactoriaMsj.getMsj(mensaje);
-            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
-            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
             }
         }
     }
@@ -1849,7 +1707,6 @@ public class Controlador {
 				this.mensajeDesde_GUI(TC.GUIRenombrarEntidad_Click_BotonRenombrar, v);
 				break;
 			}
-			
 			case SE_AnadirAtributoAEntidad_HECHO: {
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -1858,7 +1715,6 @@ public class Controlador {
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarAtributo,v);	
 				break;
 			}
-			
 			case SE_EliminarEntidad_HECHO:{
 				Vector<Object> v2 = (Vector<Object>) datos;
 				Vector atributos = this.auxTransferAtributos;
@@ -1908,8 +1764,6 @@ public class Controlador {
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_MoverEntidad, te);
 				this.factoriaGUI.getGUIPrincipal().getPanelDiseno().repaint();
 			}*/
-
-			
 			/*case SA_EliminarAtributo_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -1943,7 +1797,6 @@ public class Controlador {
 				
 				break;
 			}
-			
 			case SE_setUniqueUnitarioAEntidad_HECHO:{//es el ultimo mensaje cuando se renombra un atributo
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -1962,7 +1815,6 @@ public class Controlador {
 				}
 				
 			}
-			
 			case SA_EditarUniqueAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
 				Vector<Object> v = new Vector<Object>();
@@ -1990,7 +1842,6 @@ public class Controlador {
 				}
 				break;
 			}
-			
 			case SA_EditarDominioAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
 				Vector<Object> v = new Vector<Object>();
@@ -1999,25 +1850,21 @@ public class Controlador {
 				this.mensajeDesde_GUI(TC.GUIEditarDominioAtributo_Click_BotonEditar, v);
 				break;
 			}
-			
 			case SA_EditarCompuestoAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
 				if (ta.getCompuesto() != this.antiguoCompuestoAtribuo) mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarCompuestoAtributo,ta);
 				break;
 			}
-			
 			case SA_EditarMultivaloradoAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
 				if (ta.getMultivalorado() != this.antiguoMultivaloradoAtribuo) mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarMultivaloradoAtributo,ta);
 				break;
 			}
-			
 			case SA_EditarNotNullAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
 				if (ta.getNotnull() != this.antiguoNotnullAtribuo) mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarNotNullAtributo,ta);
 				break;
 			}
-			
 			case SA_AnadirSubAtributoAtributo_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2026,20 +1873,17 @@ public class Controlador {
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarAtributo,v);	
 				break;
 			}
-			
 			case SA_EditarClavePrimariaAtributo_HECHO:{
 				Vector<Object> v = (Vector<Object>) datos;
 				TransferAtributo ta = (TransferAtributo) v.get(0);
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo, v);
 				break;
 			}
-			
 			case SD_InsertarDominio_HECHO:{
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarDominio, datos);
 				this.factoriaGUI.getGUIPrincipal().actualizaArbolDominio(null);
 				break;
 			}
-			
 			case SD_RenombrarDominio_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2049,7 +1893,6 @@ public class Controlador {
 				this.factoriaGUI.getGUIPrincipal().actualizaArbolDominio(null);
 				break;
 			}
-			
 			case SD_EliminarDominio_HECHO:{
 				Vector<Object> v = (Vector<Object>) datos;
 				TransferDominio td = (TransferDominio) v.get(0);
@@ -2057,7 +1900,6 @@ public class Controlador {
 				this.factoriaGUI.getGUIPrincipal().actualizaArbolDominio(null);
 				break;
 			}
-			
 			case SR_InsertarRelacion_HECHO:{
 				TransferRelacion tr = (TransferRelacion) datos;
 				Vector<Object> v = new Vector<Object>();
@@ -2066,8 +1908,6 @@ public class Controlador {
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarRelacionNormal, v);
 				break;
 			}
-			
-			
 			case SR_RenombrarRelacion_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2076,9 +1916,7 @@ public class Controlador {
 				this.mensajeDesde_GUI(TC.GUIRenombrarRelacion_Click_BotonRenombrar,v);
 				break;
 			}
-			
 			//case SR_DebilitarRelacion_HECHO:{}
-			
 			case SR_AnadirAtributoARelacion_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2088,7 +1926,6 @@ public class Controlador {
 				break;
 				
 			}
-			
 			case SR_EstablecerEntidadPadre_HECHO:{
 				Vector<Object> v2 = (Vector<Object>) datos;
 				TransferRelacion tr = (TransferRelacion) v2.get(0);
@@ -2096,7 +1933,6 @@ public class Controlador {
 				break;
 				
 			}
-			
 			case SR_QuitarEntidadPadre_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				TransferRelacion tr = (TransferRelacion) datos;
@@ -2116,25 +1952,20 @@ public class Controlador {
 				break;
 				
 			}
-			
 			case SR_AnadirEntidadHija_HECHO:{
 				Vector<Object> v = (Vector<Object>) datos;
 				this.mensajeDesde_GUI(TC.GUIQuitarEntidadHija_ClickBotonQuitar, v);
 				break;
 			}
-			
 			case SR_QuitarEntidadHija_HECHO:{
 				Vector<Object> v = (Vector<Object>) datos;
 				this.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir, v);
 				break;
 			}
-			
 			case SR_EliminarRelacionIsA_HECHO:{
 				TransferRelacion tr = (TransferRelacion) datos;
-				
-				
+
 				//obtenemos el padre
-				
 				TransferEntidad tP = this.padreAntiguo;
 				
 				//obtenemos las hijas
@@ -2152,10 +1983,7 @@ public class Controlador {
 					this.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir, v2);
 				}
 				break;
-				
-				
 			}
-			
 			case SR_EliminarRelacionNormal_HECHO:{
 				TransferRelacion tr = (TransferRelacion) datos;
 				
@@ -2188,11 +2016,8 @@ public class Controlador {
 					v2.add("10");
 					this.mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v2);
 				}
-				
 				break;
-				
 			}
-			
 			case SR_InsertarRelacionIsA_HECHO:{
 				TransferRelacion tr = (TransferRelacion) datos;
 				Vector<Object> v = new Vector<Object>();
@@ -2200,9 +2025,7 @@ public class Controlador {
 				v.add(true);// se uede enviar el atributo this.confirmarEliminaciones
 				this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarRelacionIsA, v);
 				break;
-				
 			}
-			
 			case SR_AnadirEntidadARelacion_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2211,9 +2034,7 @@ public class Controlador {
 				v.add(v2.get(4));
 				this.mensajeDesde_GUI(TC.GUIQuitarEntidadARelacion_ClickBotonQuitar, v);
 				break;
-				
 			}
-			
 			case SR_QuitarEntidadARelacion_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;
@@ -2228,9 +2049,7 @@ public class Controlador {
 				v.add(false);
 				this.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, v);
 				break;
-				
 			}
-			
 			case SR_EditarCardinalidadEntidad_HECHO:{
 				Vector<Object> v = new Vector<Object>();
 				Vector<Object> v2 = (Vector<Object>) datos;

@@ -15,7 +15,6 @@ public class FactoriaServicios {
 	//TODO quitar este parámetro de controlador cuando los servicios ya no lo necesiten
 	public FactoriaServicios(Controlador controlador) {
 		servicioEntidades = new ServiciosEntidades();
-        servicioEntidades.setControlador(controlador);
         servicioAtributos = new ServiciosAtributos();
         servicioRelaciones = new ServiciosRelaciones();
         servicioRelaciones.setControlador(controlador);
