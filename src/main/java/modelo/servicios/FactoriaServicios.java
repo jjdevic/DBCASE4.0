@@ -12,19 +12,19 @@ public class FactoriaServicios {
 	private ServiciosReporte servicioReporte;
 	private ServiciosAgregaciones servicioAgregaciones;
 	
-	//TODO quitar este parámetro de controlador cuando los servicios ya no lo necesiten
 	public FactoriaServicios(Controlador controlador) {
 		servicioEntidades = new ServiciosEntidades();
         servicioAtributos = new ServiciosAtributos();
         servicioRelaciones = new ServiciosRelaciones();
-        servicioRelaciones.setControlador(controlador);
         servicioDominios = new ServiciosDominios();
+        servicioAgregaciones = new ServiciosAgregaciones();
+        
         servicioSistema = new GeneradorEsquema();
         servicioSistema.reset();
-        servicioSistema.setControlador(controlador);
         servicioReporte = new ServiciosReporte();
+        
         servicioReporte.setControlador(controlador);
-        servicioAgregaciones = new ServiciosAgregaciones();
+        servicioSistema.setControlador(controlador);
 	}
 	
 	public ServiciosEntidades getServicioEntidades() {

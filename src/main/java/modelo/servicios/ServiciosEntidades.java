@@ -1,6 +1,6 @@
 package modelo.servicios;
 
-import controlador.Config;
+import misc.Config;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;

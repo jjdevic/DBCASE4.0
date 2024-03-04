@@ -2,12 +2,12 @@ package vista.componentes.GUIPanels;
 
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import utils.UtilsFunc;
 import vista.Lenguaje;
 import vista.iconos.*;
 import vista.tema.Theme;

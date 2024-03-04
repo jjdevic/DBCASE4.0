@@ -470,6 +470,8 @@ public enum TC {
     SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio,
     SD_ModificarElementosDominio_ERROR_ValorNoValido,
     SD_ModificarElementosDominio_HECHO,
+    
+    ERROR_SERVICIOS,
 
     //---------------------------------------------------------------------------------
     // Mensajes desde los Servicios de Relaciones al Controlador

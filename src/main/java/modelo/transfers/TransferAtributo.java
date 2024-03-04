@@ -1,7 +1,6 @@
 package modelo.transfers;
 
-import controlador.Config;
-import controlador.Controlador;
+import misc.Config;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

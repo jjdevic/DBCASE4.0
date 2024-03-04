@@ -6,11 +6,11 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
-import utils.UtilsFunc;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 

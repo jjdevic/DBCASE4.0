@@ -1,6 +1,6 @@
 package persistencia;
 
-import controlador.Config;
+import misc.Config;
 import controlador.Controlador;
 import modelo.transfers.TransferAtributo;
 import org.w3c.dom.*;

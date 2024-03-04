@@ -39,7 +39,7 @@ public class ComandoClickModificarEntidad extends Comando{
             }
             TransferEntidad te2 = (TransferEntidad) v.get(4);
             TransferRelacion tr = (TransferRelacion) v.get(3);
-            if (getFactoriaServicios().getServicioRelaciones().SePuedeAnadirRelacion(tr)) {
+            if (getFactoriaServicios().getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito()) {
                 Vector<Object> v2 = new Vector<Object>();
                 v2.add(tr);
                 v2.add(te);

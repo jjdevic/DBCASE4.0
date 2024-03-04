@@ -1,4 +1,5 @@
-package controlador;
+package misc;
+
 
 public class Config {
 	

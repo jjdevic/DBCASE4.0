@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import controlador.Comando;
 import controlador.Controlador;
-import utils.UtilsFunc;
+import misc.UtilsFunc;
 
 public class ComandoClickAbrir extends Comando {
 

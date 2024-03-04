@@ -2,14 +2,12 @@ package controlador;
 
 import modelo.servicios.*;
 import modelo.transfers.*;
-import persistencia.EntidadYAridad;
-
 import org.w3c.dom.Document;
 
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
-import utils.UtilsFunc;
+import misc.*;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
 import vista.frames.*;
@@ -925,7 +923,7 @@ public class Controlador {
             }
             case GUIInsertarRelacionDebil_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
-                boolean exito = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr);
+                boolean exito = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito();
                 factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, null, exito) ,false);
                 ActualizaArbol(tr);
                 factoriaServicios.getServicioSistema().reset();
@@ -1112,14 +1110,12 @@ public class Controlador {
             else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
         }
 
-
         switch (mensaje) {
             case SR_InsertarRelacion_HECHO: {
                 setCambios(true);
                 factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
                 Vector<Object> v = (Vector<Object>) datos;
                 TransferRelacion te = (TransferRelacion) v.get(0);
-                //this.listaRelaciones.add(te);//ojo
                 this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
                 break;
             }

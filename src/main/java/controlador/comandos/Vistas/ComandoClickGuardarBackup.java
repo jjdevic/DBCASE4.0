@@ -9,7 +9,7 @@ import java.util.Objects;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import utils.UtilsFunc;
+import misc.UtilsFunc;
 
 public class ComandoClickGuardarBackup extends Comando {
 

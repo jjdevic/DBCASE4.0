@@ -3,13 +3,13 @@ package vista.componentes;
 
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferConexion;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import utils.UtilsFunc;
 import vista.Lenguaje;
 import vista.iconos.IconLabel;
 import vista.iconos.perspective.allIcon;

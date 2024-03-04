@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import utils.UtilsFunc;
+import misc.UtilsFunc;
 import vista.Lenguaje;
 
 public class ComandoWorkspaceNuevo extends Comando {

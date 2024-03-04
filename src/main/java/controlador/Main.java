@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import utils.UtilsFunc;
+import misc.UtilsFunc;
 import vista.Lenguaje;
 import vista.tema.Theme;
 
