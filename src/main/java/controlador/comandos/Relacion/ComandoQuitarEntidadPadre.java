@@ -3,6 +3,7 @@ package controlador.comandos.Relacion;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.TransferEntidad;
@@ -16,7 +17,8 @@ public class ComandoQuitarEntidadPadre extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferRelacion tr = (TransferRelacion) datos;
         //this.idPadreAntigua = tr.getEntidadYAridad(0).getEntidad();
         Vector<EntidadYAridad> eyaV = tr.getListaEntidadesYAridades();
@@ -44,9 +46,9 @@ public class ComandoQuitarEntidadPadre extends Comando {
         }
         //this.hijosAntiguo = th;
 
-        getFactoriaServicios().getServicioRelaciones().quitarEntidadPadreEnRelacionIsA(tr);
-        ActualizaArbol(tr);
+        resultado = getFactoriaServicios().getServicioRelaciones().quitarEntidadPadreEnRelacionIsA(tr);
         getFactoriaServicios().getServicioSistema().reset();
+        return resultado;
 	}
 
 }

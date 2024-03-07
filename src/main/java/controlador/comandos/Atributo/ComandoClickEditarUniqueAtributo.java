@@ -17,7 +17,8 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		Vector<Object> ve = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) ve.get(0);
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
@@ -52,14 +53,15 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
                 Vector v = new Vector();
                 v.add(te);
                 v.add(ta);
-                getFactoriaServicios().getServicioEntidades().setUniqueUnitario(v);
+                resultado = getFactoriaServicios().getServicioEntidades().setUniqueUnitario(v);
             } else {//esRelacion
                 Vector v = new Vector();
                 v.add(tr);
                 v.add(ta);
-                getFactoriaServicios().getServicioRelaciones().setUniqueUnitario(v);
+                resultado = getFactoriaServicios().getServicioRelaciones().setUniqueUnitario(v);
             }
         }
+        return resultado;
 	}
 
 }

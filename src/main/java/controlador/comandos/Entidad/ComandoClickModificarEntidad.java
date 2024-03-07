@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
@@ -18,7 +19,8 @@ public class ComandoClickModificarEntidad extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferEntidad te = (TransferEntidad) v.get(0);
         boolean eraDebil = te.isDebil();
@@ -35,7 +37,7 @@ public class ComandoClickModificarEntidad extends Comando{
         if (debilitar) {
             boolean debilitada = false;
             if (!eraDebil) {
-            	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
+            	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
             }
             TransferEntidad te2 = (TransferEntidad) v.get(4);
             TransferRelacion tr = (TransferRelacion) v.get(3);
@@ -64,9 +66,9 @@ public class ComandoClickModificarEntidad extends Comando{
                 v3.add(true);
                 v3.add(false);
                 v3.add(false);
-                getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v3, 1);//mandamos un 1, se anade la relacion por otro metodo
+                resultado = getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v3, 1);//mandamos un 1, se anade la relacion por otro metodo
             } else if (!eraDebil) {
-            	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
+            	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
             }
         } else if (eraDebil) {
         	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
@@ -76,13 +78,12 @@ public class ComandoClickModificarEntidad extends Comando{
                 Vector<EntidadYAridad> eya = tr.getListaEntidadesYAridades();
                 for (EntidadYAridad entidadYAridad : eya) {
                     if (entidadYAridad.getEntidad() == te.getIdEntidad() && tr.getTipo().equals("Debil"))
-                        getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+                        resultado = getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
                 }
             }
-
         }
-        ActualizaArbol((Transfer) v.get(0));
         getFactoriaServicios().getServicioSistema().reset();
+        return resultado;
 	}
 
 }

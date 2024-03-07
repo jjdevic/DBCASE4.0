@@ -3,6 +3,7 @@ package controlador.comandos.Otros;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import controlador.Factorias.FactoriaTCCtrl;
@@ -19,7 +20,7 @@ public class ComandoEditarElemento extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		if (datos instanceof TransferEntidad) {
             TransferEntidad te = (TransferEntidad) datos;
             Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarEntidad), datos, false);
@@ -67,6 +68,7 @@ public class ComandoEditarElemento extends Comando{
             gui.setDatos(ta);
             gui.setActiva();
         }
+		return null;
 	}
 
 }

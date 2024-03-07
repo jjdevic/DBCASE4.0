@@ -14,7 +14,8 @@ public class ComandoEliminarSubatributos extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferAtributo ta = (TransferAtributo) datos;
 		Vector lista_atributos = ta.getListaComponentes();
         int cont = 0;
@@ -28,8 +29,8 @@ public class ComandoEliminarSubatributos extends Comando{
         }
         // Modificamos el atributo
         ta.getListaComponentes().clear();
-        Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
-        tratarContexto(ctxt);
+        resultado = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
+        return resultado;
 	}
 
 }

@@ -1,6 +1,5 @@
 package misc;
 
-
 public class Config {
 	
 	public static String path;

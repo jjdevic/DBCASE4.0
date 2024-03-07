@@ -19,7 +19,8 @@ public class ComandoClickEliminarDominio extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferDominio td = (TransferDominio) datos;
 		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 
 				UtilsFunc.crearVector(Lenguaje.text(Lenguaje.DOMAIN) + " \"" + td.getNombre() + "\" " + Lenguaje.text(Lenguaje.REMOVE_FROM_SYSTEM) + "\n" +
@@ -53,8 +54,9 @@ public class ComandoClickEliminarDominio extends Comando{
                 cont++;
             }
             // Eliminamos el dominio
-            getFactoriaServicios().getServicioDominios().eliminarDominio(td);
+            resultado = getFactoriaServicios().getServicioDominios().eliminarDominio(td);
         }
+        return resultado;
 	}
 
 }

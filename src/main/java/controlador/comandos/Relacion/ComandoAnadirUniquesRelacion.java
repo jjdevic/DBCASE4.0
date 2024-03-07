@@ -3,6 +3,7 @@ package controlador.comandos.Relacion;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
@@ -16,7 +17,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		Vector v = (Vector<Transfer>) datos;
         getFactoriaServicios().getServicioRelaciones().setUniques(v);
         TransferRelacion relacion = (TransferRelacion) v.get(1);
@@ -68,6 +69,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
                 }
             }
         }
+        return null;
 	}
 
 }

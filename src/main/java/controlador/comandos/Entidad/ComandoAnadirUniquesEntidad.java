@@ -3,6 +3,7 @@ package controlador.comandos.Entidad;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
@@ -16,7 +17,7 @@ public class ComandoAnadirUniquesEntidad extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		Vector v = (Vector<Transfer>) datos;
         getFactoriaServicios().getServicioEntidades().setUniques(v);
         TransferEntidad entidad = (TransferEntidad) v.get(1);
@@ -83,6 +84,7 @@ public class ComandoAnadirUniquesEntidad extends Comando {
                 }
             }
         }
+        return null;
 	}
 
 }

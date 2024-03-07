@@ -1,6 +1,7 @@
 package controlador.comandos.Vistas;
 
 import static vista.utils.Otros.DIRECTORY;
+
 import static vista.utils.Otros.INCIDENCES;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
 import misc.UtilsFunc;
 
@@ -18,7 +20,7 @@ public class ComandoClickGuardar extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		
 		String guardarPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
@@ -42,6 +44,7 @@ public class ComandoClickGuardar extends Comando{
             ctrl.setLimiteFicherosDeshacer(0);
             ctrl.guardarDeshacer();
         }
+        return null;
 	}
 
 }

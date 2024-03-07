@@ -16,7 +16,8 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferAtributo ta = (TransferAtributo) datos;
 		boolean actuar = true;
         // Si es un atributo compuesto y tiene subatributos al ponerlo como simple hay que eliminar sus atributos
@@ -29,13 +30,13 @@ public class ComandoClickEditarCompuestoAtrib extends Comando{
             int respuesta = gui.setActiva(0);
             if(respuesta != 0) {
             	actuar = false;
-            	ta.getListaComponentes().clear(); //TODO mirar esto
+            	ta.getListaComponentes().clear();
             }
         }
         
         if(actuar) {
-            Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
-            tratarContexto(ctxt);
+            resultado = getFactoriaServicios().getServicioAtributos().editarCompuestoAtributo(ta);
         }
+        return resultado;
 	}
 }

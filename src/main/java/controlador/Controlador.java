@@ -1074,235 +1074,6 @@ public class Controlador {
         }
     }
 
-    // Mensajes que mandan los Servicios de Relaciones al Controlador
-    public void mensajeDesde_SR(TC mensaje, Object datos) {
-        int intAux = 2;
-        Integer n_error = null;
-        TransferRelacion taux = new TransferRelacion();
-        
-        if (mensaje == TC.SR_EliminarRelacionNormal_HECHO) {
-            Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion de la relacion venga de eliminar entidad debil
-            intAux = (int) aux.get(1);
-        }
-
-        if (mensaje == TC.SR_InsertarRelacion_HECHO) {
-            Vector<Object> aux = (Vector<Object>) datos;//auxiliar para el caso de que la eliminacion de la relacion venga de eliminar entidad debil
-            //intAux = (int) aux.get(1);
-            taux = (TransferRelacion) aux.get(0);
-        }
-
-        if (mensaje == TC.SR_AnadirEntidadARelacion_HECHO) {
-            Vector<Object> aux = (Vector<Object>) datos;
-            //intAux = (int) aux.get(aux.size()-1);
-        }
-
-        if (mensaje == TC.SR_MoverPosicionRelacion_HECHO || mensaje == TC.SR_InsertarRelacion_HECHO || mensaje == TC.SR_EliminarRelacion_HECHO || mensaje == TC.SR_RenombrarRelacion_HECHO || mensaje == TC.SR_AnadirAtributoARelacion_HECHO || mensaje == TC.SR_EstablecerEntidadPadre_HECHO || mensaje == TC.SR_QuitarEntidadPadre_HECHO || mensaje == TC.SR_AnadirEntidadHija_HECHO || mensaje == TC.SR_QuitarEntidadHija_HECHO || mensaje == TC.SR_EliminarRelacionIsA_HECHO || (mensaje == TC.SR_EliminarRelacionNormal_HECHO && intAux == 0) || mensaje == TC.SR_InsertarRelacionIsA_HECHO || mensaje == TC.SR_AnadirEntidadARelacion_HECHO || mensaje == TC.SR_QuitarEntidadARelacion_HECHO || mensaje == TC.SR_EditarCardinalidadEntidad_HECHO) {
-            //this.ultimoMensaje = mensaje;
-            //this.ultimosDatos = datos;
-            this.guardarDeshacer();
-            this.auxDeshacer = true;
-            if (this.getContFicherosDeshacer() == 1)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
-
-            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
-                this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
-            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
-        }
-
-        switch (mensaje) {
-            case SR_InsertarRelacion_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferRelacion te = (TransferRelacion) v.get(0);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
-                break;
-            }
-            case SR_EliminarRelacion_HECHO: {
-                setCambios(true);
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacion, tr);
-                break;
-            }
-            case SR_RenombrarRelacion_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_RenombrarRelacion, tr);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SR_DebilitarRelacion_HECHO: {
-                setCambios(true);
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_DebilitarRelacion, tr);
-                ActualizaArbol(tr);
-                break;
-            }
-            case SR_AnadirRestriccionARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion te = (TransferRelacion) v.get(0);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirRestriccionRelacion, te);
-                //this.getTheGUIAnadirRestriccionAAtributo().setInactiva();
-                break;
-            }
-            case SR_QuitarRestriccionARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion te = (TransferRelacion) v.get(0);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarRestriccionRelacion, te);
-                break;
-            }
-            case SR_setRestriccionesARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion te = (TransferRelacion) v.get(1);
-                setCambios(true);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setRestriccionesRelacion, te);
-                break;
-            }
-            case SR_MoverPosicionRelacion_HECHO: {
-                setCambios(true);
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_MoverRelacion_HECHO, tr);
-                break;
-            }
-            case SR_AnadirAtributoARelacion_HECHO: {
-                setCambios(true);
-                Vector<Transfer> v = (Vector<Transfer>) datos;
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SR_EstablecerEntidadPadre_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EstablecerEntidadPadre, vt);
-                break;
-            }
-            case SR_QuitarEntidadPadre_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadPadre, tr);
-                break;
-            }
-            case SR_AnadirEntidadHija_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadHija, vt);
-                break;
-            }
-            case SR_QuitarEntidadHija_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarEntidadHija, vt);
-                break;
-            }
-            case SR_EliminarRelacionIsA_HECHO: {
-                setCambios(true);
-                TransferRelacion tr = (TransferRelacion) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacionIsA, tr);
-                ActualizaArbol(null);
-                break;
-            }
-            case SR_EliminarRelacionNormal_HECHO: {
-                setCambios(true);
-                Vector<Object> v = (Vector<Object>) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EliminarRelacionNormal, tr);
-                ActualizaArbol(null);
-                break;
-            }
-            case SR_InsertarRelacionIsA_HECHO: {
-                setCambios(true);
-                TransferRelacion tr = (TransferRelacion) datos;
-                //this.antiguaIsA = tr;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacionIsA, tr);
-                ActualizaArbol(tr);
-                break;
-            }
-            case SR_AnadirEntidadARelacion_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SR_QuitarEntidadARelacion_HECHO: {
-                setCambios(true);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                Vector<Transfer> vt = (Vector<Transfer>) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), vt);
-                break;
-            }
-            case SR_EditarCardinalidadEntidad_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(mensaje), v);
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-                break;
-            }
-            case SR_AridadEntidadUnoUno_HECHO: {
-                setCambios(true);
-                Vector v = (Vector) datos;
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_CardinalidadUnoUno, v);
-                break;
-            } 
-            case SR_AnadirUniqueARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                TransferRelacion clon_relacion = tr.clonar();
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirUniqueRelacion, clon_relacion);
-                //this.getTheGUIAnadirRestriccionAEntidad().setInactiva();
-                break;
-            }
-            case SR_QuitarUniqueARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                TransferRelacion clon_relacion = tr.clonar();
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_QuitarUniqueRelacion, clon_relacion);
-                break;
-            }
-            case SR_setUniquesARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(1);
-                TransferRelacion clon_relacion = tr.clonar();
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniquesRelacion, clon_relacion);
-                break;
-            }
-            case SR_setUniqueUnitarioARelacion_HECHO: {
-                Vector v = (Vector) datos;
-                TransferRelacion tr = (TransferRelacion) v.get(0);
-                TransferRelacion clon_relacion = tr.clonar();
-                setCambios(true);
-
-                this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_setUniqueUnitarioRelacion, clon_relacion);
-                break;
-            }
-            default: {
-            	String msj_error = FactoriaMsj.getMsj(mensaje);
-            	//Si el TC devuelto corresponde a un error, tomamos el mensaje correspondiente de FactoriaMsj y lo mostramos
-            	if(msj_error != null) JOptionPane.showMessageDialog(null, msj_error, Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
-                break;
-            }
-        }
-    }
-
     // Mensajes que mandan los Servicios del Sistema al Controlador
     @SuppressWarnings("incomplete-switch")
     public void mensajeDesde_SS(TC mensaje, Object datos) {
@@ -1660,13 +1431,26 @@ public class Controlador {
     		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;
     	}
     	else {
+    		//Funcionalidad deshacer/rehacer
+    		
+    		//this.ultimoMensaje = mensaje;
+            //this.ultimosDatos = datos;
     		this.guardarDeshacer();
             this.auxDeshacer = true;
+            
+            if (this.getContFicherosDeshacer() == 1)
+                this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.GRAY);
+            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getDeshacer().setBackground(Color.WHITE);
+
+            if (this.getContFicherosDeshacer() == this.getLimiteFicherosDeshacer() || this.auxDeshacer)
+                this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.GRAY);
+            else this.factoriaGUI.getGUIPrincipal().getMyMenu().getRehacer().setBackground(Color.WHITE);
             
             Vector v = null;
             Transfer tr = null;
             Object ob = null;
             
+            //Extraer datos del contexto
             if(contexto.getDatos() != null) {
             	v = (Vector) contexto.getDatos();
             	tr = (Transfer) v.get(0);

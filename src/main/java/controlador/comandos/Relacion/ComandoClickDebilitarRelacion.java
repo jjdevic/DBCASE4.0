@@ -28,7 +28,8 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	
 	//TODO Mirar este comando
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferRelacion tr = (TransferRelacion) datos;
         //Si es una relacion fuerte...
         if (tr.getTipo().equals("Normal")) {
@@ -61,14 +62,14 @@ public class ComandoClickDebilitarRelacion extends Comando{
 	            } else {
 	            	//Modificamos la relacion
 	            	tr.getListaAtributos().clear();
-	                getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+	                resultado = getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
 	            }
 
             }
         } else {
-            getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+            resultado = getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
         }
-		
+		return resultado;
 	}
 
 }

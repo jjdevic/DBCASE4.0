@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.swing.SwingUtilities;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import misc.UtilsFunc;
 
@@ -19,8 +20,7 @@ public class ComandoClickAbrir extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
-		System.out.println("Pasa por comando click abrir");
+	public Contexto ejecutar(Object datos) {
 		ctrl.setContFicherosDeshacer(0);
 		ctrl.setLimiteFicherosDeshacer(0);
 		ctrl.setAuxDeshacer(false);
@@ -49,6 +49,7 @@ public class ComandoClickAbrir extends Comando {
         }
         ctrl.guardarDeshacer();
         ctrl.setTiempoGuardado(System.currentTimeMillis() / 1000);
+        return null;
 	}
 
 }

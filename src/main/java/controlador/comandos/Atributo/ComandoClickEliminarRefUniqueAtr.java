@@ -17,14 +17,12 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		TransferAtributo ta = (TransferAtributo) datos;
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         tratarContexto(ctxt);
 
-        //ctrl.getTheServiciosEntidades().ListaDeEntidades();
-        //ctrl.getTheServiciosAtributos().ListaDeAtributos();
-        //ctrl.getTheServiciosRelaciones().ListaDeRelaciones();
         //modificar la tabla de Uniques de la entidad o la relacion a la que pertenece
         Vector<TransferRelacion> relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
         Vector<TransferEntidad> entidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
@@ -54,14 +52,15 @@ public class ComandoClickEliminarRefUniqueAtr extends Comando{
                 Vector v = new Vector();
                 v.add(te);
                 v.add(ta);
-                getFactoriaServicios().getServicioEntidades().eliminarReferenciasUnitario(v);
+                resultado = getFactoriaServicios().getServicioEntidades().eliminarReferenciasUnitario(v);
             } else {//esRelacion
                 Vector v = new Vector();
                 v.add(tr);
                 v.add(ta);
-                getFactoriaServicios().getServicioRelaciones().eliminarReferenciasUnitario(v);
+                resultado = getFactoriaServicios().getServicioRelaciones().eliminarReferenciasUnitario(v);
             }
         }
+        return resultado;
 	}
 
 }

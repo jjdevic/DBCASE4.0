@@ -16,7 +16,7 @@ public class ComandoClickModificarAtributo extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
         /*
@@ -97,8 +97,8 @@ public class ComandoClickModificarAtributo extends Comando {
         	ctxt = getFactoriaServicios().getServicioAtributos().editarMultivaloradoAtributo(ta);
         	tratarContexto(ctxt);
         }
-        //ActualizaArbol(ta);
         getFactoriaServicios().getServicioSistema().reset();
+        return null;
 	}
 
 }

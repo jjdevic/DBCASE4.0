@@ -11,7 +11,12 @@ public abstract class Comando {
 		this.ctrl = ctrl;
 	}
 	
-	public abstract void ejecutar(Object datos);
+	/**
+	 * Ejecutar el comando.
+	 * @param datos
+	 * @return Null si no se quiere que se trate el contexto desde fuera. Contexto a tratar en caso contrario.
+	 */
+	public abstract Contexto ejecutar(Object datos);
 	
 	/**
 	 * Toma la factoria de servicios. Todos los comandos deben usar este método para tomar la 

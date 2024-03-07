@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
@@ -18,7 +19,8 @@ public class ComandoAnadirEntidadARelacion extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		// v tiene: [transferRelacion, idEntidad, inicioRango, finalRango, rol]
         Vector v = (Vector) datos;
         //Vamos a controlar que no se añada una segunda entidad débil a una relación débil
@@ -53,10 +55,9 @@ public class ComandoAnadirEntidadARelacion extends Comando{
 
         //a�adimos la relacion a la entidad para que sepa a que relaciones esta conectada
 
-        getFactoriaServicios().getServicioEntidades().anadirRelacionAEntidad(v);
-
-        ActualizaArbol(tr);
+        resultado = getFactoriaServicios().getServicioEntidades().anadirRelacionAEntidad(v);
         getFactoriaServicios().getServicioSistema().reset();
+        return resultado;
 	}
 
 }

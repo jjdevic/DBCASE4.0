@@ -1,6 +1,7 @@
 package controlador.comandos.Vistas;
 
 import static vista.utils.Otros.DIRECTORY;
+
 import static vista.utils.Otros.INCIDENCES;
 import static vista.utils.Otros.PROJECTS;
 
@@ -13,6 +14,7 @@ import javax.swing.SwingUtilities;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
 import misc.UtilsFunc;
 import vista.Lenguaje;
@@ -24,7 +26,7 @@ public class ComandoWorkspaceNuevo extends Comando {
 	}
 	
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		try {
             ctrl.setFiletemp(File.createTempFile("dbcase", "xml"));
             UtilsFunc.creaFicheroXML(ctrl.getFiletemp());
@@ -61,5 +63,6 @@ public class ComandoWorkspaceNuevo extends Comando {
 		ctrl.setAuxDeshacer(false);                              
 		ctrl.guardarDeshacer();
 		ctrl.setTiempoGuardado(System.currentTimeMillis() / 1000);
+		return null;
 	}
 }

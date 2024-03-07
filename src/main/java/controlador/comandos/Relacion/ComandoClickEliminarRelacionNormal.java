@@ -21,7 +21,8 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferRelacion tr = (TransferRelacion) v.get(0);
         int intAux = (int) v.get(2);
@@ -118,8 +119,9 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
             // Eliminamos la relacion
             getFactoriaServicios().getServicioAgregaciones().eliminarAgregacion(tr);
             getFactoriaServicios().getServicioEntidades().eliminarRelacionDeEntidad(tr);
-            getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, intAux);
+            resultado = getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, intAux);
         }
+        return resultado;
 	}
 
 }

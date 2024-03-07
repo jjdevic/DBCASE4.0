@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import controlador.Comando;
+import controlador.Contexto;
 import controlador.Controlador;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -15,7 +16,7 @@ public class ComandoModificarCardinalidadRelacion1a1 extends Comando {
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		TransferRelacion tr = (TransferRelacion) datos;
 		Vector<Object> v = new Vector<Object>();
         EntidadYAridad informacion;
@@ -50,10 +51,10 @@ public class ComandoModificarCardinalidadRelacion1a1 extends Comando {
                 v.add(tipo);
                 v.add(rol);
                 v.add(posicion);
-                //TODO Creo que esto no estaba implementado (el método al que se llama está vacío)
                 getFactoriaServicios().getServicioRelaciones().aridadEntidadUnoUno(v);
             }
             i++;
         }
+        return null;
 	}
 }

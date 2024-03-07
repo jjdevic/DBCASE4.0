@@ -17,7 +17,8 @@ public class ComandoClickModificarUniqueAtrib extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		Vector v1 = (Vector) datos;
         TransferAtributo ta = (TransferAtributo) v1.get(0);
         String antiguoNombre = (String) v1.get(1);
@@ -55,14 +56,15 @@ public class ComandoClickModificarUniqueAtrib extends Comando{
                 v.add(te);
                 v.add(ta);
                 v.add(antiguoNombre);
-                getFactoriaServicios().getServicioEntidades().renombraUnique(v);
+                resultado = getFactoriaServicios().getServicioEntidades().renombraUnique(v);
             } else {//esRelacion
                 v.add(tr);
                 v.add(ta);
                 v.add(antiguoNombre);
-                getFactoriaServicios().getServicioRelaciones().renombraUnique(v);
+                resultado = getFactoriaServicios().getServicioRelaciones().renombraUnique(v);
             }
         }
+        return resultado;
 	}
 
 }

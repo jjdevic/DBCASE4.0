@@ -18,7 +18,8 @@ public class ComandoClickEliminarAtributo extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
+		Contexto resultado = null;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
         int intAux = (int) v.get(2);
@@ -48,9 +49,9 @@ public class ComandoClickEliminarAtributo extends Comando{
             TransferAtributo clon_atributo2 = ta.clonar();
             ctrl.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EliminarReferenciasUniqueAtributo, clon_atributo2);
             TransferAtributo clon_atributo3 = ta.clonar();
-            Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
-            tratarContexto(ctxt);
+            resultado = getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
         }
+        return resultado;
 	}
 
 }

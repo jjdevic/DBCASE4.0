@@ -1,10 +1,12 @@
 package controlador.comandos.Vistas;
 
 import java.awt.geom.Point2D;
+
 import java.util.Vector;
 
 import controlador.Comando;
 import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -18,7 +20,7 @@ public class ComandoClickPegar extends Comando{
 	}
 
 	@Override
-	public void ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) {
 		if (ctrl.getCopiado() instanceof TransferEntidad) {
             TransferEntidad te = (TransferEntidad) ctrl.getCopiado();
             int p = te.getPegado();
@@ -143,7 +145,7 @@ public class ComandoClickPegar extends Comando{
         }
 
         if (ctrl.getCopiado() instanceof TransferAtributo) {
-            return;
+            return null;
             /*TransferAtributo ta = (TransferAtributo) copiado;
             int p = ta.getPegado();
             TransferAtributo nuevo = new TransferAtributo(ctrl);
@@ -196,6 +198,7 @@ public class ComandoClickPegar extends Comando{
             ActualizaArbol(ta);
             */
         }
+        return null;
 	}
 
 }
