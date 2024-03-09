@@ -1,7 +1,8 @@
 package modelo.servicios;
 
-import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
+import misc.Config;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.*;
@@ -22,7 +23,6 @@ import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class GeneradorEsquema {
-    protected Controlador controlador;
     //atributos para la generacion de los modelos
     private String sqlHTML = "";
     private String mr = "";
@@ -36,6 +36,10 @@ public class GeneradorEsquema {
     private Hashtable<Integer, Enumerado> tiposEnumerados = new Hashtable<Integer, Enumerado>();
     private ValidadorBD validadorBD;
 
+    public GeneradorEsquema() {
+    	this.validadorBD = ValidadorBD.getInstancia();
+    }
+    
     protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor) {
         int i = 0;
         boolean encontrado = false;
@@ -49,7 +53,7 @@ public class GeneradorEsquema {
     }
 
     protected TransferRelacion dameRel(String id) {
-        DAORelaciones daoRel = new DAORelaciones(this.controlador.getPath());
+        DAORelaciones daoRel = new DAORelaciones(Config.getPath());
         Vector relaciones = daoRel.ListaDeRelaciones();
         TransferRelacion rel = null;
         for (int i = 0; i < relaciones.size(); ++i) {
@@ -60,7 +64,7 @@ public class GeneradorEsquema {
     }
 
     protected TransferEntidad dameEnt(int id) {
-        DAOEntidades daoEnt = new DAOEntidades(this.controlador.getPath());
+        DAOEntidades daoEnt = new DAOEntidades(Config.getPath());
         Vector entidades = daoEnt.ListaDeEntidades();
         TransferEntidad ent = null;
         for (int i = 0; i < entidades.size(); ++i) {
@@ -73,7 +77,7 @@ public class GeneradorEsquema {
 
 
     private void generaTablasAgregaciones() {
-		/*DAOAgregaciones daoAgregaciones = new DAOAgregaciones(controlador.getPath());
+		/*DAOAgregaciones daoAgregaciones = new DAOAgregaciones(Config.getPath());
 		Vector<TransferAgregacion> agregaciones = daoAgregaciones.ListaDeAgregaciones();
 		
 		
@@ -119,14 +123,14 @@ public class GeneradorEsquema {
     }
 
     private void generaTablasEntidades() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
 
         //recorremos las entidades generando las tablas correspondientes.
         for (int i = 0; i < entidades.size(); i++) {
             Vector<TransferAtributo> multivalorados = new Vector<TransferAtributo>();
             TransferEntidad te = entidades.elementAt(i);
-            Tabla tabla = new Tabla(te.getNombre(), te.getListaRestricciones(), controlador);
+            Tabla tabla = new Tabla(te.getNombre(), te.getListaRestricciones());
             Vector<TransferAtributo> atribs = this.dameAtributosEnTransfer(te.getListaAtributos());
             for (String rest : (Vector<String>) te.getListaRestricciones()) {
                 restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), rest, restriccionPerdida.TABLA));
@@ -174,7 +178,7 @@ public class GeneradorEsquema {
     }
 
     private void generaTablasRelaciones() {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         // recorremos las relaciones creando sus tablas, en funcion de su tipo.
         for (int i = 0; i < relaciones.size(); i++) {
@@ -187,7 +191,7 @@ public class GeneradorEsquema {
                 restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), rest, restriccionPerdida.TABLA));
             if (tr.getTipo().equalsIgnoreCase("Normal")) {
                 // creamos la tabla
-                Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones(), controlador);
+                Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones());
                 // aniadimos los atributos propios.
                 Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
                 for (int a = 0; a < ats.size(); a++) {
@@ -339,7 +343,7 @@ public class GeneradorEsquema {
                      * entidades fuertes y las debiles que aparezcan, pues este sera
                      * el criterio a seguir a la hora de reasignar las claves.
                      */
-                    DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+                    DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
                     Vector<TransferEntidad> fuertes = new Vector<TransferEntidad>();
                     Vector<TransferEntidad> debiles = new Vector<TransferEntidad>();
                     for (int s = 0; s < veya.size(); s++) {
@@ -371,7 +375,7 @@ public class GeneradorEsquema {
     }
 
     private void generaTiposEnumerados() {
-        DAODominios daoDominios = new DAODominios(controlador.getPath());
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> dominios = daoDominios.ListaDeDominios();
 
         //recorremos los dominios creando sus tipos enumerados
@@ -397,10 +401,11 @@ public class GeneradorEsquema {
         sqlHTML = "";
     }
 
-    public void generaScriptSQL(TransferConexion conexion) {
+    public Contexto generaScriptSQL(TransferConexion conexion) {
         reset();
         StringBuilder warnings = new StringBuilder();
-        if (!validadorBD.validaBaseDeDatos(false, warnings)) return;
+        Contexto aux = validadorBD.validaBaseDeDatos(false, warnings);
+        if (!aux.isExito()) return new Contexto(false, null, aux.getDatos());
         // Eliminar tablas anteriores, pero recordar que el modelo a ha sido validado
         reset();
         conexionScriptGenerado = conexion;
@@ -418,17 +423,19 @@ public class GeneradorEsquema {
         creaEnums(conexion);
         ponClaves(conexion);
         ponRestricciones(conexion);
-        controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL, sqlHTML);
+        
+        return new Contexto(true, TC.SS_GeneracionScriptSQL, sqlHTML);
     }
 
-    public void exportarCodigo(String text, boolean sql) {
-        if (!validadorBD.validaBaseDeDatos(false, new StringBuilder())) {
+    public String exportarCodigo(String text, boolean sql) {
+    	Contexto aux = validadorBD.validaBaseDeDatos(false, new StringBuilder());
+        if (!aux.isExito()) {
             JOptionPane.showMessageDialog(null,
                     Lenguaje.text(Lenguaje.ERROR) + ".\n" +
                             Lenguaje.text(Lenguaje.SCRIPT_ERROR),
                     Lenguaje.text(Lenguaje.DBCASE),
                     JOptionPane.PLAIN_MESSAGE);
-            return;
+            return null;
         }
         if (text.isEmpty()) {
             JOptionPane.showMessageDialog(null,
@@ -436,7 +443,7 @@ public class GeneradorEsquema {
                             Lenguaje.text(Lenguaje.MUST_GENERATE_SCRIPT),
                     Lenguaje.text(Lenguaje.DBCASE),
                     JOptionPane.PLAIN_MESSAGE);
-            return;
+            return null;
         }
         text = "# " + Lenguaje.text(Lenguaje.SCRIPT_GENERATED) + "\n" +
                 (sql ? "# " + Lenguaje.text(Lenguaje.SYNTAX) + ": " + conexionScriptGenerado.getRuta() + "\n\n" : "") + text;
@@ -474,6 +481,7 @@ public class GeneradorEsquema {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+        return (String) aux.getDatos();
     }
 
     public Vector<TransferConexion> obtenerTiposDeConexion() {
@@ -619,7 +627,7 @@ public class GeneradorEsquema {
 
     private boolean esPadreEnIsa(Tabla tabla) {
         boolean encontrado = false;
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
 
         // recorremos las relaciones buscando las isa
@@ -631,12 +639,12 @@ public class GeneradorEsquema {
                 Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
                 int idPadre = veya.firstElement().getEntidad();
 
-                DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+                DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
                 TransferEntidad te = new TransferEntidad();
                 te.setIdEntidad(idPadre);
                 te = daoEntidades.consultarEntidad(te);
 
-                Tabla t = new Tabla(te.getNombre(), te.getListaRestricciones(), controlador);
+                Tabla t = new Tabla(te.getNombre(), te.getListaRestricciones());
                 t = t.creaClonSinAmbiguedadNiEspacios();
 
                 encontrado = t.getNombreTabla().equalsIgnoreCase(tabla.getNombreTabla());
@@ -770,10 +778,11 @@ public class GeneradorEsquema {
         return code;
     }
 
-    public void generaModeloRelacional() {
+    public Contexto generaModeloRelacional() {
         reset();
         StringBuilder warnings = new StringBuilder();
-        if (!validadorBD.validaBaseDeDatos(true, warnings)) return;
+        Contexto aux = validadorBD.validaBaseDeDatos(true, warnings);
+        if (!aux.isExito()) return new Contexto(false, null, aux.getDatos());
         restriccionesPerdidas = new RestriccionesPerdidas();
         generaTablasAgregaciones(); //creamos primero las de las agregaciones porque ahi se impide que se creen las tablas de sus relaciones internas
         generaTablasEntidades();
@@ -808,7 +817,8 @@ public class GeneradorEsquema {
         mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.LOST_CONSTR) + "</h2>";
         mr += restriccionesPerdidas();
         mr += "<p></p></div>";
-        controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional, mr);
+        
+        return new Contexto(true, TC.SS_GeneracionModeloRelacional, mr);
     }
 
     //metodos auxiliares.
@@ -853,7 +863,7 @@ public class GeneradorEsquema {
         Tabla tablaEntidad = tablasEntidades.get(idEntidad);
 
         //creamos la tabla.
-        Tabla tablaMulti = new Tabla(tablaEntidad.getNombreTabla() + "_" + ta.getNombre(), ta.getListaRestricciones(), controlador);
+        Tabla tablaMulti = new Tabla(tablaEntidad.getNombreTabla() + "_" + ta.getNombre(), ta.getListaRestricciones());
 
         // aniadimos el campo del atributo, incluso teniendo en cuenta que sea
         // compuesto.
@@ -914,15 +924,5 @@ public class GeneradorEsquema {
                 Lenguaje.text(Lenguaje.DBCASE),
                 JOptionPane.PLAIN_MESSAGE);
         return;
-    }
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-        this.validadorBD = ValidadorBD.getInstancia();
-        this.validadorBD.setControlador(controlador);
     }
 }

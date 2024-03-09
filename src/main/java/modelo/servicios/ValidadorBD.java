@@ -1,7 +1,8 @@
 package modelo.servicios;
 
-import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
+import misc.Config;
 import modelo.transfers.*;
 import persistencia.*;
 import vista.Lenguaje;
@@ -21,10 +22,6 @@ public class ValidadorBD extends GeneradorEsquema {
     public static ValidadorBD getInstancia() {
         if (INSTANCE == null) INSTANCE = new ValidadorBD();
         return INSTANCE;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
     }
 
     //Dado un transfer y un texto, genera un error (formato html)
@@ -62,7 +59,8 @@ public class ValidadorBD extends GeneradorEsquema {
      * metodo principal
      * boolean modelo: diferencia entre esquema logico y fisico
      */
-    protected boolean validaBaseDeDatos(boolean modelo, StringBuilder warning) {
+    protected Contexto validaBaseDeDatos(boolean modelo, StringBuilder warning) {
+    	Contexto resultado = new Contexto(false, null);
         mensaje = "";
         warnings = "";
         this.errores = "";
@@ -80,20 +78,24 @@ public class ValidadorBD extends GeneradorEsquema {
         // Mostrar el texto
         construyeErroresWarnings();
         if (!valido)
-            if (modelo) controlador.mensajeDesde_SS(TC.SS_ValidacionM, mensaje);
-            else controlador.mensajeDesde_SS(TC.SS_ValidacionC, mensaje);
+            if (modelo) resultado.setMensaje(TC.SS_ValidacionM);
+            else resultado.setMensaje(TC.SS_ValidacionC);
+        
         warning.append(mensaje);
-        return valido;
+        resultado.setDatos(mensaje);
+        resultado.setExito(valido);
+        
+        return resultado;
     }
 
     private boolean esVacio() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         return daoRelaciones.ListaDeRelaciones().isEmpty() && daoEntidades.ListaDeEntidades().isEmpty();
     }
 
     private boolean validaEntidades() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
         boolean valido = true;
         int i = 0;
@@ -176,7 +178,7 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private void validaFidelidadEntidadEnIsA(TransferEntidad te) {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         //si la entidad es padre de una relacion isA comprueba que solo lo sea de una, sino, dara un aviso.
         int i = 0;
@@ -220,7 +222,7 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private int dameNumEntidadesDebiles(TransferRelacion tr) {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         TransferEntidad aux = new TransferEntidad();
         Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
         int cont = 0;
@@ -233,8 +235,8 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private boolean misDebilesEstanEnDebiles(TransferRelacion rel) {
-        DAORelaciones daoRelaciones = new DAORelaciones(this.getControlador().getPath());
-        DAOEntidades daoEntidades = new DAOEntidades(this.getControlador().getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         boolean enDebil = false;
         boolean encontrada = false;
@@ -289,7 +291,7 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private boolean validaRelaciones() {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         boolean valido = true;
         int i = 0;
@@ -306,7 +308,7 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     private boolean validaDominios() {
-        DAODominios daoDominios = new DAODominios(super.controlador.getPath());
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> dominios = daoDominios.ListaDeDominios();
         boolean valido = true;
         int i = 0;
@@ -392,7 +394,7 @@ public class ValidadorBD extends GeneradorEsquema {
         boolean relacionada = false;
         if (keys.isEmpty() && enIsA <= 0) {
             // Comprobar que no esta asociada a ninguna relacion
-            DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+            DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
             Vector<TransferRelacion> rels = daoRelaciones.ListaDeRelaciones();
             int k = 0;
             while (k < rels.size() && !relacionada) {
@@ -471,7 +473,7 @@ public class ValidadorBD extends GeneradorEsquema {
      si es hija -> 1
      */
     private Vector<int[]> entidadPerteneceAisA(TransferEntidad te) {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         Vector<int[]> resultados = new Vector<int[]>();
 
@@ -544,8 +546,8 @@ public class ValidadorBD extends GeneradorEsquema {
     // comprueba si el atributo pertenece solo a una entidad.
     private boolean validaFidelidadAtributo(TransferAtributo ta) {
         DAOAtributos daoAtributos = new DAOAtributos();
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();

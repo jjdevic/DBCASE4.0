@@ -1,6 +1,5 @@
 package modelo.servicios;
 
-import controlador.Controlador;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.TipoDominio;
@@ -10,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+
+import misc.Config;
 
 //la clase tabla, almacenara las tablas a traducir del disenio al script.
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -47,9 +48,8 @@ public class Tabla {
     private ArrayList<String> constraints;
     private Vector<String> uniques;
     private int constraintNumber;
-    private Controlador c;
 
-    public Tabla(String nombre, Vector restr, Controlador c) {
+    public Tabla(String nombre, Vector restr) {
         nombreTabla = nombre;
         atributos = new Vector<String[]>();
         primaries = new Vector<String[]>();
@@ -57,7 +57,6 @@ public class Tabla {
         uniques = new Vector<String>();
         constraints = new ArrayList<String>();
         constraintNumber = 0;
-        this.c = c;
         setConstraints(restr);
     }
 
@@ -154,7 +153,7 @@ public class Tabla {
 
     public Tabla creaClonSinAmbiguedadNiEspacios() {
         //Crea la tabla con el mismo nombre
-        Tabla t = new Tabla(ponGuionesBajos(this.nombreTabla), this.getConstraints(), this.c);
+        Tabla t = new Tabla(ponGuionesBajos(this.nombreTabla), this.getConstraints());
 
         //Anade todos los atributos
         for (int i = 0; i < atributos.size(); i++) {
@@ -297,7 +296,7 @@ public class Tabla {
     }
 
     private String asterisco(String[] a) {
-        return c.isNullAttrs() && a[4] == "0" ? "*" : "";
+        return Config.getIsNullAttrs() && a[4] == "0" ? "*" : "";
     }
 
     public String getNombreTabla() {

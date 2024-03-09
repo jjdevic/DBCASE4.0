@@ -1,7 +1,5 @@
 package modelo.servicios;
 
-import controlador.Controlador;
-
 public class FactoriaServicios {
 	
 	private ServiciosEntidades servicioEntidades;
@@ -12,7 +10,7 @@ public class FactoriaServicios {
 	private ServiciosReporte servicioReporte;
 	private ServiciosAgregaciones servicioAgregaciones;
 	
-	public FactoriaServicios(Controlador controlador) {
+	public FactoriaServicios() {
 		servicioEntidades = new ServiciosEntidades();
         servicioAtributos = new ServiciosAtributos();
         servicioRelaciones = new ServiciosRelaciones();
@@ -22,9 +20,6 @@ public class FactoriaServicios {
         servicioSistema = new GeneradorEsquema();
         servicioSistema.reset();
         servicioReporte = new ServiciosReporte();
-        
-        servicioReporte.setControlador(controlador);
-        servicioSistema.setControlador(controlador);
 	}
 	
 	public ServiciosEntidades getServicioEntidades() {

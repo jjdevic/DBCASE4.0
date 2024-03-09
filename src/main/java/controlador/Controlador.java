@@ -88,7 +88,7 @@ public class Controlador {
         modoSoporte = false;
         cuadricula = false;
         factoriaGUI = new FactoriaGUI(this);
-        factoriaServicios = new FactoriaServicios(this);
+        factoriaServicios = new FactoriaServicios();
         //valorZoom=0; 
     }
 
@@ -675,7 +675,9 @@ public class Controlador {
              * Generacion del script SQL
              */
             case GUI_Principal_Click_BotonGenerarModeloRelacional: {
-            	factoriaServicios.getServicioSistema().generaModeloRelacional();
+            	Contexto aux = factoriaServicios.getServicioSistema().generaModeloRelacional();
+            	String info = (String) aux.getDatos();
+                this.factoriaGUI.getGUIPrincipal().escribeEnModelo(info);
             	factoriaGUI.getGUIPrincipal().getModeloText().goToTop();
                 break;
             }
@@ -683,7 +685,11 @@ public class Controlador {
             	factoriaGUI.getGUIPrincipal().getConexionActual().setDatabase("");
             	
                 TransferConexion tc = factoriaGUI.getGUIPrincipal().getConexionActual();
-                factoriaServicios.getServicioSistema().generaScriptSQL(tc);
+                Contexto aux = factoriaServicios.getServicioSistema().generaScriptSQL(tc);
+                
+                String info = (String) aux.getDatos();
+                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
+                this.factoriaGUI.getGUIPrincipal().setScriptGeneradoCorrectamente(true);
                 
                 // Restaurar el sistema
                 factoriaGUI.getGUIPrincipal().getConexionActual().setDatabase("");
@@ -691,11 +697,12 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoScriptSQL: {
-                factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true);
+                String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true);
+                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo((String) info);
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoModelo: {
-                factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false);
+                String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false);
                 break;
             }
             case GUI_Principal_Click_BotonEjecutarEnDBMS: {
@@ -1051,7 +1058,7 @@ public class Controlador {
                 Vector<Object> d = (Vector<Object>) datos;
                 String textoIncidencia = (String) d.get(0);
                 boolean anadirDiagrama = (boolean) d.get(1);
-                factoriaServicios.getServicioReporte().crearIncidencia(textoIncidencia, anadirDiagrama);
+                factoriaServicios.getServicioReporte().crearIncidencia(textoIncidencia, anadirDiagrama, this.filetemp);
                 break;
             }
             case GUISeleccionarConexion_ClickNueva: {
@@ -1070,39 +1077,6 @@ public class Controlador {
                     String str = file.getAbsolutePath();
                     file.delete();
                 }
-            }
-        }
-    }
-
-    // Mensajes que mandan los Servicios del Sistema al Controlador
-    @SuppressWarnings("incomplete-switch")
-    public void mensajeDesde_SS(TC mensaje, Object datos) {
-        switch (mensaje) {
-            case SS_ValidacionM: {
-                String info = (String) datos;
-                this.factoriaGUI.getGUIPrincipal().escribeEnModelo(info);
-                break;
-            }
-            case SS_ValidacionC: {
-                String info = (String) datos;
-                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
-                break;
-            }
-            case SS_GeneracionScriptSQL: {
-                String info = (String) datos;
-                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
-                this.factoriaGUI.getGUIPrincipal().setScriptGeneradoCorrectamente(true);
-                break;
-            }
-            case SS_GeneracionArchivoScriptSQL: {
-                String info = (String) datos;
-                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
-                break;
-            }
-            case SS_GeneracionModeloRelacional: {
-                String info = (String) datos;
-                this.factoriaGUI.getGUIPrincipal().escribeEnModelo(info);
-                break;
             }
         }
     }
