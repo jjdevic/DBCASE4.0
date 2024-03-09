@@ -466,7 +466,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }

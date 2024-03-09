@@ -37,7 +37,7 @@ public class GeneradorEsquema {
     private ValidadorBD validadorBD;
 
     public GeneradorEsquema() {
-    	this.validadorBD = ValidadorBD.getInstancia();
+    	this.validadorBD = ValidadorBD.getInstancia(this);
     }
     
     protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor) {

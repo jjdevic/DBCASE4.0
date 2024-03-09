@@ -51,11 +51,15 @@ public class ComandoAnadirEntidadARelacion extends Comando{
         }
         if (relDebil && entDebil && relTieneEntDebil)
             JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ALREADY_WEAK_ENTITY), Lenguaje.text(Lenguaje.ERROR), 0);
-        else getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v, 0);
+        else resultado = getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v, 0);
 
         //a�adimos la relacion a la entidad para que sepa a que relaciones esta conectada
-
-        resultado = getFactoriaServicios().getServicioEntidades().anadirRelacionAEntidad(v);
+        Contexto aux;
+        if(resultado.isExito()) {
+        	aux = getFactoriaServicios().getServicioEntidades().anadirRelacionAEntidad(v);
+        	if(!aux.isExito()) resultado = aux;
+        }
+        
         getFactoriaServicios().getServicioSistema().reset();
         return resultado;
 	}

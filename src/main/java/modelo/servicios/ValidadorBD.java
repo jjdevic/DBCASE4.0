@@ -10,17 +10,19 @@ import vista.Lenguaje;
 import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ValidadorBD extends GeneradorEsquema {
+public class ValidadorBD{
     private String mensaje;
     private static ValidadorBD INSTANCE;
     private String errores = "";
     private String warnings = "";
-
-    public ValidadorBD() {
+    private GeneradorEsquema ge;
+    
+    public ValidadorBD(GeneradorEsquema ge) {
+    	this.ge = ge;
     }
 
-    public static ValidadorBD getInstancia() {
-        if (INSTANCE == null) INSTANCE = new ValidadorBD();
+    public static ValidadorBD getInstancia(GeneradorEsquema ge) {
+        if (INSTANCE == null) INSTANCE = new ValidadorBD(ge);
         return INSTANCE;
     }
 
@@ -112,7 +114,7 @@ public class ValidadorBD extends GeneradorEsquema {
 
     private boolean validaNombresAtributosEntidad(TransferEntidad te) {
         //comprueba que una entidad tenga atributos con nombres distintos.
-        Vector<TransferAtributo> ats = dameAtributosEnTransfer(te.getListaAtributos());
+        Vector<TransferAtributo> ats = ge.dameAtributosEnTransfer(te.getListaAtributos());
         Vector<int[]> resultados = entidadPerteneceAisA(te);
         if (resultados.size() > 0) {
             if (ats.size() < 1 && resultados.elementAt(0)[1] != 1) {
@@ -419,7 +421,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 //dos casos. que la clave sea un atbto compuesto o que no haya clave.
                 //comprobamos que hay un atbto compuesto y si lo hay, lo comprobamos.
                 while (contador < atbs.size()) {
-                    aux.setIdAtributo(this.objectToInt(atbs.elementAt(contador)));
+                    aux.setIdAtributo(ge.objectToInt(atbs.elementAt(contador)));
                     aux = daoAtributos.consultarAtributo(aux);
                     if (aux.getCompuesto()) {
                         if (compruebaClaveCompuesto(keys, aux)) compuesto = true;
@@ -434,7 +436,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 }
             } else { // comprobamos que no haya una clave que sea un atributo multivalorado.
                 while (contador < keys.size() && noMulti) {
-                    aux.setIdAtributo(this.objectToInt(keys.elementAt(contador)));
+                    aux.setIdAtributo(ge.objectToInt(keys.elementAt(contador)));
                     aux = daoAtributos.consultarAtributo(aux);
                     if (aux.isMultivalorado()) {
                         valido = false;
@@ -455,7 +457,7 @@ public class ValidadorBD extends GeneradorEsquema {
         for (int i = 0; i < subVector.size(); i++) {
             esta = false;
             for (int j = 0; j < vector.size(); j++)
-                if (objectToInt(subVector.elementAt(i)) == objectToInt(vector.elementAt(j))) esta = true;
+                if (ge.objectToInt(subVector.elementAt(i)) == ge.objectToInt(vector.elementAt(j))) esta = true;
             contiene = esta && contiene;
         }
         return contiene;
@@ -510,11 +512,11 @@ public class ValidadorBD extends GeneradorEsquema {
         Vector subs = ta.getListaComponentes();
         TransferAtributo aux = new TransferAtributo();
         if (!ta.getCompuesto()) {
-            if (estaEnVectorDeEnteros(clavesEntidad, ta.getIdAtributo())) return true;
+            if (ge.estaEnVectorDeEnteros(clavesEntidad, ta.getIdAtributo())) return true;
             else return false;
         } else {
             while (i < subs.size() && todosBien) {
-                aux.setIdAtributo(objectToInt(subs.elementAt(i)));
+                aux.setIdAtributo(ge.objectToInt(subs.elementAt(i)));
                 aux = daoAtributos.consultarAtributo(aux);
                 todosBien = todosBien && compruebaClaveCompuesto(clavesEntidad, aux);
                 i++;
@@ -559,7 +561,7 @@ public class ValidadorBD extends GeneradorEsquema {
         int i = 0;
         while (i < entidades.size() && cont <= 1) {
             te = entidades.elementAt(i);
-            if (estaEnVectorDeEnteros(te.getListaAtributos(), ta.getIdAtributo())) {
+            if (ge.estaEnVectorDeEnteros(te.getListaAtributos(), ta.getIdAtributo())) {
                 cont++;
                 enEntidad = true;
             }
@@ -570,7 +572,7 @@ public class ValidadorBD extends GeneradorEsquema {
             i = 0;
             while (i < relaciones.size() && cont <= 1) {
                 tr = relaciones.elementAt(i);
-                if (estaEnVectorDeEnteros(tr.getListaAtributos(), ta.getIdAtributo())) cont++;
+                if (ge.estaEnVectorDeEnteros(tr.getListaAtributos(), ta.getIdAtributo())) cont++;
                 i++;
             }
         }
@@ -583,7 +585,7 @@ public class ValidadorBD extends GeneradorEsquema {
             while (i < atributos.size() && contSubAtrib <= 1) {
                 aux = atributos.elementAt(i);
                 if (aux.getCompuesto())
-                    if (estaEnVectorDeEnteros(aux.getListaComponentes(), ta.getIdAtributo()))
+                    if (ge.estaEnVectorDeEnteros(aux.getListaComponentes(), ta.getIdAtributo()))
                         contSubAtrib++;
                 i++;
             }

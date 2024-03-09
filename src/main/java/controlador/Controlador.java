@@ -42,7 +42,6 @@ public class Controlador {
     private File fileguardar;
     private final Theme theme;
     private int modoVista;
-    private Contexto ctxt;
     private boolean modoSoporte;
 
     //Para boton Deshacer solo afecta a acciones con elementos
@@ -165,6 +164,7 @@ public class Controlador {
     public void mensajeDesde_PanelDiseno(TC mensaje, Object datos) {
         long tiempoActual = System.currentTimeMillis() / 1000;
         long ti = (tiempoActual - this.tiempoGuardado);
+        Contexto contexto = null;
         
         if (cambios && ti > 600) // si ha pasado mas de media hora
             this.guardarBackup();
@@ -181,10 +181,10 @@ public class Controlador {
                 Transfer t = (Transfer) datos;
                 if (t instanceof TransferAgregacion) {
                     TransferAgregacion agre = (TransferAgregacion) datos;
-                    factoriaServicios.getServicioAgregaciones().eliminarAgregacion(agre);
+                    contexto = factoriaServicios.getServicioAgregaciones().eliminarAgregacion(agre);
                 } else if (t instanceof TransferRelacion) {
                     TransferRelacion rel = (TransferRelacion) datos;
-                    factoriaServicios.getServicioAgregaciones().eliminarAgregacion(rel);
+                    contexto = factoriaServicios.getServicioAgregaciones().eliminarAgregacion(rel);
                 }
 
                 break;
@@ -226,25 +226,22 @@ public class Controlador {
                 TransferEntidad te = (TransferEntidad) datos;
                 if (!te.isDebil() && factoriaServicios.getServicioRelaciones().tieneHermanoDebil(te))
                     JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ALREADY_WEAK_ENTITY), Lenguaje.text(Lenguaje.ERROR), 0);
-                else factoriaServicios.getServicioEntidades().debilitarEntidad(te);
+                else contexto = factoriaServicios.getServicioEntidades().debilitarEntidad(te);
                 break;
             }
             case PanelDiseno_Click_EditarNotNullAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                ctxt = factoriaServicios.getServicioAtributos().editarNotNullAtributo(ta);
-                tratarContexto(ctxt);
+                contexto = factoriaServicios.getServicioAtributos().editarNotNullAtributo(ta);
                 break;
             }
             case PanelDiseno_Click_EditarMultivaloradoAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                ctxt = factoriaServicios.getServicioAtributos().editarMultivaloradoAtributo(ta);
-                tratarContexto(ctxt);
+                contexto = factoriaServicios.getServicioAtributos().editarMultivaloradoAtributo(ta);
                 break;
             }
             case PanelDiseno_Click_EditarClavePrimariaAtributo: {
                 Vector<Object> v = (Vector<Object>) datos;
-                ctxt = factoriaServicios.getServicioAtributos().editarClavePrimariaAtributo(v);
-                tratarContexto(ctxt);
+                contexto = factoriaServicios.getServicioAtributos().editarClavePrimariaAtributo(v);
                 break;
             }
             case PanelDiseno_MoverEntidad: {
@@ -254,13 +251,12 @@ public class Controlador {
             }
             case PanelDiseno_MoverAtributo: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                ctxt = factoriaServicios.getServicioAtributos().moverPosicionAtributo(ta);
-                tratarContexto(ctxt);
+                contexto = factoriaServicios.getServicioAtributos().moverPosicionAtributo(ta);
                 break;
             }
             case PanelDiseno_MoverRelacion: {
                 TransferRelacion tr = (TransferRelacion) datos;
-                factoriaServicios.getServicioRelaciones().moverPosicionRelacion(tr);
+                contexto = factoriaServicios.getServicioRelaciones().moverPosicionRelacion(tr);
                 break;
             }
             case PanelDiseno_Click_AnadirAtributoRelacion: {
@@ -301,7 +297,7 @@ public class Controlador {
                 Point2D punto = (Point2D) datos;
                 TransferRelacion tr = new TransferRelacion();
                 tr.setPosicion(punto);
-                factoriaServicios.getServicioRelaciones().anadirRelacionIsA(tr);
+                contexto = factoriaServicios.getServicioRelaciones().anadirRelacionIsA(tr);
                 break;
             }
            
@@ -319,7 +315,7 @@ public class Controlador {
                 Vector<Object> v = new Vector();
                 v.add(td);
                 v.add(td.getListaValores());
-                factoriaServicios.getServicioDominios().modificarElementosDominio(v);
+                contexto = factoriaServicios.getServicioDominios().modificarElementosDominio(v);
                 break;
             }
 
@@ -384,20 +380,20 @@ public class Controlador {
             case PanelDiseno_Click_ModificarUniqueAtributo:
             case PanelDiseno_Click_EliminarRelacionNormal:
             case PanelDiseno_Click_EliminarDominio: {
-                ejecutarComandoDelMensaje(mensaje, datos);
+                contexto = ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             default:
                 break;
         }
+        
+        if(contexto != null) tratarContexto(contexto);
     }
-    
-    
 
     // Mensajes que manda la GUIPrincipal al Controlador
     @SuppressWarnings("static-access")
     public void mensajeDesde_GUIPrincipal(TC mensaje, Object datos) {
-
+    	Contexto contexto = null;
         switch (mensaje) {
             case GUIPrincipal_ObtenDBMSDisponibles: {
                 Vector<TransferConexion> vtc =
@@ -595,7 +591,7 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_EditarElemento: {
-                ejecutarComandoDelMensaje(mensaje, datos);
+                contexto = ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             case GUI_Principal_Click_Submenu_GuardarComo: {
@@ -725,25 +721,25 @@ public class Controlador {
             default:
                 break;
         } // switch
+        
+        if(contexto != null) tratarContexto(contexto);
     }
 
     // Mensajes que le mandan las GUIs al controlador
     public void mensajeDesde_GUI(TC mensaje, Object datos) {
-    	
+    	Contexto contexto = null;
         switch (mensaje) {
             case GUIInsertarEntidad_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
-                factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
-                ActualizaArbol(te);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
                 break;
             }
+            //TODO mirar este caso
             case GUIInsertarEntidadDebil_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
                 boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te).isExito();
                 factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, exito, null) ,false);
                 ActualizaArbol(te);
-                factoriaServicios.getServicioSistema().reset();
                 break;
             }
             case GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos: {
@@ -752,158 +748,106 @@ public class Controlador {
             }
             case GUIRenombrarEntidad_Click_BotonRenombrar: {
                 Vector v = (Vector) datos;
-                factoriaServicios.getServicioEntidades().renombrarEntidad(v);
-
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().renombrarEntidad(v);
                 break;
             }
             case GUIAnadirAtributoEntidad_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioEntidades().anadirAtributo(vectorTransfers);
-                ActualizaArbol(vectorTransfers.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().anadirAtributo(vectorTransfers);
                 break;
             }
             case GUIAnadirAtributoAgregacion_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioAgregaciones().anadirAtributo(vectorTransfers);
-                ActualizaArbol(vectorTransfers.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAgregaciones().anadirAtributo(vectorTransfers);
                 break;
             }
             case GUIAnadirAtributoRelacion_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().anadirAtributo(vectorTransfers);
-                ActualizaArbol(vectorTransfers.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().anadirAtributo(vectorTransfers);
                 break;
             }
             case GUIPonerRestriccionesAEntidad_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioEntidades().setRestricciones(v);
-                ActualizaArbol((Transfer) v.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().setRestricciones(v);
                 break;
             }
             case GUIPonerRestriccionesARelacion_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().setRestricciones(v);
-                ActualizaArbol((Transfer) v.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().setRestricciones(v);
                 break;
             }
             case GUIPonerRestriccionesAAtributo_Click_BotonAceptar: {
                 Vector v = (Vector<Transfer>) datos;
-                ctxt = factoriaServicios.getServicioAtributos().setRestricciones(v);
-                tratarContexto(ctxt);
-                ActualizaArbol((Transfer) v.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().setRestricciones(v);
                 break;
             }
             case GUIInsertarRestriccionAEntidad_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioEntidades().anadirRestriccion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().anadirRestriccion(v);
                 break;
             }
             case GUIQuitarRestriccionAEntidad_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioEntidades().quitarRestriccion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioEntidades().quitarRestriccion(v);
                 break;
             }
             case GUIInsertarRestriccionAAtributo_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                ctxt = factoriaServicios.getServicioAtributos().anadirRestriccion(v);
-                tratarContexto(ctxt);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().anadirRestriccion(v);
                 break;
             }
             case GUIQuitarRestriccionAAtributo_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioAtributos().quitarRestriccion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().quitarRestriccion(v);
                 break;
             }
             case GUIInsertarRestriccionARelacion_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().anadirRestriccion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().anadirRestriccion(v);
                 break;
             }
             case GUIQuitarRestriccionARelacion_Click_BotonAnadir: {
                 Vector v = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().quitarRestriccion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().quitarRestriccion(v);
                 break;
             }
             case GUIRenombrarAtributo_Click_BotonRenombrar: {
                 Vector v = (Vector) datos;
-                ctxt = factoriaServicios.getServicioAtributos().renombrarAtributo(v);
-                tratarContexto(ctxt);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().renombrarAtributo(v);
                 break;
             }
             case GUIRenombrarAgregacion_Click_BotonRenombrar: {
                 Vector v = (Vector) datos;
                 TransferRelacion rel = (TransferRelacion) v.get(0);
                 String nombre = (String) v.get(1);
-                factoriaServicios.getServicioAgregaciones().renombrarAgregacion(rel, nombre);
-
-                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
-
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAgregaciones().renombrarAgregacion(rel, nombre);
                 break;
             }
             case GUIEditarDominioAtributo_Click_BotonEditar: {
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
-                ctxt = factoriaServicios.getServicioAtributos().editarDomnioAtributo(v);
-                tratarContexto(ctxt);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().editarDomnioAtributo(v);
                 break;
             }
             case GUIEditarCompuestoAtributo_Click_BotonAceptar: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                ctxt = factoriaServicios.getServicioAtributos().editarCompuestoAtributo(ta);
-                tratarContexto(ctxt);
-                ActualizaArbol(ta);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().editarCompuestoAtributo(ta);
                 break;
             }
             case GUIEditarMultivaloradoAtributo_Click_BotonAceptar: {
                 TransferAtributo ta = (TransferAtributo) datos;
-                ctxt = factoriaServicios.getServicioAtributos().editarMultivaloradoAtributo(ta);
-                tratarContexto(ctxt);
-                ActualizaArbol(ta);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().editarMultivaloradoAtributo(ta);
                 break;
             }
             case GUIAnadirSubAtributoAtributo_Click_BotonAnadir: {
                 Vector<Transfer> vectorTransfers = (Vector<Transfer>) datos;
-                ctxt = factoriaServicios.getServicioAtributos().anadirAtributo(vectorTransfers);
-                tratarContexto(ctxt);
-                ActualizaArbol(vectorTransfers.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().anadirAtributo(vectorTransfers);
                 break;
             }
             case GUIEditarClavePrimariaAtributo_Click_BotonAceptar: {
                 Vector<Object> vectorAtributoyEntidad = (Vector<Object>) datos;
                 //vectorAtributoyEntidad.add(0);
-                ctxt = factoriaServicios.getServicioAtributos().editarClavePrimariaAtributo(vectorAtributoyEntidad);
-                tratarContexto(ctxt);
-                ActualizaArbol((Transfer) vectorAtributoyEntidad.get(1));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioAtributos().editarClavePrimariaAtributo(vectorAtributoyEntidad);
                 break;
             }
             case GUIInsertarAgregacion:
@@ -911,7 +855,7 @@ public class Controlador {
             case GUIAnadirEntidadARelacion_ClickBotonAnadir:
             case GUIPonerUniquesAEntidad_Click_BotonAceptar: 
             case GUIModificarEntidad_Click_ModificarEntidad: {
-                ejecutarComandoDelMensaje(mensaje, datos);
+                contexto = ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
             /*
@@ -919,51 +863,40 @@ public class Controlador {
              */
             case GUIQuitarEntidadPadre_ClickBotonSi:
             case GUIPonerUniquesARelacion_Click_BotonAceptar: {
-            	ejecutarComandoDelMensaje(mensaje, datos); break;
+            	contexto = ejecutarComandoDelMensaje(mensaje, datos); break;
             }
             case GUIInsertarRelacion_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
-                factoriaServicios.getServicioRelaciones().anadirRelacion(tr, 0);
-                ActualizaArbol(tr);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().anadirRelacion(tr, 0);
                 break;
             }
+            //TODO mirar este caso
             case GUIInsertarRelacionDebil_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
                 boolean exito = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito();
                 factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, null, exito) ,false);
-                ActualizaArbol(tr);
-                factoriaServicios.getServicioSistema().reset();
                 break;
             }
             case GUIRenombrarRelacion_Click_BotonRenombrar: {
                 Vector<Object> v = (Vector) datos;
                 TransferRelacion tr = (TransferRelacion) v.get(0);
                 String nuevoNombre = (String) v.get(1);
-                factoriaServicios.getServicioRelaciones().renombrarRelacion(tr, nuevoNombre);
-                ActualizaArbol(tr);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().renombrarRelacion(tr, nuevoNombre);
                 break;
             }
             case GUIEstablecerEntidadPadre_ClickBotonAceptar: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().establecerEntidadPadreEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().establecerEntidadPadreEnRelacionIsA(relacionIsAyEntidadPadre);
                 break;
             }
             case GUIAnadirEntidadHija_ClickBotonAnadir: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().anadirEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().anadirEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
                 break;
             }
             case GUIQuitarEntidadHija_ClickBotonQuitar: {
                 Vector<Transfer> relacionIsAyEntidadPadre = (Vector<Transfer>) datos;
-                factoriaServicios.getServicioRelaciones().quitarEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
-                ActualizaArbol(relacionIsAyEntidadPadre.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().quitarEntidadHijaEnRelacionIsA(relacionIsAyEntidadPadre);
                 break;
             }
             /*
@@ -972,9 +905,7 @@ public class Controlador {
             case GUIQuitarEntidadARelacion_ClickBotonQuitar: {
                 //Vector<Transfer> v = (Vector<Transfer>) datos;
                 Vector<Object> v = (Vector<Object>) datos;
-                factoriaServicios.getServicioRelaciones().quitarEntidadARelacion(v);
-                ActualizaArbol((Transfer) v.get(0));
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().quitarEntidadARelacion(v);
                 break;
             }
             case GUIEditarCardinalidadEntidad_ClickBotonEditar: {
@@ -992,9 +923,7 @@ public class Controlador {
                 tr.setRelacionConMinMax(minMaxSeleccionado);
                 tr.setRelacionConCardinalidad1(cardinalidadMax1Seleccionada);
 
-                factoriaServicios.getServicioRelaciones().editarAridadEntidad(v);
-                ActualizaArbol(tr);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioRelaciones().editarAridadEntidad(v);
                 break;
             }
             /*
@@ -1002,9 +931,7 @@ public class Controlador {
              */
             case GUIInsertarDominio_Click_BotonInsertar: {
                 TransferDominio td = (TransferDominio) datos;
-                factoriaServicios.getServicioDominios().anadirDominio(td);
-
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioDominios().anadirDominio(td);
                 break;
             }
             case GUIRenombrarDominio_Click_BotonRenombrar: {
@@ -1023,20 +950,17 @@ public class Controlador {
                         vect.add(ta);
                         vect.add(nuevoNombre);
 
-                        ctxt = factoriaServicios.getServicioAtributos().editarDomnioAtributo(vect);
-                        tratarContexto(ctxt);
+                        contexto = factoriaServicios.getServicioAtributos().editarDomnioAtributo(vect);
+                        tratarContexto(contexto);
                     }
                     cont++;
                 }
-                factoriaServicios.getServicioDominios().renombrarDominio(v);
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioDominios().renombrarDominio(v);
                 break;
             }
             case GUIModificarDominio_Click_BotonEditar: {
                 Vector<Object> v = (Vector) datos;
-                factoriaServicios.getServicioDominios().modificarDominio(v);
-
-                factoriaServicios.getServicioSistema().reset();
+                contexto = factoriaServicios.getServicioDominios().modificarDominio(v);
                 break;
             }
 
@@ -1067,6 +991,9 @@ public class Controlador {
             default:
                 break;
         } // Switch
+        
+        if(contexto != null) tratarContexto(contexto);
+        factoriaServicios.getServicioSistema().reset();
     }
 
     private void borrarSiguientesDeshacer() {
@@ -1083,6 +1010,7 @@ public class Controlador {
     
     public Object mensaje(TC msj, Object datos) {
     	Object resultado = null;
+    	Contexto contexto = null;
     	switch(msj) {
     	case GetNombreAtributo: {
     		Integer id = (Integer) datos;
@@ -1091,8 +1019,8 @@ public class Controlador {
     	}
     	case EliminarRelacionIsA: {
     		TransferRelacion tr = (TransferRelacion) datos;
-    		factoriaServicios.getServicioRelaciones().eliminarRelacionIsA(tr);
-            factoriaServicios.getServicioEntidades().eliminarRelacionDeEntidad(tr);
+    		contexto = factoriaServicios.getServicioRelaciones().eliminarRelacionIsA(tr);
+            if(contexto.isExito()) factoriaServicios.getServicioEntidades().eliminarRelacionDeEntidad(tr);
     		break;
     	}
     	case GuardarYSalir: this.guardarYSalir(); break;
@@ -1147,7 +1075,7 @@ public class Controlador {
     	}
     	case ModificarCardinalidadRelacion_1a1:
     	case EliminarSubatributosAtributo: {
-    		ejecutarComandoDelMensaje(msj, datos);
+    		contexto = ejecutarComandoDelMensaje(msj, datos);
     		break;
     	}
     	case Guardar: {
@@ -1155,8 +1083,10 @@ public class Controlador {
     		break;
     	}
     	default: break;
-    	
     	}
+    	
+    	if(contexto != null) tratarContexto(contexto);
+    	
     	return resultado;
     }
 
@@ -1393,10 +1323,12 @@ public class Controlador {
 		return factoriaGUI;
 	}
 
-	private void ejecutarComandoDelMensaje(TC mensaje, Object datos) {
+	private Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
+		Contexto resultado = null;
     	Comando com = FactoriaComandos.getComando(mensaje, this);
-    	if(com != null) com.ejecutar(datos);
+    	if(com != null) resultado = com.ejecutar(datos);
     	else throw new IllegalArgumentException("Comando no encontrado");
+    	return resultado;
     }
     
     protected void tratarContexto(Contexto contexto) {
@@ -1405,6 +1337,8 @@ public class Controlador {
     		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;
     	}
     	else {
+    		System.out.println("Tratando contexto...");
+    		if(contexto.getMensaje() != null) System.out.println(contexto.getMensaje().toString());
     		//Funcionalidad deshacer/rehacer
     		
     		//this.ultimoMensaje = mensaje;
@@ -1434,12 +1368,14 @@ public class Controlador {
             //Actualizar el árbol del panel de información
             ActualizaArbol(tr);
             
-            //Actualizar la GUI Principal
-            this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), ob);
+            if(contexto.getMensaje() != null) {
+            	//Actualizar la GUI Principal
+            	this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), ob);
             
-            //Desactivar la GUI específica correspondiente (si existe)
-            Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), null, false);
-            if(gui != null) gui.setInactiva();
+            	//Desactivar la GUI específica correspondiente (si existe)
+                Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), null, false);
+                if(gui != null) gui.setInactiva();
+            }
     	}
     }
 	
