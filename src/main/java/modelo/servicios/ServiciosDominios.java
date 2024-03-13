@@ -81,7 +81,9 @@ public class ServiciosDominios {
             if (id == -1) return new Contexto(false, TC.SD_InsertarDominio_ERROR_DAO);
             else {
                 td.setIdDominio(id);
-                return new Contexto(true, TC.SD_InsertarDominio_HECHO, daoDominios.consultarDominio(td));
+                Vector<Object> vec = new Vector<Object>();
+            	vec.add(td);
+                return new Contexto(true, TC.SD_InsertarDominio_HECHO, vec);
             }
         } else {
         	return ctxt_aux;

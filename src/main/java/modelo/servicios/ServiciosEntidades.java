@@ -74,7 +74,9 @@ public class ServiciosEntidades {
         if (id == -1) return new Contexto(false, TC.SE_InsertarEntidad_ERROR_DAO, null);
         else {
             te.setIdEntidad(id);
-            return new Contexto(true, TC.SE_InsertarEntidad_HECHO, daoEntidades.consultarEntidad(te));
+            Vector<Object> vec = new Vector<Object>();
+        	vec.add(daoEntidades.consultarEntidad(te));
+            return new Contexto(true, TC.SE_InsertarEntidad_HECHO, vec);
         }
     }
 
@@ -166,7 +168,11 @@ public class ServiciosEntidades {
         if (daoEntidades.modificarEntidad(te) == false) {
             te.setDebil(!te.isDebil());
             return new Contexto(false, TC.SE_DebilitarEntidad_ERROR_DAOEntidades, te);
-        } else return new Contexto(true, TC.SE_DebilitarEntidad_HECHO, te);
+        } else {
+        	Vector<Object> v = new Vector<Object>();
+        	v.add(te);
+        	return new Contexto(true, TC.SE_DebilitarEntidad_HECHO, v);
+        }
     }
 
     public boolean esDebil(int i) {
@@ -590,8 +596,11 @@ public class ServiciosEntidades {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         if (daoEntidades.modificarEntidad(te) == false)
             return new Contexto(false, TC.SE_MoverPosicionEntidad_ERROR_DAOEntidades, te);
-        else
-            return new Contexto(true, TC.SE_MoverPosicionEntidad_HECHO, te);
+        else {
+        	Vector<Object> v = new Vector<Object>();
+        	v.add(te);
+        	return new Contexto(true, TC.SE_MoverPosicionEntidad_HECHO, v);
+        } 
     }
 
     public boolean tieneAtributo(TransferEntidad te, TransferAtributo ta) {

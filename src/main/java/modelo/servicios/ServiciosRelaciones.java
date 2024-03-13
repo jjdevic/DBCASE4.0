@@ -116,7 +116,9 @@ public class ServiciosRelaciones {
         if (id == -1) return new Contexto(false, TC.SR_InsertarRelacionIsA_ERROR_DAORelaciones, tr);
         else {
             tr.setIdRelacion(id);
-            return new Contexto(true, TC.SR_InsertarRelacionIsA_HECHO, tr);
+            Vector<Object> v = new Vector<Object>();
+            v.add(tr);
+            return new Contexto(true, TC.SR_InsertarRelacionIsA_HECHO, v);
         }
     }
 
@@ -129,7 +131,9 @@ public class ServiciosRelaciones {
         if (!daoRelaciones.borrarRelacion(tr))
         	return new Contexto(false, TC.SR_EliminarRelacionIsA_ERROR_DAORelaciones, tr);
         else {
-        	return new Contexto(true, TC.SR_EliminarRelacionIsA_HECHO, tr);
+        	Vector<Object> v = new Vector<Object>();
+            v.add(tr);
+        	return new Contexto(true, TC.SR_EliminarRelacionIsA_HECHO, v);
         }
     }
 
@@ -212,8 +216,11 @@ public class ServiciosRelaciones {
         if (daoRelaciones.modificarRelacion(tr) == false) {
             tr.setTipo(tipoViejo);
             return new Contexto(false, TC.SR_DebilitarRelacion_ERROR_DAORelaciones, tr);
-        } else
+        } else {
+        	Vector<Object> v = new Vector<Object>();
+            v.add(tr);
         	return new Contexto(true, TC.SR_DebilitarRelacion_HECHO, tr);
+        }
     }
 
     public void restablecerDebilidadRelaciones() {
@@ -650,8 +657,11 @@ public class ServiciosRelaciones {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         if (daoRelaciones.modificarRelacion(tr) == false)
             return new Contexto(false, TC.SR_MoverPosicionRelacion_ERROR_DAORelaciones, tr);
-        else
+        else {
+        	Vector<Object> v = new Vector<Object>();
+            v.add(tr);
         	return new Contexto(true, TC.SR_MoverPosicionRelacion_HECHO, tr);
+        }
     }
 
 
@@ -682,7 +692,11 @@ public class ServiciosRelaciones {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         if (!daoRelaciones.modificarRelacion(tr))
         	return new Contexto(false, TC.SR_QuitarEntidadPadre_ERROR_DAORelaciones, tr);
-        else return new Contexto(true, TC.SR_QuitarEntidadPadre_HECHO, tr);
+        else {
+        	Vector<Object> v = new Vector<Object>();
+            v.add(tr);
+        	return new Contexto(true, TC.SR_QuitarEntidadPadre_HECHO, v);
+        }
     }
 
     /*

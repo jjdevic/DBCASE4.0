@@ -13,8 +13,6 @@ import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosAtributos {
-
-	//private Controlador controlador;
 	
     public Vector<TransferAtributo> getListaDeAtributos() {
         DAOAtributos dao = new DAOAtributos();
@@ -77,7 +75,7 @@ public class ServiciosAtributos {
         }
         // Si todo ha ido bien devolvemos al controlador la el atributo padre modificado y el nuevo atributo
         //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_HECHO, v);
-        return new Contexto(true, TC.SA_AnadirSubAtributoAtributo_HECHO);
+        return new Contexto(true, TC.SA_AnadirSubAtributoAtributo_HECHO, v);
     }
 
 
@@ -135,7 +133,7 @@ public class ServiciosAtributos {
                 if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(vieneDeOtro);
                 else vectorAtributoYElemMod.set(2, vieneDeOtro);
                 //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
-                return new Contexto(true, TC.SA_EliminarAtributo_HECHO);
+                return new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
             }
         }
         /*
@@ -171,7 +169,7 @@ public class ServiciosAtributos {
                 if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(vieneDeOtro);
                 else vectorAtributoYElemMod.set(2, vieneDeOtro);
                 //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
-                return new Contexto(true, TC.SA_EliminarAtributo_HECHO);
+                return new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
             }
         }
     }
@@ -421,7 +419,6 @@ public class ServiciosAtributos {
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
         } else {
             v.add(antiguoNombre);
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_HECHO, v);
             
             /*TODO Implementar aquí la funcionalidad que hacía antes el controlador: 
              * Vector v = (Vector) datos;
@@ -435,7 +432,7 @@ public class ServiciosAtributos {
                 this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_ModificarUniqueAtributo, v1);
              */
             
-            return new Contexto(true, TC.SA_RenombrarAtributo_HECHO);
+            return new Contexto(true, TC.SA_RenombrarAtributo_HECHO, v);
         }
     }
 
@@ -468,9 +465,12 @@ public class ServiciosAtributos {
         if (daoAtributos.modificarAtributo(ta) == false)
             //controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarDominioAtributo_ERROR_DAOAtributos);
-        else
+        else {
             //controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_HECHO, ta);
-        	return new Contexto(true, TC.SA_EditarDominioAtributo_HECHO);
+        	Vector<Object> vec = new Vector<Object>();
+        	vec.add(ta);
+        	return new Contexto(true, TC.SA_EditarDominioAtributo_HECHO, vec);
+        }
     }
 
 
@@ -489,9 +489,12 @@ public class ServiciosAtributos {
         if (daoAtributos.modificarAtributo(ta) == false)
             //controlador.mensajeDesde_SA(TC.SA_EditarCompuestoAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarCompuestoAtributo_ERROR_DAOAtributos);
-        else
+        else {
             //controlador.mensajeDesde_SA(TC.SA_EditarCompuestoAtributo_HECHO, ta);
-        	return new Contexto(true, TC.SA_EditarCompuestoAtributo_HECHO);
+        	Vector<Object> vec = new Vector<Object>();
+        	vec.add(ta);
+        	return new Contexto(true, TC.SA_EditarCompuestoAtributo_HECHO, vec);
+        }
     }
 
 
@@ -507,9 +510,12 @@ public class ServiciosAtributos {
         if (daoAtributos.modificarAtributo(ta) == false)
             //controlador.mensajeDesde_SA(TC.SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos);
-        else
+        else {
             //controlador.mensajeDesde_SA(TC.SA_EditarMultivaloradoAtributo_HECHO, ta);
-        	return new Contexto(true, TC.SA_EditarMultivaloradoAtributo_HECHO);
+        	Vector<Object> vec = new Vector<Object>();
+            vec.add(ta);
+        	return new Contexto(true, TC.SA_EditarMultivaloradoAtributo_HECHO, vec);
+        }
     }
 
     public Contexto editarNotNullAtributo(TransferAtributo ta) {
@@ -519,9 +525,12 @@ public class ServiciosAtributos {
         if (daoAtributos.modificarAtributo(ta) == false)
             //controlador.mensajeDesde_SA(TC.SA_EditarNotNullAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarNotNullAtributo_ERROR_DAOAtributos);
-        else
+        else {
             //controlador.mensajeDesde_SA(TC.SA_EditarNotNullAtributo_HECHO, ta);
+        	Vector<Object> vec = new Vector<Object>();
+        	vec.add(ta);
         	return new Contexto(true, TC.SA_EditarNotNullAtributo_HECHO);
+        }
     }
 
     public Contexto editarUniqueAtributo(TransferAtributo ta) {
@@ -535,7 +544,7 @@ public class ServiciosAtributos {
             Vector<Object> ve = new Vector<Object>();
             ve.add(ta);
             //controlador.mensajeDesde_SA(TC.SA_EditarUniqueAtributo_HECHO, ve);
-            return new Contexto(true, TC.SA_EditarUniqueAtributo_HECHO);
+            return new Contexto(true, TC.SA_EditarUniqueAtributo_HECHO, ve);
         }
     }
 
@@ -558,7 +567,7 @@ public class ServiciosAtributos {
 
         if (daoAtributoes.modificarAtributo(ta) != false)
             //controlador.mensajeDesde_SA(TC.SA_AnadirRestriccionAAtributo_HECHO, v);
-        	return new Contexto(true, TC.SA_AnadirRestriccionAAtributo_HECHO);
+        	return new Contexto(true, TC.SA_AnadirRestriccionAAtributo_HECHO, v);
         
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos) ; //TODO Añadir mensaje
     }
@@ -591,7 +600,7 @@ public class ServiciosAtributos {
 
         if (daoAtributoes.modificarAtributo(te) != false)
             //controlador.mensajeDesde_SA(TC.SA_QuitarRestriccionAAtributo_HECHO, v);
-        	return new Contexto(true, TC.SA_QuitarRestriccionAAtributo_HECHO);
+        	return new Contexto(true, TC.SA_QuitarRestriccionAAtributo_HECHO, v);
         
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
     }
@@ -609,7 +618,7 @@ public class ServiciosAtributos {
         ta.setListaRestricciones(restricciones);
         if (daoAtributos.modificarAtributo(ta) != false)
             //controlador.mensajeDesde_SA(TC.SA_setRestriccionesAAtributo_HECHO, v);
-        	return new Contexto(true, TC.SA_setRestriccionesAAtributo_HECHO);
+        	return new Contexto(true, TC.SA_setRestriccionesAAtributo_HECHO, v);
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
     }
 
@@ -621,9 +630,12 @@ public class ServiciosAtributos {
         if (daoAtributos.modificarAtributo(ta) == false)
             //controlador.mensajeDesde_SA(TC.SA_MoverPosicionAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_MoverPosicionAtributo_ERROR_DAOAtributos);
-        else
+        else {
             //controlador.mensajeDesde_SA(TC.SA_MoverPosicionAtributo_HECHO, ta);
-        	return new Contexto(true, TC.SA_MoverPosicionAtributo_HECHO);
+        	Vector<Object> vec = new Vector<Object>();
+        	vec.add(ta);
+        	return new Contexto(true, TC.SA_MoverPosicionAtributo_HECHO, vec);
+        }
     }
 
     /**

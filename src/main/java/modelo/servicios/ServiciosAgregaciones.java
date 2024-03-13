@@ -63,7 +63,9 @@ public class ServiciosAgregaciones {
         if (id == -1) return new Contexto(false, TC.SAG_InsertarAgregacion_ERROR_DAO, ta);
         else {
             ta.setIdAgregacion(id);
-            return new Contexto(true, TC.SAG_InsertarAgregacion_HECHO, daoAgregaciones.consultarAgregacion(ta));
+            Vector<Object> v = new Vector<Object>();
+            v.add(daoAgregaciones.consultarAgregacion(ta));
+            return new Contexto(true, TC.SAG_InsertarAgregacion_HECHO, v);
         }
     }
 
@@ -154,7 +156,9 @@ public class ServiciosAgregaciones {
             Vector relacion = agre.getListaRelaciones(); // solo tiene un elemento
             if (relacion.contains(idRel)) {
                 daoAgre.borrarAgregacion(agre);
-                return new Contexto(true, TC.SAG_EliminarAgregacion_HECHO, agre);
+                Vector<Object> v = new Vector<Object>();
+                v.add(agre);
+                return new Contexto(true, TC.SAG_EliminarAgregacion_HECHO, v);
             }
         }
         return new Contexto(false, null, null);
@@ -163,7 +167,9 @@ public class ServiciosAgregaciones {
     public Contexto eliminarAgregacion(TransferAgregacion ta) {
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());
         daoAgre.borrarAgregacion(ta);
-        return new Contexto(true, TC.SAG_EliminarAgregacion_HECHO, ta);
+        Vector<Object> v = new Vector<Object>();
+        v.add(ta);
+        return new Contexto(true, TC.SAG_EliminarAgregacion_HECHO, v);
     }
 
     public Contexto anadirAtributo(Vector v) {
