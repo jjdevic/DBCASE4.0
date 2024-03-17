@@ -521,15 +521,14 @@ public class ServiciosAtributos {
     public Contexto editarNotNullAtributo(TransferAtributo ta) {
         // Modificamos el atributo
         ta.setNotnull(!ta.getNotnull());
+        
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_EditarNotNullAtributo_ERROR_DAOAtributos, ta);
-        	return new Contexto(false, TC.SA_EditarNotNullAtributo_ERROR_DAOAtributos);
+        	return new Contexto(false, TC.SA_EditarNotNullAtributo_ERROR_DAOAtributos, ta);
         else {
-            //controlador.mensajeDesde_SA(TC.SA_EditarNotNullAtributo_HECHO, ta);
         	Vector<Object> vec = new Vector<Object>();
         	vec.add(ta);
-        	return new Contexto(true, TC.SA_EditarNotNullAtributo_HECHO);
+        	return new Contexto(true, TC.SA_EditarNotNullAtributo_HECHO, vec);
         }
     }
 

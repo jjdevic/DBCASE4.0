@@ -2,7 +2,6 @@ package modelo.servicios;
 
 import misc.Config;
 import controlador.Contexto;
-import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
@@ -230,11 +229,13 @@ public class ServiciosEntidades {
         if (lista == null) {
             return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_DAOAtributos, v);
         }
-        for (int i = 0; i < te.getListaAtributos().size(); i++)
+        for (int i = 0; i < te.getListaAtributos().size(); i++) {
+        	System.out.println(daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))));
             if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))).toLowerCase().equals(ta.getNombre().toLowerCase())) {
             	v.add("0");
             	return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste, v);
             }
+        }
 
         // Si hay tamano y no es un entero positivo -> ERROR
         if (v.size() == 3) {

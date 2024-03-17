@@ -1,7 +1,6 @@
 package persistencia;
 
 import misc.Config;
-import controlador.Controlador;
 import modelo.transfers.TransferAtributo;
 import org.w3c.dom.*;
 import vista.Lenguaje;

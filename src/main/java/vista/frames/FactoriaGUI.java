@@ -46,6 +46,7 @@ public class FactoriaGUI {
 		}
 		else {
 			switch(mensaje) {
+			case Controlador_InsertarAtributo: gui = new GUI_AnadirAtributo(ctrl); break;
 			case Controlador_InsertarAgregacion: gui = new GUI_AnadirAgregacion(ctrl); break;
 			case Controlador_AnadirRestriccionEntidad: gui = new GUI_InsertarRestriccionAEntidad(ctrl); break;
 	        case Controlador_AnadirRestriccionAtributo: gui = new GUI_InsertarRestriccionAAtributo(ctrl); break;
@@ -53,6 +54,7 @@ public class FactoriaGUI {
 	        case Controlador_TablaUniqueAEntidad: gui = new GUI_TablaUniqueEntidad(ctrl); break;
 	        case Controlador_TablaUniqueARelacion: gui = new GUI_TablaUniqueRelacion(ctrl); break;
 	        case Controlador_AnadirAtributoAEntidad: gui = new GUI_AnadirAtributoEntidad(ctrl); break;
+	        case Controlador_AnadirAtributoARelacion: gui = new GUI_AnadirAtributoRelacion(ctrl); break;
 	        case Controlador_RenombrarAtributo: gui = new GUI_RenombrarAtributo(ctrl); break;
 	        case Controlador_InsertarRelacion: gui = new GUI_InsertarRelacion(ctrl); break;
 	        case Controlador_RenombrarRelacion: gui = new GUI_RenombrarRelacion(ctrl); break;

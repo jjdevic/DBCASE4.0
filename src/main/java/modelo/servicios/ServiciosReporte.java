@@ -1,6 +1,5 @@
 package modelo.servicios;
 
-import controlador.Controlador;
 import vista.Lenguaje;
 
 import java.awt.*;

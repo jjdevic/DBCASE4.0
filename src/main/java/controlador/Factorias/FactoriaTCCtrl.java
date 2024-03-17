@@ -28,6 +28,7 @@ public class FactoriaTCCtrl {
 		case SA_QuitarRestriccionAAtributo_HECHO: resultado = TC.Controlador_QuitarRestriccionAtributo; break;
 		case SA_setRestriccionesAAtributo_HECHO: resultado = TC.Controlador_setRestriccionesAtributo; break;
 		case SA_MoverPosicionAtributo_HECHO: resultado = TC.Controlador_MoverAtributo_HECHO; break;
+		case PanelDiseno_Click_InsertarAtributo: case SA_AnadirAtributo_HECHO: resultado = TC.Controlador_InsertarAtributo; break;
 		
 		case SR_AnadirRestriccionARelacion_HECHO: case PanelDiseno_Click_AnadirRestriccionARelacion: resultado = TC.Controlador_AnadirRestriccionRelacion; break; 
 		case PanelDiseno_Click_TablaUniqueAEntidad: resultado = TC.Controlador_TablaUniqueAEntidad; break; 
@@ -50,6 +51,7 @@ public class FactoriaTCCtrl {
 		case SE_RenombrarEntidad_HECHO: case PanelDiseno_Click_RenombrarEntidad: resultado = TC.Controlador_RenombrarEntidad; break; 
 		case SAG_RenombrarAgregacion_HECHO: case GUIRenombrarAgregacion_Click_BotonRenombrar: resultado = TC.Controlador_RenombrarAgregacion; break;
 		case PanelDiseno_Click_AnadirRestriccionAEntidad: resultado = TC.Controlador_AnadirRestriccionEntidad; break;
+		case PanelDiseno_Click_AnadirAtributoRelacion: case SR_AnadirAtributoARelacion_HECHO: resultado = TC.Controlador_AnadirAtributoARelacion; break;
 		default: break;
 		}
 		return resultado;

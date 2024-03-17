@@ -271,7 +271,7 @@ public class Controlador {
                             JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                factoriaGUI.getGUI(mensaje, datos, false).setActiva();
+                factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setActiva();
                 break;
             }
             case PanelDiseno_Click_EliminarRelacionIsA: {
@@ -1370,7 +1370,8 @@ public class Controlador {
             
             if(contexto.getMensaje() != null) {
             	//Actualizar la GUI Principal
-            	this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(FactoriaTCCtrl.getTCCtrl(contexto.getMensaje()), ob);
+            	TC mc = FactoriaTCCtrl.getTCCtrl(contexto.getMensaje());
+            	if(mc != null) this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(mc, ob);
             
             	//Desactivar la GUI específica correspondiente (si existe)
                 Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), null, false);

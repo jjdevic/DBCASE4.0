@@ -600,7 +600,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAtributo ta = (TransferAtributo) v.get(0);
                 panelDiseno.ModificaValorInterno(ta);
                 break;
             }
@@ -661,8 +662,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
-                panelDiseno.ModificaValorInterno(tr);
+            	Vector<Object> v = new Vector<Object>();
+                //TransferRelacion tr = (TransferRelacion) v.get(0);
+                panelDiseno.ModificaValorInterno(null);
                 break;
             }
             case Controlador_RenombrarAgregacion: {

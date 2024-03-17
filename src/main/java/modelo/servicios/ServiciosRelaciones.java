@@ -2,7 +2,6 @@ package modelo.servicios;
 
 import misc.Config;
 import controlador.Contexto;
-import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.*;
 import persistencia.*;
@@ -660,7 +659,7 @@ public class ServiciosRelaciones {
         else {
         	Vector<Object> v = new Vector<Object>();
             v.add(tr);
-        	return new Contexto(true, TC.SR_MoverPosicionRelacion_HECHO, tr);
+        	return new Contexto(true, TC.SR_MoverPosicionRelacion_HECHO, v);
         }
     }
 

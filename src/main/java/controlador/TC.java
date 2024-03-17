@@ -499,6 +499,7 @@ public enum TC {
     Controlador_InsertarAgregacion,
 
     Controlador_EditarDominioAtributo,
+    Controlador_InsertarAtributo,
     Controlador_EditarCompuestoAtributo,
     Controlador_EditarMultivaloradoAtributo,
     Controlador_EditarNotNullAtributo,

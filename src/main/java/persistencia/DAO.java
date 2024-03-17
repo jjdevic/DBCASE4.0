@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -20,6 +21,8 @@ import vista.Lenguaje;
 
 abstract class DAO {
 	
+	/** Indica el numero de whitespaces que se usa para indentar */
+	final int N_INDENT = 4;
 	protected String path;
 	protected TransformerFactory transFac;
 	
@@ -28,12 +31,15 @@ abstract class DAO {
 		this.path = this.path.replace(" ", "%20");
         this.path = this.path.replace('\\', '/');
 		this.transFac = TransformerFactory.newInstance();
+		transFac.setAttribute("indent-number", N_INDENT);
 	}
 
 	protected void guardaDoc(Document doc) {
 		DOMSource source = new DOMSource(doc);
 		try {
 			Transformer transformer = transFac.newTransformer();
+			//Especificar que se debe indentar
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		
 			// El FileWriter necesita espacios en la ruta
 	        String path_fw = path.replace("%20", " ");
@@ -66,7 +72,7 @@ abstract class DAO {
             parser = factoria.newDocumentBuilder();
             doc = parser.parse(this.path);
         } catch (Exception e) {
-        	//TODO Cambiar esto por mensaje al controlador
+        	//TODO Cambiar esto
             JOptionPane.showMessageDialog(
                     null,
                     Lenguaje.text(Lenguaje.ERROR) + ":\n" +
