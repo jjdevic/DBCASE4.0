@@ -1,5 +1,7 @@
 package controlador;
 
+import java.util.Vector;
+
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.Transfer;
 
@@ -42,4 +44,19 @@ public abstract class Comando {
 	protected void ActualizaArbol(Transfer tr) {
 		ctrl.ActualizaArbol(tr);
 	}
+	
+	/**
+	 * LLama al metodo aVectorContextos del controlador
+	 */
+	protected Vector<Contexto> aVectorContextos(Vector<Object> v, int inicio) {
+    	return ctrl.aVectorContextos(v, inicio);
+    }
+    
+	/**
+	 * LLama al metodo tratarContextos del controlador
+	 * @param v
+	 */
+    protected void tratarContextos(Vector<Contexto> v) {
+    	ctrl.tratarContextos(v);
+    }
 }

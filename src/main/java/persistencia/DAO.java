@@ -15,14 +15,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import org.w3c.dom.Document;
+
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 import vista.Lenguaje;
 
 abstract class DAO {
 	
-	/** Indica el numero de whitespaces que se usa para indentar */
-	final int N_INDENT = 4;
 	protected String path;
 	protected TransformerFactory transFac;
 	
@@ -31,35 +32,38 @@ abstract class DAO {
 		this.path = this.path.replace(" ", "%20");
         this.path = this.path.replace('\\', '/');
 		this.transFac = TransformerFactory.newInstance();
-		transFac.setAttribute("indent-number", N_INDENT);
+		//transFac.setAttribute("indent-number", N_INDENT);
 	}
 
 	protected void guardaDoc(Document doc) {
-		DOMSource source = new DOMSource(doc);
-		try {
-			Transformer transformer = transFac.newTransformer();
-			//Especificar que se debe indentar
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		
-			// El FileWriter necesita espacios en la ruta
-	        String path_fw = path.replace("%20", " ");
-	        FileWriter f = null;
-	        /*debido a que la funcion FileWriter da un error de acceso
-	         * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
-	        boolean centinela = true;
-	        while (centinela) {
-	            try {
-	                f = new FileWriter(path_fw);
-	                centinela = false;
-	            } catch (IOException ignored) {
-	            }
-	        }
-			
-			StreamResult result = new StreamResult(f);
-	        transformer.transform(source, result);
-		} catch(TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
+		OutputFormat formato = new OutputFormat(doc.toString(), "utf-8", true);
+        StringWriter s = new StringWriter();
+        XMLSerializer ser = new XMLSerializer(s, formato);
+        
+        try {
+            ser.serialize(doc);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // El FileWriter necesita espacios en la ruta
+        this.path = this.path.replace("%20", " ");
+        FileWriter f = null;
+        /*debido a que la funcion FileWriter da un error de acceso
+         * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
+        boolean centinela = true;
+        while (centinela == true) {
+            try {
+                f = new FileWriter(this.path);
+                centinela = false;
+            } catch (IOException e) {
+                centinela = true;
+            }
+        }
+        this.path = this.path.replace(" ", "%20");
+        ser = new XMLSerializer(f, formato);
+        try {
+            ser.serialize(doc);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 	}

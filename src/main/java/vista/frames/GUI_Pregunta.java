@@ -196,9 +196,7 @@ public class GUI_Pregunta extends Parent_GUI {
 			Vector<Object> v = (Vector<Object>) datos;
 			
 			/* Esperamos un vector cuya primera componente sea el mensaje, la segunda el titulo, la tercera
-			*  si se permite o no la opción cancelar, la cuarta el mensaje que debemos enviar al controlador en caso 
-			*  de que la operación sea confirmada, la quinta los datos a enviar al controlador en caso de éxito, 
-			*  y la sexta el posible mensaje al controlador en caso de que se pulse 'No'. */
+			*  si se permite o no la opción cancelar.*/
 			
 			String mensaje = (String) v.get(0);
 			String titulo = (String) v.get(1);

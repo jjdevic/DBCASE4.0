@@ -1050,6 +1050,8 @@ public class Controlador {
                 
                 Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
                 tratarContexto(ctxt);
+                //Tratar los posibles subatributos
+                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
                 cont++;
             }
     	} 
@@ -1365,19 +1367,36 @@ public class Controlador {
             	ob = v.size() > 1 ? v : tr; //Si hay más de un componente, ob será todo el vector, si no será tr
             }
             
-            //Actualizar el árbol del panel de información
-            ActualizaArbol(tr);
-            
             if(contexto.getMensaje() != null) {
             	//Actualizar la GUI Principal
             	TC mc = FactoriaTCCtrl.getTCCtrl(contexto.getMensaje());
-            	if(mc != null) this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(mc, ob);
-            
-            	//Desactivar la GUI específica correspondiente (si existe)
-                Parent_GUI gui = factoriaGUI.getGUI(contexto.getMensaje(), null, false);
-                if(gui != null) gui.setInactiva();
+            	String m = mc == null ? "NULO" : mc.toString();
+            	System.out.println("Mensaje obtenido de FactoriaTCCtrl: " + m);
+            	if(mc != null) {
+            		this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(mc, ob);
+            		
+            		//Desactivar la GUI específica correspondiente (si existe)
+                    Parent_GUI gui = factoriaGUI.getGUI(mc, null, false);
+                    if(gui != null) gui.setInactiva();
+            	}
             }
+            
+            //Actualizar el árbol del panel de información
+            ActualizaArbol(tr);
     	}
+    }
+    
+    /** Devuelve el subvector que empieza en inicio (incluido), como vector de contextos */
+    protected Vector<Contexto> aVectorContextos(Vector<Object> v, int inicio) {
+    	int size = v.size();
+    	Vector<Contexto> v_c = new Vector<Contexto>();
+    	System.out.println("Inicio: " + inicio);
+    	for(int i = inicio; i < size; i++) { System.out.println(i); v_c.add((Contexto) v.get(i)); }
+        return v_c;
+    }
+    
+    protected void tratarContextos(Vector<Contexto> v) {
+    	for(Contexto c: v) {tratarContexto(c);}
     }
 	
 	/*public void funcionDeshacer(TC mensaje, Object datos) {

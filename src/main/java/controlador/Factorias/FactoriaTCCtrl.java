@@ -52,6 +52,7 @@ public class FactoriaTCCtrl {
 		case SAG_RenombrarAgregacion_HECHO: case GUIRenombrarAgregacion_Click_BotonRenombrar: resultado = TC.Controlador_RenombrarAgregacion; break;
 		case PanelDiseno_Click_AnadirRestriccionAEntidad: resultado = TC.Controlador_AnadirRestriccionEntidad; break;
 		case PanelDiseno_Click_AnadirAtributoRelacion: case SR_AnadirAtributoARelacion_HECHO: resultado = TC.Controlador_AnadirAtributoARelacion; break;
+		case SE_EliminarEntidad_HECHO: case PanelDiseno_Click_EliminarEntidad: resultado = TC.Controlador_EliminarEntidad; break;
 		default: break;
 		}
 		return resultado;

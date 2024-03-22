@@ -83,7 +83,8 @@ public class ServiciosAtributos {
      * Eliminar atributo
      * Parametros: recibe un transfer atributo del con el atributo a eliminar
      * Devuelve:
-     * el transfer atributo que contiene el atributo eliminado y el mensaje SA_EliminarAtributo_HECHO
+     * el transfer atributo que contiene el atributo eliminado y el mensaje SA_EliminarAtributo_HECHO y 
+     * los contextos de las posibles llamadas recursivas si hay subatributos
      * Condiciones:
      * Si es un atributo compuesto hay que eliminar tambien sus subatributos.
      * Si se produce un error al usar el DAOAtributos ->  SA_EliminarAtributo_ERROR_DAOAtributos
@@ -147,13 +148,24 @@ public class ServiciosAtributos {
         else {
             Vector lista_idSubatributos = ta.getListaComponentes();
             int cont = 0;
-            while (cont < lista_idSubatributos.size()) {
+            Vector<Object> vectorAtributoYElemMod = new Vector<Object>();
+            
+            boolean elim_ok = true;
+            while (cont < lista_idSubatributos.size() && elim_ok) {
                 int idAtributoHijo = Integer.parseInt((String) lista_idSubatributos.get(cont));
                 TransferAtributo ta_hijo = new TransferAtributo();
                 ta_hijo.setIdAtributo(idAtributoHijo);
-                this.eliminarAtributo(ta_hijo, 1);
+                //Añadir al vector que devolveremos, los contextos que devuelven las llamadas recursivas.
+                Contexto c = this.eliminarAtributo(ta_hijo, 1);
+                //Solo si se ha conseguido, si no se terminará la ejecución de la función al terminar el bucle.
+                if(c.isExito()) vectorAtributoYElemMod.add(c);
+                
                 cont++;
+                elim_ok = c.isExito();
             }
+            //Si no se ha conseguido eliminar un atributo, terminar.
+            if(!elim_ok) return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos);
+            
             // Ya estan eliminados todos sus subatributos. Ponemos compuesto a falso y eliminamos
             //ta.setCompuesto(false);
             daoAtributos = new DAOAtributos();
@@ -163,10 +175,10 @@ public class ServiciosAtributos {
             	return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos);
             else {
                 Transfer elem_mod = this.eliminaRefererenciasAlAtributo(ta);
-                Vector<Object> vectorAtributoYElemMod = new Vector<Object>();
-                vectorAtributoYElemMod.add(ta);
-                vectorAtributoYElemMod.add(elem_mod);
-                if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(vieneDeOtro);
+                
+                vectorAtributoYElemMod.add(0, ta);
+                vectorAtributoYElemMod.add(1, elem_mod);
+                if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(2, vieneDeOtro);
                 else vectorAtributoYElemMod.set(2, vieneDeOtro);
                 //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
                 return new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
