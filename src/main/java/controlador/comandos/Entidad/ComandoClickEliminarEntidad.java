@@ -54,7 +54,13 @@ public class ComandoClickEliminarEntidad extends Comando {
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
                 Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+                
+                //Tratar los posibles contextos derivados de eliminar subatributos
+                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
+                
+                //Tratar el contexto principal
                 tratarContexto(ctxt);
+                
                 conta++;
             }
         

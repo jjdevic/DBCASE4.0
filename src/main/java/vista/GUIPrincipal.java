@@ -579,7 +579,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 TransferAtributo ta = (TransferAtributo) vectorAtributoYElemMod.get(0);
                 Transfer t_elemMod = (Transfer) vectorAtributoYElemMod.get(1);
                 panelDiseno.eliminaNodo(ta);
-                panelDiseno.ModificaValorInterno(t_elemMod);
+                if(t_elemMod != null) panelDiseno.ModificaValorInterno(t_elemMod);
                 loadInfo();
                 break;
             }

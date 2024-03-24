@@ -9,6 +9,10 @@ import persistencia.DAOAtributos;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -78,7 +82,6 @@ public class ServiciosAtributos {
         return new Contexto(true, TC.SA_AnadirSubAtributoAtributo_HECHO, v);
     }
 
-
     /*
      * Eliminar atributo
      * Parametros: recibe un transfer atributo del con el atributo a eliminar
@@ -90,16 +93,37 @@ public class ServiciosAtributos {
      * Si se produce un error al usar el DAOAtributos ->  SA_EliminarAtributo_ERROR_DAOAtributos
      * Hay que comprobar primero que el atributo que viene en el transfer exista con un consultar
      */
-
-    public Contexto eliminarAtributo(TransferAtributo ta, int vieneDeOtro) {//si el entero es 1 viene de eliminar entidad o relacion
+    public Contexto eliminarAtributo(TransferAtributo ta, int vieneDeOtro) { //si el entero es 1 viene de eliminar entidad o relacion
+    	Deque<Contexto> dq = eliminarAtributo_imp(ta, vieneDeOtro);
+    	
+    	//Extraer datos del contexto principal (primer contexto)
+    	Contexto c = dq.getLast();
+    	Vector<Object> v_aux = (Vector) c.getDatos();
+    	System.out.println("Primer contexto: " + ((TransferAtributo) v_aux.get(0)).getNombre());
+    	
+    	//Aniadir todos los contextos al vector de datos del contexto principal (excepto el propio ctxt principal)
+    	dq.removeLast(); //Eliminar el contexto principal
+    	while(!dq.isEmpty()) v_aux.add(dq.pop());
+    	return c;
+    }
+    
+    /**
+     * @param f Indica si es la primera llamada o no (para manejar recursión sobre subatributos)
+     */
+    private Deque<Contexto> eliminarAtributo_imp(TransferAtributo ta, int vieneDeOtro) {
         DAOAtributos daoAtributos = new DAOAtributos();
         TransferAtributo aux = ta;
         ta = daoAtributos.consultarAtributo(ta);
+        Deque<Contexto> resultado = new LinkedList<Contexto>();
+        
         
         //el atributo puede haber sido eliminado al eliminar la entidad o relacion a la que pertenecía
         //al hacer una eliminación de múltiples nodos
-        if (ta == null) return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos); //TODO crear mensaje error
-        ta.setClavePrimaria(aux.getClavePrimaria());
+        if (ta == null) {
+        	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos)); 
+        	return resultado;
+        }
+        /*ta.setClavePrimaria(aux.getClavePrimaria());
         ta.setCompuesto(aux.getCompuesto());
         ta.setDominio(aux.getDominio());
         ta.setFrecuencia(aux.getFrecuencia());
@@ -110,13 +134,15 @@ public class ServiciosAtributos {
         //ta.setNombre(aux.getNombre());
         ta.setNotnull(aux.getNotnull());
         ta.setUnique(aux.getUnique());
-        ta.setVolumen(aux.getVolumen());
+        ta.setVolumen(aux.getVolumen());*/
 
         // Si no es compuesto
         if (!ta.getCompuesto()) {
-            if (daoAtributos.borrarAtributo(ta) == false)
+            if (daoAtributos.borrarAtributo(ta) == false) {
                 //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_ERROR_DAOAtributos, ta);
-            	return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos);
+            	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos));
+            	return resultado;
+            }
             else {
                 Transfer elem_mod = this.eliminaRefererenciasAlAtributo(ta);
                 if (elem_mod instanceof TransferAtributo) {
@@ -133,8 +159,9 @@ public class ServiciosAtributos {
                 vectorAtributoYElemMod.add(elem_mod);
                 if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(vieneDeOtro);
                 else vectorAtributoYElemMod.set(2, vieneDeOtro);
-                //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
-                return new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
+                
+                resultado.add(new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod));
+                return resultado;
             }
         }
         /*
@@ -148,40 +175,50 @@ public class ServiciosAtributos {
         else {
             Vector lista_idSubatributos = ta.getListaComponentes();
             int cont = 0;
-            Vector<Object> vectorAtributoYElemMod = new Vector<Object>();
             
             boolean elim_ok = true;
+            
             while (cont < lista_idSubatributos.size() && elim_ok) {
                 int idAtributoHijo = Integer.parseInt((String) lista_idSubatributos.get(cont));
                 TransferAtributo ta_hijo = new TransferAtributo();
                 ta_hijo.setIdAtributo(idAtributoHijo);
-                //Añadir al vector que devolveremos, los contextos que devuelven las llamadas recursivas.
-                Contexto c = this.eliminarAtributo(ta_hijo, 1);
-                //Solo si se ha conseguido, si no se terminará la ejecución de la función al terminar el bucle.
-                if(c.isExito()) vectorAtributoYElemMod.add(c);
                 
+                Deque<Contexto> dq_aux = this.eliminarAtributo_imp(ta_hijo, 1);
+                //Determinar si se ha conseguido eliminar el atributo que queriamos eliminar
+                boolean exito_subat = dq_aux.getLast().isExito();
+                
+                //Aniadir todos los contextos solo si se ha conseguido, si no se terminará la ejecución de la función al terminar el bucle.
+                if(exito_subat) resultado.addAll(dq_aux);
+                
+                elim_ok = exito_subat;
                 cont++;
-                elim_ok = c.isExito();
             }
-            //Si no se ha conseguido eliminar un atributo, terminar.
-            if(!elim_ok) return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos);
+            //Si no se ha conseguido eliminar algun atributo, terminar.
+            if(!elim_ok) {
+            	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos));
+            	return resultado;
+            }
             
             // Ya estan eliminados todos sus subatributos. Ponemos compuesto a falso y eliminamos
             //ta.setCompuesto(false);
             daoAtributos = new DAOAtributos();
             daoAtributos.modificarAtributo(ta);
-            if (daoAtributos.borrarAtributo(ta) == false)
-                //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_ERROR_DAOAtributos, ta);
-            	return new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos);
+            if (daoAtributos.borrarAtributo(ta) == false) {
+            	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos));
+            	return resultado;
+            }
+            	
             else {
                 Transfer elem_mod = this.eliminaRefererenciasAlAtributo(ta);
-                
+                Vector<Object> vectorAtributoYElemMod = new Vector<Object>();
                 vectorAtributoYElemMod.add(0, ta);
                 vectorAtributoYElemMod.add(1, elem_mod);
+                
                 if (vectorAtributoYElemMod.size() == 2) vectorAtributoYElemMod.add(2, vieneDeOtro);
                 else vectorAtributoYElemMod.set(2, vieneDeOtro);
-                //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
-                return new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod);
+                
+                resultado.add(new Contexto(true, TC.SA_EliminarAtributo_HECHO, vectorAtributoYElemMod));
+                return resultado;
             }
         }
     }
