@@ -76,6 +76,11 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                 String idAtributo = (String) lista_atributos.get(conta);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
                 Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+                
+                //Tratar los posibles contextos derivados de eliminar subatributos
+                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
+                
+                //Tratar el contexto principal
                 tratarContexto(ctxt);
                 conta++;
             }
@@ -89,8 +94,8 @@ public class ComandoClickEliminarRelacionNormal extends Comando{
                     int idEntidad = eya.getEntidad();
                     te.setIdEntidad(idEntidad);
                     //Tengo que rellenar los atributos de te
-                    Vector<TransferEntidad> auxiliar = null/* TODO ctrl.getTheGUIQuitarEntidadARelacion().getListaEntidades()*/; //falla aqui				if (auxiliar == null)
-                    auxiliar = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
+                    Vector<TransferEntidad> auxiliar = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
+                    
                     boolean encontrado = false;
                     int i = 0;
                     if (auxiliar != null) {

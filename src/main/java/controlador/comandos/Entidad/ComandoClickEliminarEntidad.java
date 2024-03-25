@@ -82,6 +82,7 @@ public class ComandoClickEliminarEntidad extends Comando {
                             idEntidad = eya.getEntidad();
                             if (te.getIdEntidad() == idEntidad) {
                                 tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
+                                //TODO Eliminar atributos de la relacion llamando a ctrl.mesnaje(eliminaratribrelacion)
                                 getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
                                 encontrado = true;
                             }

@@ -88,6 +88,7 @@ public class Controlador {
         cuadricula = false;
         factoriaGUI = new FactoriaGUI(this);
         factoriaServicios = new FactoriaServicios();
+        confirmarEliminaciones = true;
         //valorZoom=0; 
     }
 
@@ -305,7 +306,7 @@ public class Controlador {
              * Dominios
              */
             case PanelDiseno_Click_CrearDominio: {
-            	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setInactiva();
+            	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), null, false).setActiva();
                 break;
             }
             case PanelDiseno_Click_OrdenarValoresDominio: {
@@ -486,13 +487,13 @@ public class Controlador {
              */
             case GUI_Principal_Click_Submenu_Salir: {
             	boolean actuar = true;
-                if (cambios) {
-                	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, 
-                			UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true), false);
-                	int respuesta = gui.setActiva(0);
-                	if(respuesta == 0) this.mensaje(TC.GuardarYSalir, null);
-                	else if(respuesta == 1) this.mensaje(TC.Salir, null);
-                } else this.mensaje(TC.GuardarYSalir, null);
+                
+            	Parent_GUI gui = factoriaGUI.getGUI(TC.GUI_Pregunta, 
+            			UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true), false);
+            	int respuesta = gui.setActiva(0);
+            	if(respuesta == 0) this.mensaje(TC.GuardarYSalir, null);
+            	else if(respuesta == 1) this.mensaje(TC.Salir, null);
+                
                 break;
             }
             case GUI_Principal_NULLATTR: {
@@ -734,12 +735,55 @@ public class Controlador {
                 contexto = factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
                 break;
             }
-            //TODO mirar este caso
+            
             case GUIInsertarEntidadDebil_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
-                boolean exito = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te).isExito();
-                factoriaGUI.getGUI(TC.Controlador_InsertarEntidad, UtilsFunc.crearVector(null, exito, null) ,false);
-                ActualizaArbol(te);
+                boolean factibleEntidad = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te).isExito();
+                
+                
+                TransferRelacion tr = new TransferRelacion();
+                tr.setPosicion((this.getPosicionEntidad()));
+                tr.setNombre(this.jTextRelacion.getText());
+                tr.setListaAtributos(new Vector());
+                tr.setListaEntidadesYAridades(new Vector());
+                tr.setListaRestricciones(new Vector());
+                tr.setListaUniques(new Vector());
+                tr.setTipo("Debil");
+                
+                boolean factibleRelacion = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito();
+                
+                if(factibleEntidad && factibleRelacion) {
+                	//Insertar entidad
+                	
+                	//Insertar relacion
+                	
+                	//Unir la entidad fuerte con la relación
+                    
+                    Vector<Object> v = new Vector<Object>();
+                    v.add(tr);
+                    v.add(this.getListaEntidades().get(indiceAsociado(this.comboEntidadesFuertes.getSelectedIndex())));
+                    v.add(Integer.toString(0));//Inicio
+                    v.add("1");//Fin
+                    v.add("");//Rol
+                    //INcluimos en el vector MarcadaConCardinalidad(false), MarcadaConParticipacion(false), MarcadaConMinMax(false)
+                    v.add(true);
+                    v.add(false);
+                    v.add(false);
+                    
+
+                    //Unir la entidad debil con la relación
+                    Vector<Object> w = new Vector<Object>();
+                    w.add(tr);
+                    w.add(te);
+                    w.add(Integer.toString(1));//Inicio
+                    w.add("n");//Fin
+                    w.add("");//Rol
+                    //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
+                    w.add(true);
+                    w.add(false);
+                    w.add(false);
+                    
+                }
                 break;
             }
             case GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos: {
@@ -870,7 +914,6 @@ public class Controlador {
                 contexto = factoriaServicios.getServicioRelaciones().anadirRelacion(tr, 0);
                 break;
             }
-            //TODO mirar este caso
             case GUIInsertarRelacionDebil_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
                 boolean exito = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito();
@@ -1049,9 +1092,13 @@ public class Controlador {
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
                 
                 Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-                tratarContexto(ctxt);
+                
                 //Tratar los posibles subatributos
                 tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
+                
+                //Tratar contexto principal
+                tratarContexto(ctxt);
+                
                 cont++;
             }
     	} 
@@ -1390,8 +1437,7 @@ public class Controlador {
     protected Vector<Contexto> aVectorContextos(Vector<Object> v, int inicio) {
     	int size = v.size();
     	Vector<Contexto> v_c = new Vector<Contexto>();
-    	System.out.println("Inicio: " + inicio);
-    	for(int i = inicio; i < size; i++) { System.out.println(i); v_c.add((Contexto) v.get(i)); }
+    	for(int i = inicio; i < size; i++) { v_c.add((Contexto) v.get(i)); }
         return v_c;
     }
     

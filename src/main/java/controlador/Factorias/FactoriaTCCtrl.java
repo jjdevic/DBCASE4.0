@@ -2,9 +2,10 @@ package controlador.Factorias;
 
 import controlador.TC;
 
-/** Esta factoría se encarga de devolver el TC "Controlador_" que corresponde a un mensaje que proviene de los servicios o de las vistas. 
+/** Esta factoría se encarga de devolver el TC "Controlador_" que corresponde a un mensaje que proviene de los servicios 
+ * o de las vistas. 
  * No están los mensajes de error que provienen de servicios, porque la FactoriaMsj se encarga directamente de 
- * traducirlos a cadenas de texto que se muestran después. */
+ * traducirlos a cadenas de texto. */
 
 public class FactoriaTCCtrl {
 
@@ -47,12 +48,15 @@ public class FactoriaTCCtrl {
         //TODO revisar este caso porque hay dos de modificar dominio
 		case SD_ModificarTipoBaseDominio_HECHO: case PanelDiseno_Click_ModificarDominio: resultado = TC.Controlador_ModificarTipoBaseDominio; break; 
 		case PanelDiseno_Click_EditarAgregacion: resultado = TC.Controlador_EditarAgregacion; break; 
-		case SE_InsertarEntidad_HECHO: case PanelDiseno_Click_InsertarEntidad: resultado = TC.Controlador_InsertarEntidad; break; 
+		case SE_InsertarEntidad_HECHO: case PanelDiseno_Click_InsertarEntidad: case GUIInsertarEntidadDebil_Click_BotonInsertar: resultado = TC.Controlador_InsertarEntidad; break; 
 		case SE_RenombrarEntidad_HECHO: case PanelDiseno_Click_RenombrarEntidad: resultado = TC.Controlador_RenombrarEntidad; break; 
 		case SAG_RenombrarAgregacion_HECHO: case GUIRenombrarAgregacion_Click_BotonRenombrar: resultado = TC.Controlador_RenombrarAgregacion; break;
 		case PanelDiseno_Click_AnadirRestriccionAEntidad: resultado = TC.Controlador_AnadirRestriccionEntidad; break;
 		case PanelDiseno_Click_AnadirAtributoRelacion: case SR_AnadirAtributoARelacion_HECHO: resultado = TC.Controlador_AnadirAtributoARelacion; break;
 		case SE_EliminarEntidad_HECHO: case PanelDiseno_Click_EliminarEntidad: resultado = TC.Controlador_EliminarEntidad; break;
+		case SR_EliminarRelacionNormal_HECHO: case PanelDiseno_Click_EliminarRelacionNormal: resultado = TC.Controlador_EliminarRelacion; break;
+		case SR_InsertarRelacionIsA_HECHO: case PanelDiseno_Click_InsertarRelacionIsA: resultado = TC.Controlador_InsertarRelacionIsA; break;
+		case SD_InsertarDominio_HECHO: case PanelDiseno_Click_CrearDominio: resultado = TC.Controlador_InsertarDominio; break;
 		default: break;
 		}
 		return resultado;

@@ -74,6 +74,7 @@ public class FactoriaGUI {
             case Controlador_InsertarEntidad: gui = new GUI_InsertarEntidad(ctrl); break;
             case Controlador_RenombrarEntidad: gui = new GUI_RenombrarEntidad(ctrl); break;
             case Controlador_RenombrarAgregacion: gui = new GUI_RenombrarAgregacion(ctrl); break;
+            case Controlador_InsertarDominio: gui = new GUI_InsertarDominio(ctrl); break;
             case GUI_WorkSpace: gui = new GUI_SaveAs(ctrl, (Boolean) datos); break;
             case GUI_Recientes: gui = new GUI_Recientes(ctrl, (ArrayList<File>) datos); break;
             case GUI_Principal_REPORT: gui = new GUI_Report(ctrl); break;

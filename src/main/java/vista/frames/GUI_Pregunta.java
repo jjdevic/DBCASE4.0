@@ -200,11 +200,11 @@ public class GUI_Pregunta extends Parent_GUI {
 			
 			String mensaje = (String) v.get(0);
 			String titulo = (String) v.get(1);
-			boolean cancelar = (boolean) v.get(2);
+			Boolean cancelar = (Boolean) v.get(2);
 			
 			pregunta.setText(mensaje);
 	        setTitle(titulo);
-	        botonCancelar.setVisible(cancelar);
+	        if(cancelar != null) botonCancelar.setVisible(cancelar);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
