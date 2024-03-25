@@ -735,57 +735,6 @@ public class Controlador {
                 contexto = factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
                 break;
             }
-            
-            case GUIInsertarEntidadDebil_Click_BotonInsertar: {
-                TransferEntidad te = (TransferEntidad) datos;
-                boolean factibleEntidad = factoriaServicios.getServicioEntidades().SePuedeAnadirEntidad(te).isExito();
-                
-                
-                TransferRelacion tr = new TransferRelacion();
-                tr.setPosicion((this.getPosicionEntidad()));
-                tr.setNombre(this.jTextRelacion.getText());
-                tr.setListaAtributos(new Vector());
-                tr.setListaEntidadesYAridades(new Vector());
-                tr.setListaRestricciones(new Vector());
-                tr.setListaUniques(new Vector());
-                tr.setTipo("Debil");
-                
-                boolean factibleRelacion = factoriaServicios.getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito();
-                
-                if(factibleEntidad && factibleRelacion) {
-                	//Insertar entidad
-                	
-                	//Insertar relacion
-                	
-                	//Unir la entidad fuerte con la relación
-                    
-                    Vector<Object> v = new Vector<Object>();
-                    v.add(tr);
-                    v.add(this.getListaEntidades().get(indiceAsociado(this.comboEntidadesFuertes.getSelectedIndex())));
-                    v.add(Integer.toString(0));//Inicio
-                    v.add("1");//Fin
-                    v.add("");//Rol
-                    //INcluimos en el vector MarcadaConCardinalidad(false), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                    v.add(true);
-                    v.add(false);
-                    v.add(false);
-                    
-
-                    //Unir la entidad debil con la relación
-                    Vector<Object> w = new Vector<Object>();
-                    w.add(tr);
-                    w.add(te);
-                    w.add(Integer.toString(1));//Inicio
-                    w.add("n");//Fin
-                    w.add("");//Rol
-                    //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                    w.add(true);
-                    w.add(false);
-                    w.add(false);
-                    
-                }
-                break;
-            }
             case GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos: {
                 JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.REPEATED_ENTITY_REL), Lenguaje.text(Lenguaje.ERROR), 0);
                 break;
@@ -898,7 +847,8 @@ public class Controlador {
             case GUIModificarAtributo_Click_ModificarAtributo:
             case GUIAnadirEntidadARelacion_ClickBotonAnadir:
             case GUIPonerUniquesAEntidad_Click_BotonAceptar: 
-            case GUIModificarEntidad_Click_ModificarEntidad: {
+            case GUIModificarEntidad_Click_ModificarEntidad:
+            case GUIInsertarEntidadDebil_Click_BotonInsertar: {
                 contexto = ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
@@ -907,7 +857,8 @@ public class Controlador {
              */
             case GUIQuitarEntidadPadre_ClickBotonSi:
             case GUIPonerUniquesARelacion_Click_BotonAceptar: {
-            	contexto = ejecutarComandoDelMensaje(mensaje, datos); break;
+            	contexto = ejecutarComandoDelMensaje(mensaje, datos);
+            	break;
             }
             case GUIInsertarRelacion_Click_BotonInsertar: {
                 TransferRelacion tr = (TransferRelacion) datos;
@@ -1372,7 +1323,11 @@ public class Controlador {
 		return factoriaGUI;
 	}
 
-	private Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
+	protected Stack<Document> getPilaDeshacer() {
+		return pilaDeshacer;
+	}
+	
+	protected Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
 		Contexto resultado = null;
     	Comando com = FactoriaComandos.getComando(mensaje, this);
     	if(com != null) resultado = com.ejecutar(datos);
@@ -1444,6 +1399,7 @@ public class Controlador {
     protected void tratarContextos(Vector<Contexto> v) {
     	for(Contexto c: v) {tratarContexto(c);}
     }
+    
 	
 	/*public void funcionDeshacer(TC mensaje, Object datos) {
 		switch (mensaje) {

@@ -1,6 +1,9 @@
 package controlador;
 
+import java.util.Stack;
 import java.util.Vector;
+
+import org.w3c.dom.Document;
 
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.Transfer;
@@ -58,5 +61,16 @@ public abstract class Comando {
 	 */
     protected void tratarContextos(Vector<Contexto> v) {
     	ctrl.tratarContextos(v);
+    }
+    
+    /**
+     * LLama al metodo del controlador dedicado a ejecutar comandos
+     */
+    protected Contexto ejecutarComando(TC mensaje, Object datos) {
+    	return ctrl.ejecutarComandoDelMensaje(mensaje, datos);
+    }
+    
+    protected Stack<Document> getPilaDeshacer() {
+    	return ctrl.getPilaDeshacer();
     }
 }

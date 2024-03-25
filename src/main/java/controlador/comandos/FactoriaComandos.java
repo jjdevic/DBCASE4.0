@@ -15,6 +15,7 @@ import controlador.comandos.Dominio.ComandoClickEliminarDominio;
 import controlador.comandos.Entidad.ComandoAnadirUniquesEntidad;
 import controlador.comandos.Entidad.ComandoClickEliminarEntidad;
 import controlador.comandos.Entidad.ComandoClickModificarEntidad;
+import controlador.comandos.Entidad.ComandoInsertarEntidadDebil;
 import controlador.comandos.Otros.ComandoEditarElemento;
 import controlador.comandos.Relacion.ComandoAnadirEntidadARelacion;
 import controlador.comandos.Relacion.ComandoAnadirUniquesRelacion;
@@ -52,7 +53,7 @@ public class FactoriaComandos {
         case PanelDiseno_Click_DebilitarRelacion: res = new ComandoClickDebilitarRelacion(ctrl); break;
         case PanelDiseno_Click_EditarUniqueAtributo: res = new ComandoClickEditarUniqueAtributo(ctrl); break;
         case PanelDiseno_Click_EditarCompuestoAtributo: res = new ComandoClickEditarCompuestoAtrib(ctrl); break;
-        case PanelDiseno_Click_Pegar: res = new ComandoClickPegar(ctrl);
+        case PanelDiseno_Click_Pegar: res = new ComandoClickPegar(ctrl); break;
         case PanelDiseno_Click_EliminarReferenciasUniqueAtributo: res = new ComandoClickEliminarRefUniqueAtr(ctrl); break;
         case PanelDiseno_Click_ModificarUniqueAtributo: res = new ComandoClickModificarUniqueAtrib(ctrl); break;
         case PanelDiseno_Click_EliminarRelacionNormal: res = new ComandoClickEliminarRelacionNormal(ctrl); break;
@@ -66,6 +67,7 @@ public class FactoriaComandos {
         case GUIQuitarEntidadPadre_ClickBotonSi: res = new ComandoQuitarEntidadPadre(ctrl); break;
         case GUIPonerUniquesARelacion_Click_BotonAceptar: res = new ComandoAnadirUniquesRelacion(ctrl); break;
         case GUI_Principal_EditarElemento: res = new ComandoEditarElemento(ctrl); break;
+        case GUIInsertarEntidadDebil_Click_BotonInsertar: res = new ComandoInsertarEntidadDebil(ctrl); break;
         case ModificarCardinalidadRelacion_1a1:	res = new ComandoModificarCardinalidadRelacion1a1(ctrl); break;
     	case EliminarSubatributosAtributo: res = new ComandoEliminarSubatributos(ctrl); break;
 		default: break;
