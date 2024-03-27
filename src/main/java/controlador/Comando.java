@@ -73,4 +73,8 @@ public abstract class Comando {
     protected Stack<Document> getPilaDeshacer() {
     	return ctrl.getPilaDeshacer();
     }
+    
+    protected Object enviarMensaje(TC mensaje, Object datos) {
+    	return ctrl.mensaje(mensaje, datos);
+    }
 }

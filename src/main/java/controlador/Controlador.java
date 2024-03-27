@@ -1038,6 +1038,7 @@ public class Controlador {
     		Vector lista_atributos = tr.getListaAtributos();
             int cont = 0;
             TransferAtributo ta = new TransferAtributo();
+            Boolean exito = true;
             while (cont < lista_atributos.size()) {
                 String idAtributo = (String) lista_atributos.get(cont);
                 ta.setIdAtributo(Integer.parseInt(idAtributo));
@@ -1050,8 +1051,12 @@ public class Controlador {
                 //Tratar contexto principal
                 tratarContexto(ctxt);
                 
+                if(exito) exito = ctxt.isExito();
+                
                 cont++;
             }
+            resultado = exito;
+            break;
     	} 
     	case ObtenerListaEntidades: {
     		resultado = factoriaServicios.getServicioEntidades().ListaDeEntidadesNOVoid();

@@ -148,8 +148,10 @@ public class GUI_InsertarDominio extends Parent_GUI {
         String name = this.cajaNombre.getText().replace("(", "");
         td.setNombre(name.replace(")", ""));
         td.setTipoBase((TipoDominio) this.comboTipo.getSelectedItem());
-        td.setListaValores(listaValores());
-        // Mandamos mensaje + datos al controlador
+        Vector<String> lista_valores = listaValores();
+    	td.setListaValores(listaValores());
+    	
+    	// Mandamos mensaje + datos al controlador
         this.getControlador().mensajeDesde_GUI(TC.GUIInsertarDominio_Click_BotonInsertar, td);
     }
 
@@ -212,17 +214,18 @@ public class GUI_InsertarDominio extends Parent_GUI {
     /*
      * Utilidades
      */
-    //TODO Nota: deberiamos controlar repeticiones y más casos raros
+    //TODO comprobar valores vacios / repetidos y otros casos raros
     private Vector listaValores() {
         Vector v = new Vector();
         String s = this.cajaValores.getText();
+        //boolean repeticiones = false;
         int pos0 = 0;
         int comilla1 = s.indexOf("'");
         int comilla2 = s.indexOf("'", comilla1 + 1);
         int pos1;
         if (comilla2 != -1) pos1 = s.indexOf(",", comilla2);
         else pos1 = s.indexOf(",");
-        while (pos0 != -1) {
+        while (pos0 != -1 /*&& !repeticiones*/) {
             String subS;
             if (pos1 != -1) subS = s.substring(pos0, pos1);
             else subS = s.substring(pos0, s.length());
@@ -240,7 +243,15 @@ public class GUI_InsertarDominio extends Parent_GUI {
                 subS = subS.replaceAll(",", "");
             }
             v.add(subS);
+            /*if(v.contains(subS)) v.add(subS);
+            else repeticiones = true;*/
         }
+        
+        /*if(repeticiones) {
+        	//Mostrar error
+        	
+        	v = null;
+        }*/
         return v;
     }
 

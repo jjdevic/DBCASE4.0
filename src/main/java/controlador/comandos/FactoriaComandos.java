@@ -56,7 +56,7 @@ public class FactoriaComandos {
         case PanelDiseno_Click_Pegar: res = new ComandoClickPegar(ctrl); break;
         case PanelDiseno_Click_EliminarReferenciasUniqueAtributo: res = new ComandoClickEliminarRefUniqueAtr(ctrl); break;
         case PanelDiseno_Click_ModificarUniqueAtributo: res = new ComandoClickModificarUniqueAtrib(ctrl); break;
-        case PanelDiseno_Click_EliminarRelacionNormal: res = new ComandoClickEliminarRelacionNormal(ctrl); break;
+        case PanelDiseno_Click_EliminarRelacionNormal: case Controlador_EliminarRelacionNormal: res = new ComandoClickEliminarRelacionNormal(ctrl); break;
         case PanelDiseno_Click_EliminarDominio: res = new ComandoClickEliminarDominio(ctrl); break;
         
         case GUIInsertarAgregacion: res = new ComandoClickInsertarAgregacion(ctrl); break;

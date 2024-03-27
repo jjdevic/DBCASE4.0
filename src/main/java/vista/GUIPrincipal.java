@@ -662,9 +662,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarRelacion: {
-            	Vector<Object> v = new Vector<Object>();
-                //TransferRelacion tr = (TransferRelacion) v.get(0);
-                panelDiseno.ModificaValorInterno(null);
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
+                panelDiseno.ModificaValorInterno(tr);
                 break;
             }
             case Controlador_RenombrarAgregacion: {
@@ -678,7 +678,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_EliminarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 loadInfo();
                 break;
@@ -721,7 +722,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_EliminarRelacionNormal: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.eliminaNodo(tr);
                 loadInfo();
                 break;

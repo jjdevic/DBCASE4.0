@@ -54,7 +54,7 @@ public class FactoriaTCCtrl {
 		case PanelDiseno_Click_AnadirRestriccionAEntidad: resultado = TC.Controlador_AnadirRestriccionEntidad; break;
 		case PanelDiseno_Click_AnadirAtributoRelacion: case SR_AnadirAtributoARelacion_HECHO: resultado = TC.Controlador_AnadirAtributoARelacion; break;
 		case SE_EliminarEntidad_HECHO: case PanelDiseno_Click_EliminarEntidad: resultado = TC.Controlador_EliminarEntidad; break;
-		case SR_EliminarRelacionNormal_HECHO: case PanelDiseno_Click_EliminarRelacionNormal: resultado = TC.Controlador_EliminarRelacion; break;
+		case SR_EliminarRelacionNormal_HECHO: case PanelDiseno_Click_EliminarRelacionNormal: resultado = TC.Controlador_EliminarRelacionNormal; break;
 		case SR_InsertarRelacionIsA_HECHO: case PanelDiseno_Click_InsertarRelacionIsA: resultado = TC.Controlador_InsertarRelacionIsA; break;
 		case SD_InsertarDominio_HECHO: case PanelDiseno_Click_CrearDominio: resultado = TC.Controlador_InsertarDominio; break;
 		default: break;
