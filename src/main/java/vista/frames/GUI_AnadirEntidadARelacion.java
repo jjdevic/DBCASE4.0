@@ -371,7 +371,6 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
 	/*DocumentListener documentListener = new DocumentListener() {
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
-			// TODO Auto-generated method stub
 			// Código a ejecutar cuando el texto del JTextField cambia
 			if(cajaInicio.getText()=="0") {
 				totalParticipation.setSelected(false);
@@ -758,7 +757,6 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

@@ -16,9 +16,9 @@ import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickDebilitarRelacion extends Comando{
+public class ComandoDebilitarRelacion extends Comando{
 
-	public ComandoClickDebilitarRelacion(Controlador ctrl) {
+	public ComandoDebilitarRelacion(Controlador ctrl) {
 		super(ctrl);
 	}
 

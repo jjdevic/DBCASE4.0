@@ -47,7 +47,8 @@ public class ServiciosDominios {
 
     /* Anadir Dominio
      * Parametros: un TransferDominio que contiene el nombre del nuevo dominio
-     * Devuelve: El dominio en un TransferDominio y el mensaje -> SD_InsertarDominio_HECHO
+     * Devuelve: Contexto de exito con dominio en un TransferDominio dentro de un vector 
+     * 			y el mensaje -> SD_InsertarDominio_HECHO
      * Condiciones:
      * Si el nombre es vacio -> SD_InsertarDominio_ERROR_NombreDeDominioEsVacio
      * Si el nombre ya existe -> SD_InsertarDominio_ERROR_NombreDeDominioYaExiste
@@ -125,7 +126,8 @@ public class ServiciosDominios {
 
     /* Eliminar dominio
      * Parametros: el TransferEntidad que contiene el dominio que se desea eliminar
-     * Devuelve: Un TransferDominio que contiene el dominio eliminado y el mensaje -> SD_EliminarDominio_HECHO
+     * Devuelve: Un contexto de exito con un vector con un TransferDominio que contiene 
+     * 		el dominio eliminado, y el mensaje -> SD_EliminarDominio_HECHO.
      * Condiciones:
      * Se produce un error al usar el DAODominios -> SD_EliminarDominio_ERROR_DAODominios
      */
@@ -136,7 +138,6 @@ public class ServiciosDominios {
         	return new Contexto(false, TC.SD_EliminarDominio_ERROR_DAODominios, td);
         else {
             Vector<Object> vector = new Vector<Object>();
-            //Vector<Object> vectorAtributosModificados = new Vector<Object>();
             vector.add(td);
             return new Contexto(true, TC.SD_EliminarDominio_HECHO, vector);
         }

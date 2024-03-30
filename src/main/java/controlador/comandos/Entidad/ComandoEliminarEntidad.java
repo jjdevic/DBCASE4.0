@@ -14,9 +14,9 @@ import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickEliminarEntidad extends Comando {
+public class ComandoEliminarEntidad extends Comando {
 
-	public ComandoClickEliminarEntidad(Controlador ctrl) {
+	public ComandoEliminarEntidad(Controlador ctrl) {
 		super(ctrl);
 	}
 

@@ -33,19 +33,16 @@ public class ServiciosAtributos {
         
         // Si nombre de atributo hijo es vacio -> ERROR
         if (tah.getNombre().isEmpty()) {
-            //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio, v);
             return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoVacio);
         }
         // Si nombre de atributo ya existe en esa entidad-> ERROR
         DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributos.ListaDeAtributos(); //lista de todos los atributos
         if (lista == null) {
-            //controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo, v);
             return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo);
         }
         for (int i = 0; i < tap.getListaComponentes().size(); i++)
             if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) tap.getListaComponentes().get(i)))).toLowerCase().equals(tah.getNombre().toLowerCase())) {
-                //controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste, v);
                 return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_NombreDeAtributoYaExiste);
             }
 
@@ -55,30 +52,25 @@ public class ServiciosAtributos {
             try {
                 int tamano = Integer.parseInt((String) v.get(2));
                 if (tamano < 1) {
-                    //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo, v);
                     return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_TamanoEsNegativo);
                 }
             } catch (Exception e) {
-                //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero, v);
                 return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_TamanoNoEsEntero);
             }
         }
+        
         // Creamos el atributo
-        //DAOAtributos daoAtributos = new DAOAtributos(this.controlador);
         int idNuevoAtributo = daoAtributos.anadirAtributo(tah);
         if (idNuevoAtributo == -1) {
-            //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo, v);
             return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosHijo);
         }
         // Anadimos el atributo a la lista de subatributos del atributo
         tah.setIdAtributo(idNuevoAtributo);
         tap.getListaComponentes().add(Integer.toString(idNuevoAtributo));
         if (!daoAtributos.modificarAtributo(tap)) {
-            //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre, v);
             return new Contexto(false, TC.SA_AnadirSubAtributoAtributo_ERROR_DAOAtributosPadre);
         }
-        // Si todo ha ido bien devolvemos al controlador la el atributo padre modificado y el nuevo atributo
-        //this.controlador.mensajeDesde_SA(TC.SA_AnadirSubAtributoAtributo_HECHO, v);
+        // Si todo ha ido bien devolvemos el atributo padre modificado y el nuevo atributo
         return new Contexto(true, TC.SA_AnadirSubAtributoAtributo_HECHO, v);
     }
 
@@ -94,15 +86,18 @@ public class ServiciosAtributos {
      * Hay que comprobar primero que el atributo que viene en el transfer exista con un consultar
      */
     public Contexto eliminarAtributo(TransferAtributo ta, int vieneDeOtro) { //si el entero es 1 viene de eliminar entidad o relacion
+    	//Primera llamada a eliminarAtributo_imp
     	Deque<Contexto> dq = eliminarAtributo_imp(ta, vieneDeOtro);
     	
-    	//Extraer datos del contexto principal (primer contexto)
+    	//Extraer datos del contexto principal (ultimo contexto devuelto por la llamada)
     	Contexto c = dq.getLast();
     	Vector<Object> v_aux = (Vector) c.getDatos();
     	System.out.println("Primer contexto: " + ((TransferAtributo) v_aux.get(0)).getNombre());
     	
+    	//Eliminar el contexto principal
+    	dq.removeLast(); 
+    	
     	//Aniadir todos los contextos al vector de datos del contexto principal (excepto el propio ctxt principal)
-    	dq.removeLast(); //Eliminar el contexto principal
     	while(!dq.isEmpty()) v_aux.add(dq.pop());
     	return c;
     }
@@ -116,30 +111,16 @@ public class ServiciosAtributos {
         ta = daoAtributos.consultarAtributo(ta);
         Deque<Contexto> resultado = new LinkedList<Contexto>();
         
-        
         //el atributo puede haber sido eliminado al eliminar la entidad o relacion a la que pertenecía
         //al hacer una eliminación de múltiples nodos
         if (ta == null) {
         	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos)); 
         	return resultado;
         }
-        /*ta.setClavePrimaria(aux.getClavePrimaria());
-        ta.setCompuesto(aux.getCompuesto());
-        ta.setDominio(aux.getDominio());
-        ta.setFrecuencia(aux.getFrecuencia());
-        //ta.setIdAtributo(aux.getIdAtributo() + 10);
-        ta.setListaComponentes(aux.getListaComponentes());
-        ta.setListaRestricciones(aux.getListaComponentes());
-        ta.setMultivalorado(aux.getMultivalorado());
-        //ta.setNombre(aux.getNombre());
-        ta.setNotnull(aux.getNotnull());
-        ta.setUnique(aux.getUnique());
-        ta.setVolumen(aux.getVolumen());*/
 
         // Si no es compuesto
         if (!ta.getCompuesto()) {
             if (daoAtributos.borrarAtributo(ta) == false) {
-                //controlador.mensajeDesde_SA(TC.SA_EliminarAtributo_ERROR_DAOAtributos, ta);
             	resultado.add(new Contexto(false, TC.SA_EliminarAtributo_ERROR_DAOAtributos));
             	return resultado;
             }
@@ -168,8 +149,7 @@ public class ServiciosAtributos {
          * Si es compuesto...
          * 1.- Obtenemos sus subatributos
          * 2.- Los eliminamos recursivamente
-         * 3.- Mandamos al controlador el atributo que se ha eliminado y el elem modificado tras
-         * 	   tras usar el metodo elimina referencias.
+         * 3.- Insertamos en la doble cola todos los contextos devueltos por la llamada recursiva.
          */
 
         else {
@@ -209,6 +189,9 @@ public class ServiciosAtributos {
             }
             	
             else {
+            	/*Crear contexto con atributo eliminado, el elem modificado tras
+                * 	   tras usar el metodo elimina referencias, y vieneDeOtro.
+                * El contexto se aniade a la doble cola 'resultado' y se devuelve esa doble cola. */
                 Transfer elem_mod = this.eliminaRefererenciasAlAtributo(ta);
                 Vector<Object> vectorAtributoYElemMod = new Vector<Object>();
                 vectorAtributoYElemMod.add(0, ta);
@@ -228,7 +211,7 @@ public class ServiciosAtributos {
      * Este metodo sirve para eliminar las referencias que hay hacia un atributo. Las referencias
      * pueden provenir de 3 lugares: de una entidad, de una relacion o de otro atibuto (si es hijo
      * de un atributo compuesto). El metodo moficara el elemento (uno de estos 3) que lo referencia
-     * y lo devolvera en un transfer para comunicar la modificacion al controlador.
+     * y lo devolvera en un transfer para comunicar la modificacion.
      */
     public Transfer eliminaRefererenciasAlAtributo(TransferAtributo ta) {
         // Obtenemos el identificador del atributo
@@ -373,7 +356,6 @@ public class ServiciosAtributos {
         String antiguoNombre = ta.getNombre();
         // Si el nombre es vacio -> ERROR
         if (nuevoNombre.isEmpty()) {
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio, v);
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio);
         }
         int idAtributo = ta.getIdAtributo();
@@ -397,7 +379,6 @@ public class ServiciosAtributos {
                     for (int i = 0; i < te.getListaAtributos().size(); i++)
                         if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))).toLowerCase().equals(nuevoNombre.toLowerCase())
                                 && i != k) {
-                            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste, v);
                             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste);
                         }
                 }
@@ -426,7 +407,6 @@ public class ServiciosAtributos {
                     for (int i = 0; i < tr.getListaAtributos().size(); i++)
                         if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) tr.getListaAtributos().get(i)))).toLowerCase().equals(nuevoNombre.toLowerCase())
                                 && i != k) {
-                            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste, v);
                             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste);
                         }
                 }
@@ -452,7 +432,6 @@ public class ServiciosAtributos {
                     for (int i = 0; i < listaSubatributos.size(); i++)
                         if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) listaSubatributos.get(i)))).toLowerCase().equals(nuevoNombre.toLowerCase())
                                 && i != k) {
-                            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste, v);
                             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste);
                         }
                 }
@@ -464,7 +443,6 @@ public class ServiciosAtributos {
         ta.setNombre(nuevoNombre);
         if (daoAtributos.modificarAtributo(ta) == false) {
             ta.setNombre(antiguoNombre);
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_DAOAtributos, v);
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
         } else {
             v.add(antiguoNombre);
@@ -498,24 +476,19 @@ public class ServiciosAtributos {
             try {
                 int tamano = Integer.parseInt((String) v.get(2));
                 if (tamano < 1) {
-                    //this.controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_ERROR_TamanoEsNegativo, ta);
                     return new Contexto(false, TC.SA_EditarDominioAtributo_ERROR_TamanoEsNegativo);
                 }
-
-
             } catch (Exception e) {
-                //this.controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero, ta);
                 return new Contexto(false, TC.SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero);
             }
         }
+        
         // Modificamos el atributo
         DAOAtributos daoAtributos = new DAOAtributos();
         ta.setDominio(nuevoDominio);
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarDominioAtributo_ERROR_DAOAtributos);
         else {
-            //controlador.mensajeDesde_SA(TC.SA_EditarDominioAtributo_HECHO, ta);
         	Vector<Object> vec = new Vector<Object>();
         	vec.add(ta);
         	return new Contexto(true, TC.SA_EditarDominioAtributo_HECHO, vec);
@@ -536,10 +509,8 @@ public class ServiciosAtributos {
         // Persistimos
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_EditarCompuestoAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarCompuestoAtributo_ERROR_DAOAtributos);
         else {
-            //controlador.mensajeDesde_SA(TC.SA_EditarCompuestoAtributo_HECHO, ta);
         	Vector<Object> vec = new Vector<Object>();
         	vec.add(ta);
         	return new Contexto(true, TC.SA_EditarCompuestoAtributo_HECHO, vec);
@@ -557,10 +528,8 @@ public class ServiciosAtributos {
         ta.setMultivalorado(!ta.isMultivalorado());
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarMultivaloradoAtributo_ERROR_DAOAtributos);
         else {
-            //controlador.mensajeDesde_SA(TC.SA_EditarMultivaloradoAtributo_HECHO, ta);
         	Vector<Object> vec = new Vector<Object>();
             vec.add(ta);
         	return new Contexto(true, TC.SA_EditarMultivaloradoAtributo_HECHO, vec);
@@ -586,12 +555,10 @@ public class ServiciosAtributos {
         ta.setUnique(!ta.getUnique());
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_EditarUniqueAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_EditarUniqueAtributo_ERROR_DAOAtributos);
         else {
             Vector<Object> ve = new Vector<Object>();
             ve.add(ta);
-            //controlador.mensajeDesde_SA(TC.SA_EditarUniqueAtributo_HECHO, ve);
             return new Contexto(true, TC.SA_EditarUniqueAtributo_HECHO, ve);
         }
     }
@@ -600,12 +567,11 @@ public class ServiciosAtributos {
         TransferAtributo ta = (TransferAtributo) v.get(0);
         String restriccion = (String) v.get(1);
         // Si nombre es vacio -> ERROR
-        if (restriccion.isEmpty()) return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Añadir TC.restriccionsinnombre_ERROR
+        if (restriccion.isEmpty()) return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
 
         DAOAtributos daoAtributoes = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributoes.ListaDeAtributos();
         if (lista == null) {
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_DAOAtributos, v);
             return new Contexto(false,  TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
         }
 
@@ -614,10 +580,9 @@ public class ServiciosAtributos {
         ta.setListaRestricciones(vRestricciones);
 
         if (daoAtributoes.modificarAtributo(ta) != false)
-            //controlador.mensajeDesde_SA(TC.SA_AnadirRestriccionAAtributo_HECHO, v);
         	return new Contexto(true, TC.SA_AnadirRestriccionAAtributo_HECHO, v);
         
-        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos) ; //TODO Añadir mensaje
+        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
     }
 
     public Contexto quitarRestriccion(Vector v) {
@@ -630,7 +595,6 @@ public class ServiciosAtributos {
         DAOAtributos daoAtributoes = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributoes.ListaDeAtributos();
         if (lista == null) {
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_DAOAtributos, v);
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
         }
 
@@ -647,7 +611,6 @@ public class ServiciosAtributos {
         te.setListaRestricciones(vRestricciones);
 
         if (daoAtributoes.modificarAtributo(te) != false)
-            //controlador.mensajeDesde_SA(TC.SA_QuitarRestriccionAAtributo_HECHO, v);
         	return new Contexto(true, TC.SA_QuitarRestriccionAAtributo_HECHO, v);
         
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
@@ -660,12 +623,10 @@ public class ServiciosAtributos {
         DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributos.ListaDeAtributos();
         if (lista == null) {
-            //controlador.mensajeDesde_SA(TC.SA_RenombrarAtributo_ERROR_DAOAtributos, v);
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
         }
         ta.setListaRestricciones(restricciones);
         if (daoAtributos.modificarAtributo(ta) != false)
-            //controlador.mensajeDesde_SA(TC.SA_setRestriccionesAAtributo_HECHO, v);
         	return new Contexto(true, TC.SA_setRestriccionesAAtributo_HECHO, v);
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
     }
@@ -676,10 +637,8 @@ public class ServiciosAtributos {
     public Contexto moverPosicionAtributo(TransferAtributo ta) {
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
-            //controlador.mensajeDesde_SA(TC.SA_MoverPosicionAtributo_ERROR_DAOAtributos, ta);
         	return new Contexto(false, TC.SA_MoverPosicionAtributo_ERROR_DAOAtributos);
         else {
-            //controlador.mensajeDesde_SA(TC.SA_MoverPosicionAtributo_HECHO, ta);
         	Vector<Object> vec = new Vector<Object>();
         	vec.add(ta);
         	return new Contexto(true, TC.SA_MoverPosicionAtributo_HECHO, vec);
@@ -713,9 +672,7 @@ public class ServiciosAtributos {
         // Persistimos la entidad y devolvemos el mensaje
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         if (daoEntidades.modificarEntidad(te) == false) return new Contexto(false,  TC.SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades, v);
-            //controlador.mensajeDesde_SA(TC.SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades, v);
         else return new Contexto(true,  TC.SA_EditarClavePrimariaAtributo_HECHO, v);
-        	//controlador.mensajeDesde_SA(TC.SA_EditarClavePrimariaAtributo_HECHO, v);
     }
 
     public String getNombreAtributo(int id) {

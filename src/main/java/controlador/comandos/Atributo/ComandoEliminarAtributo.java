@@ -11,9 +11,9 @@ import modelo.transfers.TransferAtributo;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickEliminarAtributo extends Comando{
+public class ComandoEliminarAtributo extends Comando{
 
-	public ComandoClickEliminarAtributo(Controlador ctrl) {
+	public ComandoEliminarAtributo(Controlador ctrl) {
 		super(ctrl);
 	}
 

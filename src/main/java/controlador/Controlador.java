@@ -45,10 +45,9 @@ public class Controlador {
     private boolean modoSoporte;
 
     //Para boton Deshacer solo afecta a acciones con elementos
-    //private TC ultimoMensaje;
-    //private Object ultimosDatos;
-    //private TransferEntidad auxTransferEntidad;
-    /*
+    private TC ultimoMensaje;
+    private Object ultimosDatos;
+    private TransferEntidad auxTransferEntidad;
     private Vector auxTransferAtributos;
     private Point2D posAux;
     private String antigoNombreAtributo;
@@ -57,15 +56,15 @@ public class Controlador {
     private boolean antiguoMultivaloradoAtribuo;
     private boolean antiguoNotnullAtribuo;
     private boolean antiguoUniqueAtribuo;
-    private boolean antiguoClavePrimaria;*/
-    //private int idPadreAntigua;
-    /*private Vector<TransferEntidad> hijosAntiguo;
+    private boolean antiguoClavePrimaria;
+    private int idPadreAntigua;
+    private Vector<TransferEntidad> hijosAntiguo;
     private Vector<TransferEntidad> entidadesAntiguo;
     private TransferEntidad padreAntiguo;
     private TransferRelacion antiguaIsA;
     private Vector<TransferAtributo> antiguosAtributosRel;
     private Vector<TransferEntidad> antiguasEntidadesRel;
-    private Vector<TransferAtributo> antiguosSubatributos;*/
+    private Vector<TransferAtributo> antiguosSubatributos;
 
     private Transfer copiado;
 
@@ -1331,7 +1330,47 @@ public class Controlador {
 	protected Stack<Document> getPilaDeshacer() {
 		return pilaDeshacer;
 	}
-	
+
+	public void setAntigoNombreAtributo(String antigoNombreAtributo) {
+		this.antigoNombreAtributo = antigoNombreAtributo;
+	}
+
+	public void setAntiguoDominioAtributo(String antiguoDominioAtributo) {
+		this.antiguoDominioAtributo = antiguoDominioAtributo;
+	}
+
+	public void setAntiguoCompuestoAtribuo(boolean antiguoCompuestoAtribuo) {
+		this.antiguoCompuestoAtribuo = antiguoCompuestoAtribuo;
+	}
+
+	public void setAntiguoMultivaloradoAtribuo(boolean antiguoMultivaloradoAtribuo) {
+		this.antiguoMultivaloradoAtribuo = antiguoMultivaloradoAtribuo;
+	}
+
+	public void setAntiguoNotnullAtribuo(boolean antiguoNotnullAtribuo) {
+		this.antiguoNotnullAtribuo = antiguoNotnullAtribuo;
+	}
+
+	public void setAntiguoUniqueAtribuo(boolean antiguoUniqueAtribuo) {
+		this.antiguoUniqueAtribuo = antiguoUniqueAtribuo;
+	}
+
+	public void setAntiguoClavePrimaria(boolean antiguoClavePrimaria) {
+		this.antiguoClavePrimaria = antiguoClavePrimaria;
+	}
+
+	public void setIdPadreAntigua(int idPadreAntigua) {
+		this.idPadreAntigua = idPadreAntigua;
+	}
+
+	public void setHijosAntiguo(Vector<TransferEntidad> hijosAntiguo) {
+		this.hijosAntiguo = hijosAntiguo;
+	}
+
+	public void setPadreAntiguo(TransferEntidad padreAntiguo) {
+		this.padreAntiguo = padreAntiguo;
+	}
+
 	protected Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
 		Contexto resultado = null;
     	Comando com = FactoriaComandos.getComando(mensaje, this);

@@ -10,9 +10,9 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 
-public class ComandoClickModificarUniqueAtrib extends Comando{
+public class ComandoModificarUniqueAtrib extends Comando{
 
-	public ComandoClickModificarUniqueAtrib(Controlador ctrl) {
+	public ComandoModificarUniqueAtrib(Controlador ctrl) {
 		super(ctrl);
 	}
 

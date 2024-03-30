@@ -13,9 +13,9 @@ import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
 
-public class ComandoClickPegar extends Comando{
+public class ComandoPegar extends Comando{
 
-	public ComandoClickPegar(Controlador ctrl) {
+	public ComandoPegar(Controlador ctrl) {
 		super(ctrl);
 	}
 

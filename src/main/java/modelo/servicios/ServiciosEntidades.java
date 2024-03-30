@@ -31,14 +31,14 @@ public class ServiciosEntidades {
 
     /* Anadir Entidad
      * Parametros: un TransferEntidad que contiene el nombre de la nueva entidad y la posicion donde debe ir dibujado.
-     * Devuelve: La entidad en un TransferEntidad y el mensaje -> SE_InsertarEntidad_HECHO
+     * Devuelve: Contexto de exito con un vector con la entidad en un TransferEntidad, 
+     * 		y el mensaje -> SE_InsertarEntidad_HECHO
      * Condiciones:
      * Si el nombre es vacio -> SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio
      * Si el nombre ya existe -> SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste
      * Si al usar el DAOEntidades se produce un error -> SE_InsertarEntidad_ERROR_DAO
      */
 
-    //hay que controlar que no exista el nombre de una agregacion
     public Contexto anadirEntidad(TransferEntidad te, Stack<Document> pilaDeshacer) {
         if (te.getNombre().isEmpty()) {
             return new Contexto(false, TC.SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio, null);
@@ -81,9 +81,9 @@ public class ServiciosEntidades {
 
     /* Se puede Anadir Entidad
      * Realiza las comprobaciones oportunas para ver si se puede introducir una entidad pero NO la inserta, simplemente
-     * devuelve true o false al controlador indicando si se puede realizar la acción.
+     * devuelve true o false indicando si se puede realizar la acción.
      * Parametros: un TransferEntidad que contiene el nombre de la nueva entidad y la posicion donde debe ir dibujado.
-     * Devuelve: La entidad en un TransferEntidad y el mensaje -> SE_InsertarEntidad_HECHO
+     * Devuelve: Contexto resultante.
      * Condiciones:
      * Si el nombre es vacio -> SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio
      * Si el nombre ya existe -> SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste
@@ -112,12 +112,10 @@ public class ServiciosEntidades {
         return new Contexto(true, null);
     }
 
-    
     /*
      * Renombrar una en entidad
      * -> Recibe la entidad y el nuevo nombre
      */
-
     public Contexto renombrarEntidad(Vector v) {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String nuevoNombre = (String) v.get(1);
@@ -271,7 +269,8 @@ public class ServiciosEntidades {
 
     /* Eliminar entidad
      * Parametros: el TransferEntidad que contiene la entidad que se desea eliminar
-     * Devuelve: Un TransferEntidad que contiene la entidad eliminada y el mensaje -> SE_EliminarEntidad_HECHO
+     * Devuelve: Un contexto de exito con un vector con un TransferEntidad que contiene la entidad eliminada
+     * 		 y el mensaje -> SE_EliminarEntidad_HECHO.
      * Condiciones:
      * Se se produce un error al usar el DAOEntidades -> SE_EliminarEntidad_ERROR_DAOEntidades
      */

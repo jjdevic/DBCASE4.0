@@ -13,9 +13,9 @@ import controlador.Contexto;
 import controlador.TC;
 import misc.UtilsFunc;
 
-public class ComandoClickGuardarBackup extends Comando {
+public class ComandoGuardarBackup extends Comando {
 
-	public ComandoClickGuardarBackup(Controlador ctrl) {
+	public ComandoGuardarBackup(Controlador ctrl) {
 		super(ctrl);
 	}
 

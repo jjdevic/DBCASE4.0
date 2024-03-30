@@ -23,14 +23,13 @@ public class ServiciosRelaciones {
 
     /* Anadir Relacion
      * Parametros: un TransferRelacion que contiene el nombre de la nueva Relacion y la posicion donde debe ir dibujada.
-     * Devuelve: La Relacion en un TransferRelacion y el mensaje -> SR_InsertarRelacion_HECHO
+     * Devuelve: Vector con la relacion en un TransferRelacion, y el mensaje -> SR_InsertarRelacion_HECHO
      * Condiciones:
      * Si el nombre es vacio -> SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio
      * Si el nombre ya existe -> SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste
      * Si al usar el DAORelaciones se produce un error -> SR_InsertarRelacion_ERROR_DAO
      */
 
-    //hay que controlar que no exista el nombre de una agregacion
     public Contexto anadirRelacion(TransferRelacion tr, int deOtro) {
         if (tr.getNombre().isEmpty()) {
             return new Contexto(false, TC.SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio, null);
@@ -73,7 +72,7 @@ public class ServiciosRelaciones {
 
     /* Se puede Anadir Relacion
      * Parametros: un TransferRelacion que contiene el nombre de la nueva Relacion y la posicion donde debe ir dibujada.
-     * Devuelve: La Relacion en un TransferRelacion y el mensaje -> SR_InsertarRelacion_HECHO
+     * Devuelve: Vector con la relacion en un TransferRelacion, y el mensaje -> SR_InsertarRelacion_HECHO
      * Condiciones:
      * Si el nombre es vacio -> SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio
      * Si el nombre ya existe -> SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste
@@ -475,7 +474,6 @@ public class ServiciosRelaciones {
 
         // Si nombre es vacio -> ERROR
         if (unique.isEmpty()) {
-            //controlador.mensajeDesde_SE(TC.SE_RenombrarEntidad_ERROR_NombreDeEntidadEsVacio, v);
             return new Contexto(false, null);
         }
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());

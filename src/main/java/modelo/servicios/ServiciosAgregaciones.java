@@ -147,6 +147,7 @@ public class ServiciosAgregaciones {
         return ta;
     }
 
+    //TODO mirar este caso por la recursion que habia
     public Contexto eliminarAgregacion(TransferRelacion tr) {
         String idRel = Integer.toString(tr.getIdRelacion());
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());

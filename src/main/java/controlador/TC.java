@@ -570,5 +570,6 @@ public enum TC {
     GUI_Principal_EditarRelacion,
     GUI_Principal_EditarAtributo, GUISeleccionarConexion_ClickNueva, Controlador_ConfigurarConexionDBMS, GUISeleccionarConexion_ClickEditar, GUIConexion_ClickConectar,
     GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta, EliminarRelacionIsA, Reset, GuardarYSalir, Abrir, AbrirCasos, NuevoWorkSpace, 
-    Salir, EliminarAtributosRelacion, ModificarCardinalidadRelacion_1a1, EliminarSubatributosAtributo, ObtenerListaEntidades, ObtenerListaAtributos, ObtenerListaRelaciones, ObtenerListaDominios, ObtenerListaAgregaciones, Guardar,
+    Salir, EliminarAtributosRelacion, ModificarCardinalidadRelacion_1a1, EliminarSubatributosAtributo, ObtenerListaEntidades, ObtenerListaAtributos, 
+    ObtenerListaRelaciones, ObtenerListaDominios, ObtenerListaAgregaciones, Guardar, Controlador_EjecutarEnDBMS
 }

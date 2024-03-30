@@ -10,17 +10,16 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 
-public class ComandoClickEditarUniqueAtributo extends Comando{
+public class ComandoEliminarRefUniqueAtr extends Comando{
 
-	public ComandoClickEditarUniqueAtributo(Controlador ctrl) {
+	public ComandoEliminarRefUniqueAtr(Controlador ctrl) {
 		super(ctrl);
 	}
 
 	@Override
 	public Contexto ejecutar(Object datos) {
 		Contexto resultado = null;
-		Vector<Object> ve = (Vector<Object>) datos;
-        TransferAtributo ta = (TransferAtributo) ve.get(0);
+		TransferAtributo ta = (TransferAtributo) datos;
         Contexto ctxt = getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(ta);
         tratarContexto(ctxt);
 
@@ -53,12 +52,12 @@ public class ComandoClickEditarUniqueAtributo extends Comando{
                 Vector v = new Vector();
                 v.add(te);
                 v.add(ta);
-                resultado = getFactoriaServicios().getServicioEntidades().setUniqueUnitario(v);
+                resultado = getFactoriaServicios().getServicioEntidades().eliminarReferenciasUnitario(v);
             } else {//esRelacion
                 Vector v = new Vector();
                 v.add(tr);
                 v.add(ta);
-                resultado = getFactoriaServicios().getServicioRelaciones().setUniqueUnitario(v);
+                resultado = getFactoriaServicios().getServicioRelaciones().eliminarReferenciasUnitario(v);
             }
         }
         return resultado;

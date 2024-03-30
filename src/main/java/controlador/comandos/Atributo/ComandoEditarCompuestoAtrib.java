@@ -9,9 +9,9 @@ import modelo.transfers.TransferAtributo;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickEditarCompuestoAtrib extends Comando{
+public class ComandoEditarCompuestoAtrib extends Comando{
 
-	public ComandoClickEditarCompuestoAtrib(Controlador ctrl) {
+	public ComandoEditarCompuestoAtrib(Controlador ctrl) {
 		super(ctrl);
 	}
 

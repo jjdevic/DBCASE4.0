@@ -12,9 +12,9 @@ import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
 
-public class ComandoClickModificarEntidad extends Comando{
+public class ComandoModificarEntidad extends Comando{
 
-	public ComandoClickModificarEntidad(Controlador ctrl) {
+	public ComandoModificarEntidad(Controlador ctrl) {
 		super(ctrl);
 	}
 

@@ -12,9 +12,9 @@ import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
 
-public class ComandoClickInsertarAgregacion extends Comando {
+public class ComandoInsertarAgregacion extends Comando {
 
-	public ComandoClickInsertarAgregacion(Controlador ctrl) {
+	public ComandoInsertarAgregacion(Controlador ctrl) {
 		super(ctrl);
 	}
 

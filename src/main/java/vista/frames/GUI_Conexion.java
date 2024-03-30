@@ -21,7 +21,6 @@ import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class GUI_Conexion extends Parent_GUI {
-
     
     private Vector<TransferEntidad> listaEntidades;
     private boolean _crear;
@@ -600,19 +599,18 @@ public class GUI_Conexion extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		// TODO Auto-generated method stub
-		
+		//TODO
 	}
 
 	@Override
 	public void setActiva() {
-		// TODO Auto-generated method stub
+		// TODO
 		
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
+		// TODO
 		return 0;
 	}
 

@@ -12,9 +12,9 @@ import modelo.transfers.TransferDominio;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickEliminarDominio extends Comando{
+public class ComandoEliminarDominio extends Comando{
 
-	public ComandoClickEliminarDominio(Controlador ctrl) {
+	public ComandoEliminarDominio(Controlador ctrl) {
 		super(ctrl);
 	}
 

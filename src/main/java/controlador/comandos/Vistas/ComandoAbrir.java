@@ -13,9 +13,9 @@ import controlador.Contexto;
 import controlador.Controlador;
 import misc.UtilsFunc;
 
-public class ComandoClickAbrir extends Comando {
+public class ComandoAbrir extends Comando {
 
-	public ComandoClickAbrir(Controlador ctrl) {
+	public ComandoAbrir(Controlador ctrl) {
 		super(ctrl);
 	}
 

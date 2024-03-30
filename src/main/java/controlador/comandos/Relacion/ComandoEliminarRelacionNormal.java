@@ -14,9 +14,9 @@ import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 
-public class ComandoClickEliminarRelacionNormal extends Comando{
+public class ComandoEliminarRelacionNormal extends Comando{
 
-	public ComandoClickEliminarRelacionNormal(Controlador ctrl) {
+	public ComandoEliminarRelacionNormal(Controlador ctrl) {
 		super(ctrl);
 	}
 

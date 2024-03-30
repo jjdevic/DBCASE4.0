@@ -143,7 +143,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrir.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrir.setIcon(abrir);
@@ -164,7 +163,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrirCasos.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR_CASOS)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrirCasos.setIcon(abrirCasos);
@@ -185,7 +183,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrir2.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR_RECIENTE)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrirRecentFiles.setIcon(abrir2);
@@ -209,7 +206,6 @@ public class MyMenu extends JMenuBar {
         try {
             save.setImage(ImageIO.read(classLoader.getResourceAsStream(SAVE)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuGuardar.setIcon(save);
@@ -256,7 +252,6 @@ public class MyMenu extends JMenuBar {
         try {
             print.setImage(ImageIO.read(classLoader.getResourceAsStream(PRINT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuImprimir.setIcon(print);
@@ -297,7 +292,6 @@ public class MyMenu extends JMenuBar {
         try {
             exit.setImage(ImageIO.read(classLoader.getResourceAsStream(EXIT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuSalir.setIcon(exit);
@@ -434,7 +428,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista1.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA1)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista1.setIcon(vista1);

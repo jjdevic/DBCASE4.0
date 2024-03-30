@@ -332,7 +332,6 @@ public class GUI_EditarDominioAtributo extends Parent_GUI {
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

@@ -9,9 +9,9 @@ import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 
-public class ComandoClickModificarAtributo extends Comando {
+public class ComandoModificarAtributo extends Comando {
 
-	public ComandoClickModificarAtributo(Controlador ctrl) {
+	public ComandoModificarAtributo(Controlador ctrl) {
 		super(ctrl);
 	}
 
@@ -19,15 +19,15 @@ public class ComandoClickModificarAtributo extends Comando {
 	public Contexto ejecutar(Object datos) {
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
-        /*
-        this.antigoNombreAtributo = ta.getNombre();
-        this.antiguoDominioAtributo = ta.getDominio();
-        this.antiguoCompuestoAtribuo = ta.getCompuesto();
-        this.antiguoMultivaloradoAtribuo = ta.getMultivalorado();
-        this.antiguoNotnullAtribuo = ta.getNotnull();
-        this.antiguoUniqueAtribuo = ta.getUnique();
-        this.antiguoClavePrimaria = ta.getClavePrimaria();
-        */
+        
+        setAntigoNombreAtributo(ta.getNombre());
+        setAntiguoDominioAtributo(ta.getDominio());
+        setAntiguoCompuestoAtributo(ta.getCompuesto());
+        setAntiguoMultivaloradoAtributo(ta.getMultivalorado());
+        setAntiguoNotnullAtributo(ta.getNotnull());
+        setAntiguoUniqueAtributo(ta.getUnique());
+        setAntiguoClavePrimaria(ta.getClavePrimaria());
+        
         String nuevoNombre = (String) v.get(1);
         boolean clavePrimaraSelected = (boolean) v.get(2);
         boolean compuestoSelected = (boolean) v.get(3);
