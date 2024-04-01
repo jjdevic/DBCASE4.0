@@ -27,7 +27,7 @@ public class ComandoEliminarEntidad extends Comando {
         TransferEntidad te = (TransferEntidad) v.get(0);
         boolean preguntar = (Boolean) v.get(1);
         int intAux = (int) v.get(2);
-        boolean eliminarRelacionDebil = (boolean) v.get(3);
+        
         int respuesta = 0;
         
         if (!ctrl.getConfirmarEliminaciones()) preguntar = false;
@@ -65,8 +65,8 @@ public class ComandoEliminarEntidad extends Comando {
                 conta++;
             }
         
-            //Si la entidad es débil y se ha especificado que se debe eliminar la relacion, eliminamos la relación débil asociada
-            if (eliminarRelacionDebil && te.isDebil()) {
+            //Si la entidad es débil eliminamos la relación débil asociada
+            if (te.isDebil()) {
                 Vector<TransferRelacion> lista_rel = getFactoriaServicios().getServicioRelaciones().ListaDeRelacionesNoVoid();
                 int cont = 0, aux = 0;
                 boolean encontrado = false;
@@ -83,14 +83,7 @@ public class ComandoEliminarEntidad extends Comando {
                             idEntidad = eya.getEntidad();
                             if (te.getIdEntidad() == idEntidad) {
                                 tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
-                                Vector<Object> v_aux = new Vector<Object>();
-                                v_aux.add(lista_rel.get(cont));
-                                v_aux.add(true);
-                                v_aux.add(0);
-                                
-                                //Al ser debil, se eliminará automaticamente la entidad asociada
-                                resultado = this.ejecutarComando(TC.Controlador_EliminarRelacionNormal, v_aux);
-                                
+                                getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
                                 encontrado = true;
                             }
                             aux++;
@@ -100,7 +93,10 @@ public class ComandoEliminarEntidad extends Comando {
                     cont++;
                 }
             }
-        } 
+
+            //Eliminamos la entidad
+            tratarContexto(getFactoriaServicios().getServicioEntidades().eliminarEntidad(te, intAux));
+        }
         return resultado;
 	}
 }

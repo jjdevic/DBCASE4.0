@@ -3,6 +3,7 @@ package vista.frames;
 import controlador.ConfiguradorInicial;
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.TransferConexion;
 import vista.Lenguaje;
@@ -248,7 +249,7 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
     }
 
     private void botonNuevaActionPerformed(ActionEvent evt) {
-    	controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickNueva, _conexion);
+    	controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickNueva, UtilsFunc.crearVector(true, "", _conexion));
     }
 
     private void botonBorrarActionPerformed(ActionEvent evt) {
@@ -281,9 +282,8 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
         ConfiguradorInicial config = new ConfiguradorInicial();
         config.leerFicheroConfiguracion();
         TransferConexion tc = config.obtenConexion(elegido);
-
-        controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickEditar, tc);
-        //controlador.getTheGUIConfigurarConexionDBMS().setActiva(false, elegido, tc);
+        
+        controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickEditar, UtilsFunc.crearVector(false, elegido, tc));
     }
 
     private String getElementoSeleccionado() {

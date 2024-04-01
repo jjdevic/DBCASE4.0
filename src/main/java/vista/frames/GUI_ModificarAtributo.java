@@ -160,6 +160,7 @@ public class GUI_ModificarAtributo extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva() {
+    	this.listaDominios = (Vector<TransferDominio>) this.getControlador().mensaje(TC.ObtenerListaDominios, null);
         Object[] nuevos = new Object[this.listaDominios.size()];
         this.centraEnPantalla();
         this.opcionClavePrimaria.setSelected(ta.isClavePrimaria());
@@ -545,15 +546,16 @@ public class GUI_ModificarAtributo extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		Vector<Object> v = (Vector<Object>) datos;
-		
-		this.ta = (TransferAtributo) v.get(0);
-		this.nombrePadre = (String) v.get(1);
+		if(datos != null) {
+			Vector<Object> v = (Vector<Object>) datos;
+			
+			this.ta = (TransferAtributo) v.get(0);
+			this.nombrePadre = (String) v.get(1);
+		}
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

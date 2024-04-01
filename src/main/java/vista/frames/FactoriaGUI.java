@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import controlador.Controlador;
 import controlador.TC;
+import oracle.net.nt.TcpNTAdapter;
 import vista.GUIPrincipal;
 
 /* Esta factoría se encarga de devolver la GUI correspondiente al mensaje TC.Controlador_ recibido. */
@@ -76,6 +77,10 @@ public class FactoriaGUI {
             case Controlador_RenombrarAgregacion: gui = new GUI_RenombrarAgregacion(ctrl); break;
             case Controlador_InsertarDominio: gui = new GUI_InsertarDominio(ctrl); break;
             case Controlador_EjecutarEnDBMS: gui = new GUI_SeleccionarConexion(ctrl); break;
+            case Controlador_ConfigurarConexionDBMS: gui = new GUI_Conexion(ctrl); break; 
+            case Controlador_ModificarEntidad: gui = new GUI_ModificarEntidad(ctrl); break;
+            case Controlador_ModificarAtributo: gui = new GUI_ModificarAtributo(ctrl); break;
+            case Controlador_ModificarRelacion: gui = new GUI_ModificarRelacion(ctrl); break;
             case GUI_WorkSpace: gui = new GUI_SaveAs(ctrl, (Boolean) datos); break;
             case GUI_Recientes: gui = new GUI_Recientes(ctrl, (ArrayList<File>) datos); break;
             case GUI_Principal_REPORT: gui = new GUI_Report(ctrl); break;

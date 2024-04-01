@@ -20,7 +20,7 @@ public class ComandoQuitarEntidadPadre extends Comando {
 	public Contexto ejecutar(Object datos) {
 		Contexto resultado = null;
 		TransferRelacion tr = (TransferRelacion) datos;
-        setIdPadreAntigua(tr.getEntidadYAridad(0).getEntidad());
+        //ctrl.setIdPadreAntigua(tr.getEntidadYAridad(0).getEntidad());
         
         Vector<EntidadYAridad> eyaV = tr.getListaEntidadesYAridades();
         EntidadYAridad eya = eyaV.get(0);
@@ -29,7 +29,7 @@ public class ComandoQuitarEntidadPadre extends Comando {
         Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
         for (TransferEntidad listaEntidade : listaEntidades) {
             if (idPadre == listaEntidade.getIdEntidad());
-                setPadreAntiguo(listaEntidade);
+                ctrl.setPadreAntiguo(listaEntidade);
         }
 
         //obtenemos las hijas
@@ -45,7 +45,7 @@ public class ComandoQuitarEntidadPadre extends Comando {
                 if (idHija == listaEntidade.getIdEntidad()) th.add(listaEntidade);
             }
         }
-        setHijosAntiguo(th);
+        ctrl.setHijosAntiguo(th);
 
         resultado = getFactoriaServicios().getServicioRelaciones().quitarEntidadPadreEnRelacionIsA(tr);
         getFactoriaServicios().getServicioSistema().reset();

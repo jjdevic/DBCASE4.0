@@ -79,86 +79,7 @@ public class GUI_Conexion extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva(boolean crear, String nombre, TransferConexion tc) {
-        this._crear = crear;
-        if (crear) {
-            this.cajaPass.setText("");
-            this.textoNombre.setText("");
-            this.textoNombre.setEnabled(true);
-            this.cajaServer.setText("");
-            this.cajaPuerto.setText("");
-            this.cajaUsuario.setText("");
-            this.cajaBase.setText("");
-            if (_conexion.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
-                this.server.setEnabled(false);
-                this.puerto.setEnabled(false);
-                this.usuario.setEnabled(false);
-                this.password.setEnabled(false);
-                this.cajaServer.setEnabled(false);
-                this.cajaPuerto.setEnabled(false);
-                this.cajaBase.setEnabled(true);
-                this.btnExaminar.setVisible(true);
-                this.btnExaminar.setEnabled(true);
-                this.cajaUsuario.setEnabled(false);
-                this.cajaPass.setEnabled(false);
-            } else {
-                this.server.setEnabled(true);
-                this.puerto.setEnabled(true);
-                this.usuario.setEnabled(true);
-                this.password.setEnabled(true);
-                this.cajaServer.setEnabled(true);
-                this.cajaPuerto.setEnabled(true);
-                this.cajaBase.setEnabled(true);
-                this.btnExaminar.setVisible(false);
-                this.btnExaminar.setEnabled(false);
-                this.cajaUsuario.setEnabled(true);
-                this.cajaPass.setEnabled(true);
-            }
-        } else {
-
-            // EDITAR
-            this.textoNombre.setText(nombre);
-            this.textoNombre.setEnabled(false);
-
-            if (tc.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
-                this.server.setEnabled(false);
-                this.puerto.setEnabled(false);
-                this.usuario.setEnabled(false);
-                this.password.setEnabled(false);
-
-                this.cajaServer.setEnabled(false);
-                this.cajaServer.setText("");
-                this.cajaPuerto.setEnabled(false);
-                this.cajaPuerto.setText("");
-                this.cajaBase.setEnabled(true);
-                this.cajaBase.setText(tc.getRuta());
-                this.cajaUsuario.setEnabled(false);
-                this.cajaUsuario.setText("");
-                this.cajaPass.setEnabled(false);
-                this.cajaPass.setText("");
-            } else {
-                String server = tc.getRuta();
-                String port = "";
-                if (server.lastIndexOf(":") > 0) {
-                    port = server.substring(server.indexOf(":") + 1);
-                    server = server.substring(0, server.indexOf(":"));
-                }
-                this.cajaBase.setText(tc.getDatabase());
-                this.cajaBase.setEnabled(true);
-                this.cajaServer.setText(server);
-                this.cajaServer.setEnabled(true);
-                this.cajaPuerto.setText(port);
-                this.cajaPuerto.setEnabled(true);
-                this.cajaUsuario.setText(tc.getUsuario());
-                this.cajaUsuario.setEnabled(true);
-                this.cajaPass.setText(tc.getPassword());
-                this.cajaPass.setEnabled(true);
-            }
-            _conexion = tc;
-        }
-
-        this.centraEnPantalla();
-        SwingUtilities.invokeLater(doFocus);
-        this.setVisible(true);
+        
     }
 
     private Runnable doFocus = new Runnable() {
@@ -599,18 +520,99 @@ public class GUI_Conexion extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		//TODO
+		//Extraer datos
+		Vector<Object> v = (Vector<Object>) datos;
+		boolean crear = (boolean) v.get(0);
+		String nombre = (String) v.get(1);
+		TransferConexion tc = (TransferConexion) v.get(2);
+		
+		this._crear = crear;
+        if (crear) {
+            this.cajaPass.setText("");
+            this.textoNombre.setText("");
+            this.textoNombre.setEnabled(true);
+            this.cajaServer.setText("");
+            this.cajaPuerto.setText("");
+            this.cajaUsuario.setText("");
+            this.cajaBase.setText("");
+            if (_conexion.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
+                this.server.setEnabled(false);
+                this.puerto.setEnabled(false);
+                this.usuario.setEnabled(false);
+                this.password.setEnabled(false);
+                this.cajaServer.setEnabled(false);
+                this.cajaPuerto.setEnabled(false);
+                this.cajaBase.setEnabled(true);
+                this.btnExaminar.setVisible(true);
+                this.btnExaminar.setEnabled(true);
+                this.cajaUsuario.setEnabled(false);
+                this.cajaPass.setEnabled(false);
+            } else {
+                this.server.setEnabled(true);
+                this.puerto.setEnabled(true);
+                this.usuario.setEnabled(true);
+                this.password.setEnabled(true);
+                this.cajaServer.setEnabled(true);
+                this.cajaPuerto.setEnabled(true);
+                this.cajaBase.setEnabled(true);
+                this.btnExaminar.setVisible(false);
+                this.btnExaminar.setEnabled(false);
+                this.cajaUsuario.setEnabled(true);
+                this.cajaPass.setEnabled(true);
+            }
+        } else {
+
+            // EDITAR
+            this.textoNombre.setText(nombre);
+            this.textoNombre.setEnabled(false);
+
+            if (tc.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
+                this.server.setEnabled(false);
+                this.puerto.setEnabled(false);
+                this.usuario.setEnabled(false);
+                this.password.setEnabled(false);
+
+                this.cajaServer.setEnabled(false);
+                this.cajaServer.setText("");
+                this.cajaPuerto.setEnabled(false);
+                this.cajaPuerto.setText("");
+                this.cajaBase.setEnabled(true);
+                this.cajaBase.setText(tc.getRuta());
+                this.cajaUsuario.setEnabled(false);
+                this.cajaUsuario.setText("");
+                this.cajaPass.setEnabled(false);
+                this.cajaPass.setText("");
+            } else {
+                String server = tc.getRuta();
+                String port = "";
+                if (server.lastIndexOf(":") > 0) {
+                    port = server.substring(server.indexOf(":") + 1);
+                    server = server.substring(0, server.indexOf(":"));
+                }
+                this.cajaBase.setText(tc.getDatabase());
+                this.cajaBase.setEnabled(true);
+                this.cajaServer.setText(server);
+                this.cajaServer.setEnabled(true);
+                this.cajaPuerto.setText(port);
+                this.cajaPuerto.setEnabled(true);
+                this.cajaUsuario.setText(tc.getUsuario());
+                this.cajaUsuario.setEnabled(true);
+                this.cajaPass.setText(tc.getPassword());
+                this.cajaPass.setEnabled(true);
+            }
+            _conexion = tc;
+        }   
 	}
 
 	@Override
 	public void setActiva() {
-		// TODO
-		
+		this.centraEnPantalla();
+        SwingUtilities.invokeLater(doFocus);
+        this.setVisible(true);
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO
 		return 0;
 	}
 

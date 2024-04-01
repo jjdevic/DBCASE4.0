@@ -26,51 +26,36 @@ public class ComandoModificarEntidad extends Comando{
         boolean eraDebil = te.isDebil();
         String nuevoNombre = (String) v.get(1);
         boolean debilitar = (boolean) v.get(2);
+        TransferRelacion tr_aux = null;
+        TransferEntidad tEntidadFuerte = null;
+        
+        //Si se quiere debilitar recogemos los datos necesarios
+        if(debilitar) {
+        	tr_aux = (TransferRelacion) v.get(3);
+        	tEntidadFuerte = (TransferEntidad) v.get(4);
+        }
+        
         //Si se ha modificado su nombre la renombramos
         if (!Objects.equals(te.getNombre(), nuevoNombre)) {
             Vector<Object> v1 = new Vector<Object>();
             v1.add(te);
             v1.add(nuevoNombre);
-            getFactoriaServicios().getServicioEntidades().renombrarEntidad(v1);
+            tratarContexto(getFactoriaServicios().getServicioEntidades().renombrarEntidad(v1));
         }
-        //Si se ha debilitado añadimos la relación entre la entidad modificada y la especificada en la GUI
+        
+        //Si se ha debilitado añadimos la relación
         if (debilitar) {
-            boolean debilitada = false;
-            if (!eraDebil) {
-            	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
-            }
-            TransferEntidad te2 = (TransferEntidad) v.get(4);
-            TransferRelacion tr = (TransferRelacion) v.get(3);
-            if (getFactoriaServicios().getServicioRelaciones().SePuedeAnadirRelacion(tr).isExito()) {
-                Vector<Object> v2 = new Vector<Object>();
-                v2.add(tr);
-                v2.add(te);
-                v2.add(Integer.toString(1));//Inicio
-                v2.add("n");//Fin
-                v2.add("");//Rol
-                //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                v2.add(true);
-                v2.add(false);
-                v2.add(false);
-                //Debilitamos la entidad y añadimos a la nueva relacion
-                getFactoriaServicios().getServicioRelaciones().anadirRelacion(tr, 1);//mandamos un 1, se anade la relacion por otro metodo
-                getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v2, 1);//mandamos un 1, se anade la relacion por otro metodo
-                //dudaa
-                Vector<Object> v3 = new Vector<Object>();
-                v3.add(tr);
-                v3.add(te2);
-                v3.add(Integer.toString(0));//Inicio
-                v3.add("1");//Fin
-                v3.add("");//Rol
-                //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-                v3.add(true);
-                v3.add(false);
-                v3.add(false);
-                resultado = getFactoriaServicios().getServicioRelaciones().anadirEntidadARelacion(v3, 1);//mandamos un 1, se anade la relacion por otro metodo
-            } else if (!eraDebil) {
-            	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
-            }
-        } else if (eraDebil) {
+        	//Recopilar datos necesarios
+        	Vector<Object> v_crearRelDebil = new Vector<Object>();
+        	v_crearRelDebil.add(te);
+        	v_crearRelDebil.add(tr_aux.getPosicion());
+        	v_crearRelDebil.add(tr_aux.getNombre());
+        	v_crearRelDebil.add(tEntidadFuerte);
+        	
+        	//Usar comando para crear relacion debil
+        	resultado = ejecutarComando(TC.Controlador_InsertarRelacionDebil, v_crearRelDebil);
+        } 
+        else if (eraDebil) {
         	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
             Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
             //getFactoriaServicios().getServicioRelaciones().restablecerDebilidadRelaciones();

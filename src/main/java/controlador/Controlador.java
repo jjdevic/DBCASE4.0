@@ -978,8 +978,10 @@ public class Controlador {
                 factoriaServicios.getServicioReporte().crearIncidencia(textoIncidencia, anadirDiagrama, this.filetemp);
                 break;
             }
+            case GUISeleccionarConexion_ClickEditar:
             case GUISeleccionarConexion_ClickNueva: {
-            	factoriaGUI.getGUI(TC.Controlador_ConfigurarConexionDBMS, datos, false);
+            	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setActiva();
+            	break;
             }
             default:
                 break;
@@ -1339,19 +1341,19 @@ public class Controlador {
 		this.antiguoDominioAtributo = antiguoDominioAtributo;
 	}
 
-	public void setAntiguoCompuestoAtribuo(boolean antiguoCompuestoAtribuo) {
+	public void setAntiguoCompuestoAtributo(boolean antiguoCompuestoAtribuo) {
 		this.antiguoCompuestoAtribuo = antiguoCompuestoAtribuo;
 	}
 
-	public void setAntiguoMultivaloradoAtribuo(boolean antiguoMultivaloradoAtribuo) {
+	public void setAntiguoMultivaloradoAtributo(boolean antiguoMultivaloradoAtribuo) {
 		this.antiguoMultivaloradoAtribuo = antiguoMultivaloradoAtribuo;
 	}
 
-	public void setAntiguoNotnullAtribuo(boolean antiguoNotnullAtribuo) {
+	public void setAntiguoNotnullAtributo(boolean antiguoNotnullAtribuo) {
 		this.antiguoNotnullAtribuo = antiguoNotnullAtribuo;
 	}
 
-	public void setAntiguoUniqueAtribuo(boolean antiguoUniqueAtribuo) {
+	public void setAntiguoUniqueAtributo(boolean antiguoUniqueAtribuo) {
 		this.antiguoUniqueAtribuo = antiguoUniqueAtribuo;
 	}
 

@@ -78,44 +78,4 @@ public abstract class Comando {
     protected Object enviarMensaje(TC mensaje, Object datos) {
     	return ctrl.mensaje(mensaje, datos);
     }
-    
-	protected void setAntigoNombreAtributo(String antigoNombreAtributo) {
-		ctrl.setAntigoNombreAtributo(antigoNombreAtributo);
-	}
-
-	protected void setAntiguoDominioAtributo(String antiguoDominioAtributo) {
-		ctrl.setAntiguoDominioAtributo(antiguoDominioAtributo);
-	}
-
-	protected void setAntiguoCompuestoAtributo(boolean antiguoCompuestoAtribuo) {
-		ctrl.setAntiguoCompuestoAtribuo(antiguoCompuestoAtribuo);
-	}
-
-	protected void setAntiguoMultivaloradoAtributo(boolean antiguoMultivaloradoAtributo) {
-		ctrl.setAntiguoMultivaloradoAtribuo(antiguoMultivaloradoAtributo);
-	}
-
-	protected void setAntiguoNotnullAtributo(boolean antiguoNotnullAtributo) {
-		ctrl.setAntiguoNotnullAtribuo(antiguoNotnullAtributo);
-	}
-
-	protected void setAntiguoUniqueAtributo(boolean antiguoUniqueAtributo) {
-		ctrl.setAntiguoUniqueAtribuo(antiguoUniqueAtributo);
-	}
-
-	protected void setAntiguoClavePrimaria(boolean antiguoClavePrimaria) {
-		ctrl.setAntiguoClavePrimaria(antiguoClavePrimaria);
-	}
-
-	protected void setIdPadreAntigua(int idPadreAntigua) {
-		ctrl.setIdPadreAntigua(idPadreAntigua);
-	}
-
-	protected void setHijosAntiguo(Vector<TransferEntidad> hijosAntiguo) {
-		ctrl.setHijosAntiguo(hijosAntiguo);
-	}
-
-	protected void setPadreAntiguo(TransferEntidad padreAntiguo) {
-		ctrl.setPadreAntiguo(padreAntiguo);
-	}
 }

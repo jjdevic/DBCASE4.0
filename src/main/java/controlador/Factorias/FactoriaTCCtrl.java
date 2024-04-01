@@ -58,6 +58,10 @@ public class FactoriaTCCtrl {
 		case SR_InsertarRelacionIsA_HECHO: case PanelDiseno_Click_InsertarRelacionIsA: resultado = TC.Controlador_InsertarRelacionIsA; break;
 		case SD_InsertarDominio_HECHO: case PanelDiseno_Click_CrearDominio: resultado = TC.Controlador_InsertarDominio; break;
 		case GUI_Principal_Click_BotonEjecutarEnDBMS: resultado = TC.Controlador_EjecutarEnDBMS; break;
+		case GUISeleccionarConexion_ClickNueva: case GUISeleccionarConexion_ClickEditar: resultado = TC.Controlador_ConfigurarConexionDBMS; break;
+		case GUI_Principal_EditarEntidad: resultado = TC.Controlador_ModificarEntidad; break;
+		case GUI_Principal_EditarAtributo: resultado = TC.Controlador_ModificarAtributo; break;
+		case GUI_Principal_EditarRelacion: resultado = TC.Controlador_ModificarRelacion; break;
 		default: break;
 		}
 		return resultado;

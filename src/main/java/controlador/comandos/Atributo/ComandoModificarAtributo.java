@@ -20,13 +20,13 @@ public class ComandoModificarAtributo extends Comando {
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
         
-        setAntigoNombreAtributo(ta.getNombre());
-        setAntiguoDominioAtributo(ta.getDominio());
-        setAntiguoCompuestoAtributo(ta.getCompuesto());
-        setAntiguoMultivaloradoAtributo(ta.getMultivalorado());
-        setAntiguoNotnullAtributo(ta.getNotnull());
-        setAntiguoUniqueAtributo(ta.getUnique());
-        setAntiguoClavePrimaria(ta.getClavePrimaria());
+        ctrl.setAntigoNombreAtributo(ta.getNombre());
+        ctrl.setAntiguoDominioAtributo(ta.getDominio());
+        ctrl.setAntiguoCompuestoAtributo(ta.getCompuesto());
+        ctrl.setAntiguoMultivaloradoAtributo(ta.getMultivalorado());
+        ctrl.setAntiguoNotnullAtributo(ta.getNotnull());
+        ctrl.setAntiguoUniqueAtributo(ta.getUnique());
+        ctrl.setAntiguoClavePrimaria(ta.getClavePrimaria());
         
         String nuevoNombre = (String) v.get(1);
         boolean clavePrimaraSelected = (boolean) v.get(2);

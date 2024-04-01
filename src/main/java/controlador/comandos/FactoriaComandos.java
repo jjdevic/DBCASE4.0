@@ -3,31 +3,12 @@ package controlador.comandos;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Agregacion.ComandoInsertarAgregacion;
-import controlador.comandos.Atributo.ComandoEditarCompuestoAtrib;
-import controlador.comandos.Atributo.ComandoEditarUniqueAtributo;
-import controlador.comandos.Atributo.ComandoEliminarAtributo;
-import controlador.comandos.Atributo.ComandoEliminarRefUniqueAtr;
-import controlador.comandos.Atributo.ComandoModificarAtributo;
-import controlador.comandos.Atributo.ComandoModificarUniqueAtrib;
-import controlador.comandos.Atributo.ComandoEliminarSubatributos;
-import controlador.comandos.Dominio.ComandoEliminarDominio;
-import controlador.comandos.Entidad.ComandoAnadirUniquesEntidad;
-import controlador.comandos.Entidad.ComandoEliminarEntidad;
-import controlador.comandos.Entidad.ComandoModificarEntidad;
-import controlador.comandos.Entidad.ComandoInsertarEntidadDebil;
-import controlador.comandos.Otros.ComandoEditarElemento;
-import controlador.comandos.Relacion.ComandoAnadirEntidadARelacion;
-import controlador.comandos.Relacion.ComandoAnadirUniquesRelacion;
-import controlador.comandos.Relacion.ComandoDebilitarRelacion;
-import controlador.comandos.Relacion.ComandoEliminarRelacionNormal;
-import controlador.comandos.Relacion.ComandoModificarCardinalidadRelacion1a1;
-import controlador.comandos.Relacion.ComandoQuitarEntidadPadre;
-import controlador.comandos.Vistas.ComandoAbrir;
-import controlador.comandos.Vistas.ComandoGuardar;
-import controlador.comandos.Vistas.ComandoGuardarBackup;
-import controlador.comandos.Vistas.ComandoPegar;
-import controlador.comandos.Vistas.ComandoWorkspaceNuevo;
+import controlador.comandos.Agregacion.*;
+import controlador.comandos.Atributo.*;
+import controlador.comandos.Dominio.*;
+import controlador.comandos.Entidad.*;
+import controlador.comandos.Relacion.*;
+import controlador.comandos.Vistas.*;
 
 /**
  * Esta factoría devuelve el comando asociado a un mensaje TC.
@@ -70,6 +51,7 @@ public class FactoriaComandos {
         case GUIInsertarEntidadDebil_Click_BotonInsertar: res = new ComandoInsertarEntidadDebil(ctrl); break;
         case ModificarCardinalidadRelacion_1a1:	res = new ComandoModificarCardinalidadRelacion1a1(ctrl); break;
     	case EliminarSubatributosAtributo: res = new ComandoEliminarSubatributos(ctrl); break;
+    	case Controlador_InsertarRelacionDebil: res = new ComandoCrearRelacionDebil(ctrl); break;
 		default: break;
 		}
 		return res;

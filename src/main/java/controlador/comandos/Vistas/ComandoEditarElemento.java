@@ -1,4 +1,4 @@
-package controlador.comandos.Otros;
+package controlador.comandos.Vistas;
 
 import java.util.Vector;
 
@@ -24,25 +24,19 @@ public class ComandoEditarElemento extends Comando{
 		if (datos instanceof TransferEntidad) {
             TransferEntidad te = (TransferEntidad) datos;
             Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarEntidad), datos, false);
-            gui.setDatos(te);
             gui.setActiva();
         } 
         else if (datos instanceof TransferRelacion) {
             Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarRelacion), datos, false);
-            TransferRelacion tr = (TransferRelacion) datos;
-            gui.setDatos(tr);
             gui.setActiva();
         } 
         else if (datos instanceof TransferAtributo) {
-            Vector<TransferDominio> lista = getFactoriaServicios().getServicioDominios().getListaDeDominios();
-            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarAtributo), datos, false);
-            //this.getTheGUIModificarAtributo().setListaDominios(lista);
             TransferAtributo ta = (TransferAtributo) datos;
             
             //Buscamos a quien pertenece este atributo
             String nombrePadre = "";
             Vector<TransferEntidad> listaE = (Vector<TransferEntidad>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
-            Vector<TransferRelacion> listaR = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaEntidades, null);
+            Vector<TransferRelacion> listaR = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
 
             for (TransferEntidad transferE : listaE) {
                 Vector<String> listaA = transferE.getListaAtributos();
@@ -65,7 +59,9 @@ public class ComandoEditarElemento extends Comando{
             Vector<Object> v = new Vector<Object>();
             v.add(ta);
             v.add(nombrePadre);
-            gui.setDatos(ta);
+            
+            Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(FactoriaTCCtrl.getTCCtrl(TC.GUI_Principal_EditarAtributo), null, false);
+            gui.setDatos(v);
             gui.setActiva();
         }
 		return null;
