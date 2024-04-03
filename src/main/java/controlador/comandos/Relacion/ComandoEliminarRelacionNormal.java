@@ -38,6 +38,8 @@ public class ComandoEliminarRelacionNormal extends Comando{
                 if (id == listaAtributo.getIdAtributo()) vta.add(listaAtributo);
             }
         }
+        
+        //ctrl.setAntiguosAtributosRel(vta);
 
         for (EntidadYAridad entidadYAridad : veya) {
             int id = entidadYAridad.getEntidad();
@@ -46,6 +48,8 @@ public class ComandoEliminarRelacionNormal extends Comando{
                 if (id == listaEntidade.getIdEntidad()) vte.add(listaEntidade);
             }
         }
+        
+        //ctrl.setAntiguasEntidadesRel(vte);
 
         boolean preguntar = (Boolean) v.get(1);
         int respuesta = 0;

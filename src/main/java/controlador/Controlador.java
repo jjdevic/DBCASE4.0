@@ -47,7 +47,7 @@ public class Controlador {
     //Para boton Deshacer solo afecta a acciones con elementos
     private TC ultimoMensaje;
     private Object ultimosDatos;
-    private TransferEntidad auxTransferEntidad;
+    //private TransferEntidad auxTransferEntidad;
     private Vector auxTransferAtributos;
     private Point2D posAux;
     private String antigoNombreAtributo;
@@ -298,6 +298,7 @@ public class Controlador {
                 TransferRelacion tr = new TransferRelacion();
                 tr.setPosicion(punto);
                 contexto = factoriaServicios.getServicioRelaciones().anadirRelacionIsA(tr);
+                this.antiguaIsA = tr;
                 break;
             }
            
@@ -818,6 +819,7 @@ public class Controlador {
             case GUIEditarDominioAtributo_Click_BotonEditar: {
                 Vector v = (Vector) datos;
                 TransferAtributo ta = (TransferAtributo) v.get(0);
+                this.antiguoDominioAtributo = ta.getDominio();
                 contexto = factoriaServicios.getServicioAtributos().editarDomnioAtributo(v);
                 break;
             }
@@ -1331,6 +1333,14 @@ public class Controlador {
 
 	protected Stack<Document> getPilaDeshacer() {
 		return pilaDeshacer;
+	}
+
+	public void setAntiguosSubatributos(Vector<TransferAtributo> antiguosSubatributos) {
+		this.antiguosSubatributos = antiguosSubatributos;
+	}
+
+	public void setAuxTransferAtributos(Vector auxTransferAtributos) {
+		this.auxTransferAtributos = auxTransferAtributos;
 	}
 
 	public void setAntigoNombreAtributo(String antigoNombreAtributo) {

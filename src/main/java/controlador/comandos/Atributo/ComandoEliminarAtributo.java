@@ -22,6 +22,8 @@ public class ComandoEliminarAtributo extends Comando{
 		Contexto resultado = null;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
+        ctrl.setAntiguosSubatributos(ta.getListaComponentes());
+        
         int intAux = (int) v.get(2);
         boolean preguntar = (Boolean) v.get(1);
         int respuesta = 0;

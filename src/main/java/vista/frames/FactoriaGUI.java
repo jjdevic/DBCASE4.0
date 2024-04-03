@@ -12,7 +12,7 @@ import controlador.TC;
 import oracle.net.nt.TcpNTAdapter;
 import vista.GUIPrincipal;
 
-/* Esta factoría se encarga de devolver la GUI correspondiente al mensaje TC.Controlador_ recibido. */
+/* Esta factoría se encarga de devolver la GUI correspondiente al mensaje recibido. */
 public class FactoriaGUI {
 
 	private Map<TC, Parent_GUI> map_guis;
@@ -38,9 +38,9 @@ public class FactoriaGUI {
 	 * 									y se crea una nueva.						
 	 * */
 	public Parent_GUI getGUI(TC mensaje, Object datos, boolean destroyPreviousAndCreate) {
-		//Si la interfaz ya está creada, se devuelve, si no, se crea y se devuelve.
 		Parent_GUI gui;
 		
+		//Si podemos reutilizar el frame y hay uno para reutilizar, lo hacemos.
 		if(!destroyPreviousAndCreate && map_guis.get(mensaje) != null) {
 			gui = map_guis.get(mensaje);
 			gui.setDatos(datos); 

@@ -75,13 +75,6 @@ public class GUI_Conexion extends Parent_GUI {
         this.addKeyListener(this);
     }
 
-    /*
-     * Activar y desactivar el dialogo
-     */
-    public void setActiva(boolean crear, String nombre, TransferConexion tc) {
-        
-    }
-
     private Runnable doFocus = new Runnable() {
         public void run() {
             cajaServer.grabFocus();
@@ -525,6 +518,7 @@ public class GUI_Conexion extends Parent_GUI {
 		boolean crear = (boolean) v.get(0);
 		String nombre = (String) v.get(1);
 		TransferConexion tc = (TransferConexion) v.get(2);
+		_conexion = tc;
 		
 		this._crear = crear;
         if (crear) {
@@ -535,7 +529,7 @@ public class GUI_Conexion extends Parent_GUI {
             this.cajaPuerto.setText("");
             this.cajaUsuario.setText("");
             this.cajaBase.setText("");
-            if (_conexion.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
+            if (tc.getTipoConexion() == FactoriaConectores.CONECTOR_MSACCESS_MDB) {
                 this.server.setEnabled(false);
                 this.puerto.setEnabled(false);
                 this.usuario.setEnabled(false);

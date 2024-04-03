@@ -25,6 +25,7 @@ public class ComandoEliminarEntidad extends Comando {
 		Contexto resultado = null;
         Vector<Object> v = (Vector<Object>) datos;
         TransferEntidad te = (TransferEntidad) v.get(0);
+        ctrl.setAuxTransferAtributos(te.getListaAtributos());
         boolean preguntar = (Boolean) v.get(1);
         int intAux = (int) v.get(2);
         

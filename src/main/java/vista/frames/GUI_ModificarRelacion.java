@@ -18,7 +18,7 @@ public class GUI_ModificarRelacion extends Parent_GUI {
     
     private TransferRelacion relacion;
     private JButton botonRenombrar;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    private JTextField cajaNombre;
     private JLabel explicacion;
 
     public GUI_ModificarRelacion(Controlador controlador) {
@@ -30,7 +30,8 @@ public class GUI_ModificarRelacion extends Parent_GUI {
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
-        this.setAlwaysOnTop(true);
+        //this.setAlwaysOnTop(true);
+        setModal(true);
         getContentPane().setLayout(null);
         this.setSize(300, 170);
         cajaNombre = this.getCajaNombre(25, 40);
