@@ -3,6 +3,7 @@ package modelo.servicios;
 import misc.Config;
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -17,13 +18,13 @@ import java.util.Vector;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosEntidades {
 
-    public void ListaDeEntidades() {
+    public void ListaDeEntidades() throws ExceptionAp {
         DAOEntidades dao = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> lista_entidades = dao.ListaDeEntidades();
     }
 
     //Devuelve actualizada la lista de entidades
-    public Vector<TransferEntidad> ListaDeEntidadesNOVoid() {
+    public Vector<TransferEntidad> ListaDeEntidadesNOVoid() throws ExceptionAp {
         DAOEntidades dao = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> lista_entidades = dao.ListaDeEntidades();
         return lista_entidades;
@@ -39,7 +40,7 @@ public class ServiciosEntidades {
      * Si al usar el DAOEntidades se produce un error -> SE_InsertarEntidad_ERROR_DAO
      */
 
-    public Contexto anadirEntidad(TransferEntidad te, Stack<Document> pilaDeshacer) {
+    public Contexto anadirEntidad(TransferEntidad te, Stack<Document> pilaDeshacer) throws ExceptionAp {
         if (te.getNombre().isEmpty()) {
             return new Contexto(false, TC.SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio, null);
         }
@@ -89,7 +90,7 @@ public class ServiciosEntidades {
      * Si el nombre ya existe -> SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste
      * Si al usar el DAOEntidades se produce un error -> SE_InsertarEntidad_ERROR_DAO
      */
-    public Contexto SePuedeAnadirEntidad(TransferEntidad te) {
+    public Contexto SePuedeAnadirEntidad(TransferEntidad te) throws ExceptionAp {
         if (te.getNombre().isEmpty()) {
             return new Contexto(false, TC.SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadEsVacio, null);
         }
@@ -116,7 +117,7 @@ public class ServiciosEntidades {
      * Renombrar una en entidad
      * -> Recibe la entidad y el nuevo nombre
      */
-    public Contexto renombrarEntidad(Vector v) {
+    public Contexto renombrarEntidad(Vector v) throws ExceptionAp  {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String nuevoNombre = (String) v.get(1);
         String antiguoNombre = te.getNombre();
@@ -159,7 +160,7 @@ public class ServiciosEntidades {
     /* Debilitar/Fortalecer una entidad
      * -> Entidad a la que hay que voltear su caracter debil
      */
-    public Contexto debilitarEntidad(TransferEntidad te) {
+    public Contexto debilitarEntidad(TransferEntidad te) throws ExceptionAp {
         te.setDebil(!te.isDebil());
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         if (daoEntidades.modificarEntidad(te) == false) {
@@ -172,7 +173,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public boolean esDebil(int i) {
+    public boolean esDebil(int i) throws ExceptionAp {
         DAOEntidades dao = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> listaentidades = dao.ListaDeEntidades();
         for (int j = 0; j < listaentidades.size(); j++) {
@@ -183,7 +184,7 @@ public class ServiciosEntidades {
     }
 
 
-    public Contexto anadirRelacionAEntidad(Vector v) {
+    public Contexto anadirRelacionAEntidad(Vector v) throws ExceptionAp {
         //la relacion es el primer elemento del vector y la entidad el siguiente
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
@@ -194,7 +195,7 @@ public class ServiciosEntidades {
         } else return new Contexto(true, null);
     }
 
-    public void eliminarRelacionDeEntidad(TransferRelacion tr) {
+    public void eliminarRelacionDeEntidad(TransferRelacion tr) throws ExceptionAp {
         DAOEntidades dao = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> listaentidades = dao.ListaDeEntidades();
 
@@ -212,7 +213,7 @@ public class ServiciosEntidades {
      * Anadir un atributo a una entidad
      * -> en v viene la entidad (pos 0) y el atributo (pos 1)
      */
-    public Contexto anadirAtributo(Vector v) {
+    public Contexto anadirAtributo(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         // Si nombre de atributo es vacio -> ERROR
@@ -274,7 +275,7 @@ public class ServiciosEntidades {
      * Condiciones:
      * Se se produce un error al usar el DAOEntidades -> SE_EliminarEntidad_ERROR_DAOEntidades
      */
-    public Contexto eliminarEntidad(TransferEntidad te, int vieneDeOtro) {
+    public Contexto eliminarEntidad(TransferEntidad te, int vieneDeOtro) throws ExceptionAp {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         // Eliminamos la entidad
         if (daoEntidades.borrarEntidad(te) == false)
@@ -297,7 +298,7 @@ public class ServiciosEntidades {
      * relaciones la modificaremos quitando la referencia, la persistimos.
      * Deolveremos un vector de relaciones modificadas. Cuando no este referenciada, el vector estara vacio.
      */
-    private Vector<TransferRelacion> eliminaRefererenciasAEntidad(TransferEntidad te) {
+    private Vector<TransferRelacion> eliminaRefererenciasAEntidad(TransferEntidad te) throws ExceptionAp {
         Vector<TransferRelacion> vectorRelaciones = new Vector<TransferRelacion>();
         int idEntidad = te.getIdEntidad();
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
@@ -331,7 +332,7 @@ public class ServiciosEntidades {
         return vectorRelaciones;
     }
 
-    public Contexto anadirRestriccion(Vector v) {
+    public Contexto anadirRestriccion(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String restriccion = (String) v.get(1);
 
@@ -354,7 +355,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto quitarRestriccion(Vector v) {
+    public Contexto quitarRestriccion(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String restriccion = (String) v.get(1);
 
@@ -385,9 +386,13 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto setRestricciones(Vector v) {
+    public Contexto setRestricciones(Vector v) throws ExceptionAp {
         Vector restricciones = (Vector) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
+        
+        //Cambiar el orden de los elementos en el vector para que el primer elemento sea el transfer.
+        v.set(0, te);
+        v.set(1, restricciones);
 
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> lista = daoEntidades.ListaDeEntidades();
@@ -403,12 +408,11 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto anadirUnique(Vector v) {
+    public Contexto anadirUnique(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String unique = (String) v.get(1);
 
         // Si nombre es vacio -> ERROR
-        //TODO mirar este mensaje de error
         if (unique.isEmpty()) return new Contexto(false, TC.SE_RenombrarEntidad_ERROR_DAOEntidades, null);
 
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
@@ -430,7 +434,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto quitarUnique(Vector v) {
+    public Contexto quitarUnique(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         String unique = (String) v.get(1);
 
@@ -461,7 +465,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto setUniques(Vector v) {
+    public Contexto setUniques(Vector v) throws ExceptionAp {
         Vector uniques = (Vector) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
 
@@ -482,7 +486,7 @@ public class ServiciosEntidades {
     /*
      * Quitar/poner un Unique unitario a la entidad
      * */
-    public Contexto setUniqueUnitario(Vector v) {
+    public Contexto setUniqueUnitario(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         Vector uniques = te.getListaUniques();
@@ -514,7 +518,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto eliminarReferenciasUnitario(Vector v) {
+    public Contexto eliminarReferenciasUnitario(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         Vector uniques = te.getListaUniques();
@@ -558,7 +562,7 @@ public class ServiciosEntidades {
         }
     }
 
-    public Contexto renombraUnique(Vector v) {
+    public Contexto renombraUnique(Vector v) throws ExceptionAp {
         TransferEntidad te = (TransferEntidad) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         String antiguoNombre = (String) v.get(2);
@@ -592,7 +596,7 @@ public class ServiciosEntidades {
     /*
      * Mover una entidad (cambiar su posicion)
      */
-    public Contexto moverPosicionEntidad(TransferEntidad te) {
+    public Contexto moverPosicionEntidad(TransferEntidad te) throws ExceptionAp  {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         if (daoEntidades.modificarEntidad(te) == false)
             return new Contexto(false, TC.SE_MoverPosicionEntidad_ERROR_DAOEntidades, te);

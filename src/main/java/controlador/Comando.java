@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.w3c.dom.Document;
 
+import excepciones.ExceptionAp;
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferEntidad;
@@ -22,7 +23,7 @@ public abstract class Comando {
 	 * @param datos
 	 * @return Null si no se quiere que se trate el contexto desde fuera. Contexto a tratar en caso contrario.
 	 */
-	public abstract Contexto ejecutar(Object datos);
+	public abstract Contexto ejecutar(Object datos) throws ExceptionAp;
 	
 	/**
 	 * Toma la factoria de servicios. Todos los comandos deben usar este método para tomar la 

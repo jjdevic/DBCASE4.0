@@ -762,7 +762,6 @@ public class Lenguaje {
         try {
             cargaLng(_lenguajes.get(nombreLenguaje));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -776,7 +775,6 @@ public class Lenguaje {
         try {
             cargaLng(Lenguaje.DEFAULT);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             throw new RuntimeException(e);

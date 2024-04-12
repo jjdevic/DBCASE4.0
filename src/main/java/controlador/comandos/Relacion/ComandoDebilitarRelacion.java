@@ -9,6 +9,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
@@ -26,9 +27,8 @@ public class ComandoDebilitarRelacion extends Comando{
      * utilizándose cuando se crea una entidad débil ya que debe generarse también una
      * relación débil asociada a ella.*/
 	
-	//TODO Mirar este comando
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
 		TransferRelacion tr = (TransferRelacion) datos;
         //Si es una relacion fuerte...

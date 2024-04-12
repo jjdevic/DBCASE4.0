@@ -78,7 +78,9 @@ public class Main {
             public void run() {
                 try {
                     controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-                    UtilsFunc.creaFicheroXML(controlador.getFiletemp());
+                    System.out.println("Ruta temp: " + controlador.getFiletemp().getAbsolutePath());
+                    controlador.crearAlmacenPers(controlador.getFiletemp().getPath());
+                    
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null,
                             Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),

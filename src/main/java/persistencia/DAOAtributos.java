@@ -3,9 +3,10 @@ package persistencia;
 import misc.Config;
 import modelo.transfers.TransferAtributo;
 import org.w3c.dom.*;
+
+import excepciones.ExceptionAp;
 import vista.Lenguaje;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
@@ -21,13 +22,13 @@ public class DAOAtributos extends DAO {
     private Document doc;
 
     // Constructora del DAO
-    public DAOAtributos() {
+    public DAOAtributos() throws ExceptionAp {
         super(Config.getPath());
         this.doc = dameDoc();
     }
 
     // Metodos del DAOAtributos
-    public int anadirAtributo(TransferAtributo tc) {
+    public int anadirAtributo(TransferAtributo tc) throws ExceptionAp{
         // Resultado que se devolvera
         int resultado = 0;
         // Generamos el id del nuevo Atributo
@@ -112,7 +113,7 @@ public class DAOAtributos extends DAO {
         return transfer;
     }
 
-    public boolean modificarAtributo(TransferAtributo tc) {
+    public boolean modificarAtributo(TransferAtributo tc) throws ExceptionAp{
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Atributo
@@ -173,7 +174,7 @@ public class DAOAtributos extends DAO {
     }
 
 
-    public boolean borrarAtributo(TransferAtributo tc) {
+    public boolean borrarAtributo(TransferAtributo tc) throws ExceptionAp{
         Node atributoBuscado = dameNodoAtributo(tc.getIdAtributo());
         NodeList LC = doc.getElementsByTagName("AttributeList");
         // Sacamos el nodo

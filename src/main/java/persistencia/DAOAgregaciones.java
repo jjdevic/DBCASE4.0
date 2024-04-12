@@ -4,6 +4,9 @@ package persistencia;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import modelo.transfers.TransferAgregacion;
 import org.w3c.dom.*;
+
+import excepciones.ExceptionAp;
+
 import java.awt.geom.Point2D;
 import java.util.Stack;
 import java.util.Vector;
@@ -14,7 +17,7 @@ public class DAOAgregaciones extends DAO{
     private Document doc;
 
     // Constructora del DAO
-    public DAOAgregaciones(String path) {
+    public DAOAgregaciones(String path) throws ExceptionAp {
         super(path);
         this.doc = dameDoc();
     }
@@ -24,7 +27,7 @@ public class DAOAgregaciones extends DAO{
     }
 
     // Metodos del DAOCllientes
-    public int anadirAgregacion(TransferAgregacion tc) {//tr.getTipo().equalsIgnoreCase("Normal")
+    public int anadirAgregacion(TransferAgregacion tc) throws ExceptionAp{//tr.getTipo().equalsIgnoreCase("Normal")
         // Resultado que se devolvera
         int resultado = 0;
         // Sacamos la <ListaAgregaciones>
@@ -89,7 +92,7 @@ public class DAOAgregaciones extends DAO{
         return transfer;
     }
 
-    public boolean modificarAgregacion(TransferAgregacion tc) {
+    public boolean modificarAgregacion(TransferAgregacion tc) throws ExceptionAp{
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Relacion
@@ -139,7 +142,7 @@ public class DAOAgregaciones extends DAO{
     }
 
 
-    public boolean borrarAgregacion(TransferAgregacion tc) {
+    public boolean borrarAgregacion(TransferAgregacion tc) throws ExceptionAp{
         Node nodo = dameNodoAgregacion(tc.getIdAgregacion());
         NodeList LC = doc.getElementsByTagName("AggregationList");
         // Sacamos el nodo

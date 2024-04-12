@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferDominio;
@@ -19,7 +20,7 @@ public class ComandoEliminarDominio extends Comando{
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
 		TransferDominio td = (TransferDominio) datos;
 		Parent_GUI gui = ctrl.getFactoriaGUI().getGUI(TC.GUI_Pregunta, 

@@ -6,6 +6,7 @@ import java.util.Vector;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
 
@@ -16,7 +17,7 @@ public class ComandoModificarCardinalidadRelacion1a1 extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		TransferRelacion tr = (TransferRelacion) datos;
 		Vector<Object> v = new Vector<Object>();
         EntidadYAridad informacion;

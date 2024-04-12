@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -21,7 +22,7 @@ public class ComandoEliminarEntidad extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
         Vector<Object> v = (Vector<Object>) datos;
         TransferEntidad te = (TransferEntidad) v.get(0);
@@ -84,7 +85,9 @@ public class ComandoEliminarEntidad extends Comando {
                             idEntidad = eya.getEntidad();
                             if (te.getIdEntidad() == idEntidad) {
                                 tr.setIdRelacion(lista_rel.get(cont).getIdRelacion());
-                                getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1);
+                                
+                                //Eliminar la relacion y tratar el contexto
+                                tratarContexto(getFactoriaServicios().getServicioRelaciones().eliminarRelacionNormal(tr, 1));
                                 encontrado = true;
                             }
                             aux++;

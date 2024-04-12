@@ -1,5 +1,6 @@
 package controlador.comandos.Entidad;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Vector;
 
@@ -10,9 +11,11 @@ import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import controlador.Factorias.FactoriaMsj;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
+
 
 public class ComandoInsertarEntidadDebil extends Comando {
 
@@ -21,7 +24,7 @@ public class ComandoInsertarEntidadDebil extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto contexto = null;
 		Vector<Object> v_datos = (Vector<Object>) datos;
     	
@@ -41,6 +44,9 @@ public class ComandoInsertarEntidadDebil extends Comando {
         	JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(mError), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE);
         } 
         else {
+        	//Desplazar la posicion para que no se inserten juntas
+            p.setLocation(p.getX(), p.getY() + 150);
+            
         	//Insertar entidad
         	contexto = getFactoriaServicios().getServicioEntidades().anadirEntidad(te, getPilaDeshacer());
         	tratarContexto(contexto);

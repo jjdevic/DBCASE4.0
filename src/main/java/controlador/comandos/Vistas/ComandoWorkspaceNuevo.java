@@ -29,7 +29,7 @@ public class ComandoWorkspaceNuevo extends Comando {
 	public Contexto ejecutar(Object datos) {
 		try {
             ctrl.setFiletemp(File.createTempFile("dbcase", "xml"));
-            UtilsFunc.creaFicheroXML(ctrl.getFiletemp());
+            ctrl.crearAlmacenPers(ctrl.getFiletemp().getPath());
             ctrl.setPath(ctrl.getFiletemp().getAbsolutePath());
         
 		} catch (IOException e) {

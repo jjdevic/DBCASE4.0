@@ -286,7 +286,6 @@ public class GUI_InsertarRestriccionARelacion extends Parent_GUI {
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

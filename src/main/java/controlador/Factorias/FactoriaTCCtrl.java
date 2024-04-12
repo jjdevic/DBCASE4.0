@@ -62,6 +62,15 @@ public class FactoriaTCCtrl {
 		case GUI_Principal_EditarEntidad: resultado = TC.Controlador_ModificarEntidad; break;
 		case GUI_Principal_EditarAtributo: resultado = TC.Controlador_ModificarAtributo; break;
 		case GUI_Principal_EditarRelacion: resultado = TC.Controlador_ModificarRelacion; break;
+		case SR_MoverPosicionRelacion_HECHO: resultado = TC.Controlador_MoverRelacion_HECHO; break;
+		case SE_MoverPosicionEntidad_HECHO: resultado = TC.Controlador_MoverEntidad_HECHO; break;
+		case SE_setRestriccionesAEntidad_HECHO: resultado = TC.Controlador_setRestriccionesEntidad; break;
+		case SR_setRestriccionesARelacion_HECHO: resultado = TC.Controlador_setRestriccionesRelacion; break;
+		
+		case PanelDiseno_Click_AddAgregacion: case SAG_InsertarAgregacion_HECHO: resultado = TC.Controlador_InsertarAgregacion; break;
+		case PanelDiseno_Click_EliminarAgregacion: case SAG_EliminarAgregacion_HECHO: resultado = TC.Controlador_EliminarAgregacion; break;
+		case GUIAnadirAtributoAgregacion_Click_BotonAnadir: case SAG_AnadirAtributoAAgregacion_HECHO: resultado = TC.Controlador_AnadirAtributoAAgregacion; break;
+		
 		default: break;
 		}
 		return resultado;

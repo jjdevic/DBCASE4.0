@@ -3,6 +3,7 @@ package modelo.servicios;
 import misc.Config;
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.*;
 import persistencia.DAOAgregaciones;
 import persistencia.DAOAtributos;
@@ -18,7 +19,13 @@ import java.util.Vector;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosAtributos {
 	
-    public Vector<TransferAtributo> getListaDeAtributos() {
+	private FactoriaServicios facServicios;
+	
+	public ServiciosAtributos(FactoriaServicios f) {
+		this.facServicios = f;
+	}
+	
+    public Vector<TransferAtributo> getListaDeAtributos() throws ExceptionAp{
         DAOAtributos dao = new DAOAtributos();
         Vector<TransferAtributo> lista_atributos = dao.ListaDeAtributos();
         return lista_atributos;
@@ -27,7 +34,7 @@ public class ServiciosAtributos {
     /* Añadir atributo
      * -> en v viene el atributo padre (pos 0) y el atributo hijo (pos 1)
      */
-    public Contexto anadirAtributo(Vector v) {
+    public Contexto anadirAtributo(Vector v) throws ExceptionAp {
         TransferAtributo tap = (TransferAtributo) v.get(0);
         TransferAtributo tah = (TransferAtributo) v.get(1);
         
@@ -76,7 +83,7 @@ public class ServiciosAtributos {
 
     /*
      * Eliminar atributo
-     * Parametros: recibe un transfer atributo del con el atributo a eliminar
+     * Parametros: recibe un transfer atributo del con el atributo a eliminar, y un entero que indica si viene de eliminar entidad o relacion
      * Devuelve:
      * el transfer atributo que contiene el atributo eliminado y el mensaje SA_EliminarAtributo_HECHO y 
      * los contextos de las posibles llamadas recursivas si hay subatributos
@@ -85,14 +92,13 @@ public class ServiciosAtributos {
      * Si se produce un error al usar el DAOAtributos ->  SA_EliminarAtributo_ERROR_DAOAtributos
      * Hay que comprobar primero que el atributo que viene en el transfer exista con un consultar
      */
-    public Contexto eliminarAtributo(TransferAtributo ta, int vieneDeOtro) { //si el entero es 1 viene de eliminar entidad o relacion
+    public Contexto eliminarAtributo(TransferAtributo ta, int vieneDeOtro) throws ExceptionAp { 
     	//Primera llamada a eliminarAtributo_imp
     	Deque<Contexto> dq = eliminarAtributo_imp(ta, vieneDeOtro);
     	
     	//Extraer datos del contexto principal (ultimo contexto devuelto por la llamada)
     	Contexto c = dq.getLast();
     	Vector<Object> v_aux = (Vector) c.getDatos();
-    	System.out.println("Primer contexto: " + ((TransferAtributo) v_aux.get(0)).getNombre());
     	
     	//Eliminar el contexto principal
     	dq.removeLast(); 
@@ -105,7 +111,7 @@ public class ServiciosAtributos {
     /**
      * @param f Indica si es la primera llamada o no (para manejar recursión sobre subatributos)
      */
-    private Deque<Contexto> eliminarAtributo_imp(TransferAtributo ta, int vieneDeOtro) {
+    private Deque<Contexto> eliminarAtributo_imp(TransferAtributo ta, int vieneDeOtro) throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         TransferAtributo aux = ta;
         ta = daoAtributos.consultarAtributo(ta);
@@ -213,7 +219,7 @@ public class ServiciosAtributos {
      * de un atributo compuesto). El metodo moficara el elemento (uno de estos 3) que lo referencia
      * y lo devolvera en un transfer para comunicar la modificacion.
      */
-    public Transfer eliminaRefererenciasAlAtributo(TransferAtributo ta) {
+    public Transfer eliminaRefererenciasAlAtributo(TransferAtributo ta) throws ExceptionAp {
         // Obtenemos el identificador del atributo
         int idAtributo = ta.getIdAtributo();
         boolean enEntidad = false;
@@ -350,7 +356,7 @@ public class ServiciosAtributos {
      * Renombrar atributo
      * -> Recibe el atributo y el nuevo nombre
      */
-    public Contexto renombrarAtributo(Vector v) {
+    public Contexto renombrarAtributo(Vector v) throws ExceptionAp  {
         TransferAtributo ta = (TransferAtributo) v.get(0);
         String nuevoNombre = (String) v.get(1);
         String antiguoNombre = ta.getNombre();
@@ -359,7 +365,8 @@ public class ServiciosAtributos {
             return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio);
         }
         int idAtributo = ta.getIdAtributo();
-        boolean encontrado = false;
+        boolean encontrado = false, esAtrEntidad = false, esAtrRelacion = false, esSubAtr = false;
+        
         // Buscamos si esta en entidades
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector listaEntidades = daoEntidades.ListaDeEntidades();
@@ -374,6 +381,8 @@ public class ServiciosAtributos {
                 if (idAtributo == id_posible) {
                     // Es un atributo de una entidad
                     encontrado = true;
+                    esAtrEntidad = true;
+                    
                     // Si nombre de atributo ya existe en esa entidad-> ERROR
                     DAOAtributos daoAtributos = new DAOAtributos();
                     for (int i = 0; i < te.getListaAtributos().size(); i++)
@@ -401,6 +410,7 @@ public class ServiciosAtributos {
                 if (idAtributo == id_posible) {
                     // Es un atributo de una relacion
                     encontrado = true;
+                    esAtrRelacion = true;
 
                     // Si nombre de atributo ya existe en esa entidad-> ERROR
                     DAOAtributos daoAtributos = new DAOAtributos();
@@ -428,6 +438,8 @@ public class ServiciosAtributos {
                 if (idAtributo == id_posible) {
                     // Es un subatributo de un atributo
                     encontrado = true;
+                    esSubAtr = true;
+                    
                     // Si nombre de atributo ya existe en esa entidad-> ERROR
                     for (int i = 0; i < listaSubatributos.size(); i++)
                         if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) listaSubatributos.get(i)))).toLowerCase().equals(nuevoNombre.toLowerCase())
@@ -459,6 +471,12 @@ public class ServiciosAtributos {
                 this.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_ModificarUniqueAtributo, v1);
              */
             
+            Vector<Object> v_aux = new Vector<Object>();
+            v_aux.add(ta.clonar());
+            //FIXME
+            if(esAtrEntidad) {facServicios.getServicioEntidades().renombraUnique(v_aux); }
+            else if (esAtrRelacion) {facServicios.getServicioRelaciones().renombraUnique(v_aux); }
+            
             return new Contexto(true, TC.SA_RenombrarAtributo_HECHO, v);
         }
     }
@@ -468,7 +486,7 @@ public class ServiciosAtributos {
      * -> Recibe v con el atributo, el nuevo dominio y si tiene tamano el tamano
      */
 
-    public Contexto editarDomnioAtributo(Vector<Object> v) {
+    public Contexto editarDomnioAtributo(Vector<Object> v) throws ExceptionAp{
         TransferAtributo ta = (TransferAtributo) v.get(0);
         String nuevoDominio = (String) v.get(1);
         // Si tiene tamano comprobamos que es correcto
@@ -501,7 +519,7 @@ public class ServiciosAtributos {
      * -> Hay que voltear el valor de compuesto
      */
 
-    public Contexto editarCompuestoAtributo(TransferAtributo ta) {
+    public Contexto editarCompuestoAtributo(TransferAtributo ta) throws ExceptionAp {
         // Modificamos el atributo
         ta.setCompuesto(!ta.getCompuesto());
         // Ponemos su dominio a null si es compuesto
@@ -523,7 +541,7 @@ public class ServiciosAtributos {
      * -> Hay que voltear el valor de multuvalorado
      */
 
-    public Contexto editarMultivaloradoAtributo(TransferAtributo ta) {
+    public Contexto editarMultivaloradoAtributo(TransferAtributo ta) throws ExceptionAp {
         // Modificamos el atributo
         ta.setMultivalorado(!ta.isMultivalorado());
         DAOAtributos daoAtributos = new DAOAtributos();
@@ -536,7 +554,7 @@ public class ServiciosAtributos {
         }
     }
 
-    public Contexto editarNotNullAtributo(TransferAtributo ta) {
+    public Contexto editarNotNullAtributo(TransferAtributo ta) throws ExceptionAp {
         // Modificamos el atributo
         ta.setNotnull(!ta.getNotnull());
         
@@ -550,7 +568,7 @@ public class ServiciosAtributos {
         }
     }
 
-    public Contexto editarUniqueAtributo(TransferAtributo ta) {
+    public Contexto editarUniqueAtributo(TransferAtributo ta) throws ExceptionAp {
         // Modificamos el atributo
         ta.setUnique(!ta.getUnique());
         DAOAtributos daoAtributos = new DAOAtributos();
@@ -563,7 +581,7 @@ public class ServiciosAtributos {
         }
     }
 
-    public Contexto anadirRestriccion(Vector v) {
+    public Contexto anadirRestriccion(Vector v) throws ExceptionAp {
         TransferAtributo ta = (TransferAtributo) v.get(0);
         String restriccion = (String) v.get(1);
         // Si nombre es vacio -> ERROR
@@ -585,7 +603,7 @@ public class ServiciosAtributos {
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
     }
 
-    public Contexto quitarRestriccion(Vector v) {
+    public Contexto quitarRestriccion(Vector v) throws ExceptionAp {
         TransferAtributo te = (TransferAtributo) v.get(0);
         String restriccion = (String) v.get(1);
 
@@ -616,9 +634,13 @@ public class ServiciosAtributos {
         return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
     }
 
-    public Contexto setRestricciones(Vector v) {
+    public Contexto setRestricciones(Vector v) throws ExceptionAp {
         Vector restricciones = (Vector) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
+        
+        //Cambiar el orden de los elementos en el vector para que el primer elemento sea el transfer.
+        v.set(0, ta);
+        v.set(1, restricciones);
 
         DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributos.ListaDeAtributos();
@@ -634,7 +656,7 @@ public class ServiciosAtributos {
     /*
      * Mover un atributo (cambiar su posicion)
      */
-    public Contexto moverPosicionAtributo(TransferAtributo ta) {
+    public Contexto moverPosicionAtributo(TransferAtributo ta) throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         if (daoAtributos.modificarAtributo(ta) == false)
         	return new Contexto(false, TC.SA_MoverPosicionAtributo_ERROR_DAOAtributos);
@@ -650,7 +672,7 @@ public class ServiciosAtributos {
      * En el vector viene el atributo (pos 0) y la entidad (pos 1)
      * Hay que negar el valor de esClavePrimaria del atributo
      */
-    public Contexto editarClavePrimariaAtributo(Vector<Object> v) {
+    public Contexto editarClavePrimariaAtributo(Vector<Object> v) throws ExceptionAp {
         TransferAtributo ta = (TransferAtributo) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
 
@@ -675,12 +697,12 @@ public class ServiciosAtributos {
         else return new Contexto(true,  TC.SA_EditarClavePrimariaAtributo_HECHO, v);
     }
 
-    public String getNombreAtributo(int id) {
+    public String getNombreAtributo(int id) throws ExceptionAp  {
         DAOAtributos daoAtributos = new DAOAtributos();
         return daoAtributos.nombreDeAtributo(id);
     }
 
-    public boolean idUnique(int id) {
+    public boolean idUnique(int id) throws ExceptionAp  {
         DAOAtributos daoAtributos = new DAOAtributos();
         return daoAtributos.uniqueAtributo(id);
     }

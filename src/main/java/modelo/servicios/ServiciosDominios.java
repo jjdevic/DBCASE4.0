@@ -4,6 +4,7 @@ package modelo.servicios;
 import misc.Config;
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TipoDominio;
 import modelo.transfers.TransferDominio;
 import persistencia.DAODominios;
@@ -18,7 +19,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosDominios {
 
-    public void ListaDeDominios() {
+    public void ListaDeDominios() throws ExceptionAp {
         Object[] items = modelo.transfers.TipoDominio.values();
         DAODominios dao = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista_dominios = dao.ListaDeDominios();
@@ -31,7 +32,7 @@ public class ServiciosDominios {
         }
     }
 
-    public Vector<TransferDominio> getListaDeDominios() {
+    public Vector<TransferDominio> getListaDeDominios() throws ExceptionAp {
         Object[] items = modelo.transfers.TipoDominio.values();
         DAODominios dao = new DAODominios(Config.getPath());
         Vector<TransferDominio> lista_dominios = dao.ListaDeDominios();
@@ -54,7 +55,7 @@ public class ServiciosDominios {
      * Si el nombre ya existe -> SD_InsertarDominio_ERROR_NombreDeDominioYaExiste
      * Si al usar el DAODominio se produce un error -> SD_InsertarDominio_ERROR_DAO
      */
-    public Contexto anadirDominio(TransferDominio td) {
+    public Contexto anadirDominio(TransferDominio td) throws ExceptionAp {
         if (td.getNombre().isEmpty()) {
             return new Contexto(false, TC.SD_InsertarDominio_ERROR_NombreDeDominioEsVacio);
         }
@@ -94,7 +95,7 @@ public class ServiciosDominios {
      * Renombrar un dominio
      * -> Recibe el dominio y el nuevo nombre
      */
-    public Contexto renombrarDominio(Vector v) {
+    public Contexto renombrarDominio(Vector v) throws ExceptionAp {
         TransferDominio td = (TransferDominio) v.get(0);
         String nuevoNombre = (String) v.get(1);
         String antiguoNombre = td.getNombre();
@@ -131,7 +132,7 @@ public class ServiciosDominios {
      * Condiciones:
      * Se produce un error al usar el DAODominios -> SD_EliminarDominio_ERROR_DAODominios
      */
-    public Contexto eliminarDominio(TransferDominio td) {
+    public Contexto eliminarDominio(TransferDominio td) throws ExceptionAp {
         DAODominios daoDominios = new DAODominios(Config.getPath());
         // Eliminamos el Dominio
         if (daoDominios.borrarDominio(td) == false)
@@ -143,7 +144,7 @@ public class ServiciosDominios {
         }
     }
 
-    public Contexto modificarDominio(Vector<Object> v) {
+    public Contexto modificarDominio(Vector<Object> v) throws ExceptionAp {
         TransferDominio td = (TransferDominio) v.get(0);
         Vector<String> nuevosValores = (Vector<String>) v.get(1);
         Vector<String> antiguosValores = td.getListaValores();
@@ -187,7 +188,7 @@ public class ServiciosDominios {
     }
 
     //Se usa para ordenar los valores
-    public Contexto modificarElementosDominio(Vector<Object> v) {
+    public Contexto modificarElementosDominio(Vector<Object> v) throws ExceptionAp {
         TransferDominio td = (TransferDominio) v.get(0);
         Vector<String> nuevosValores = (Vector<String>) v.get(1);
         Vector<String> antiguosValores = td.getListaValores();

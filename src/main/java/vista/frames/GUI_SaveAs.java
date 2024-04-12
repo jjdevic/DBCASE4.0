@@ -292,7 +292,5 @@ public class GUI_SaveAs extends Parent_GUI {
 
 	@Override
 	public void setActiva() {
-		// TODO Auto-generated method stub
-		
 	}
 }

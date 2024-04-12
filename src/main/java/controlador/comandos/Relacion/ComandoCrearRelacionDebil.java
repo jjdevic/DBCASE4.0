@@ -10,6 +10,7 @@ import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import controlador.Factorias.FactoriaMsj;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -21,7 +22,7 @@ public class ComandoCrearRelacionDebil extends Comando{
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto contexto = null, c_factibleRelacion;
 		Vector<Object> v_datos = (Vector<Object>) datos;
 		

@@ -8,6 +8,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -19,7 +20,7 @@ public class ComandoInsertarAgregacion extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
 		Vector v = (Vector) datos;
         TransferRelacion t = (TransferRelacion) v.elementAt(0); //relacion sobre el que se construye la agregacion

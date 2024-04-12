@@ -4,6 +4,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import vista.Lenguaje;
@@ -16,7 +17,7 @@ public class ComandoEditarCompuestoAtrib extends Comando{
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp  {
 		Contexto resultado = null;
 		TransferAtributo ta = (TransferAtributo) datos;
 		boolean actuar = true;

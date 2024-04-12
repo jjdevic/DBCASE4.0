@@ -223,13 +223,10 @@ public class GUI_Zoom extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

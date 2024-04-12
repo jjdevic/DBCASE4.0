@@ -73,13 +73,11 @@ public class TransferDominio extends Transfer {
 
     @Override
     public Point2D getPosicion() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Shape toShape() {
-        // TODO Auto-generated method stub
         return null;
     }
 

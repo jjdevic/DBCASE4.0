@@ -2,9 +2,10 @@ package persistencia;
 
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.*;
+
+import excepciones.ExceptionAp;
 import vista.Lenguaje;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
@@ -20,13 +21,13 @@ public class DAORelaciones extends DAO {
     private Document doc;
 
     // Constructora del DAO
-    public DAORelaciones(String path) {
+    public DAORelaciones(String path) throws ExceptionAp {
     	super(path);
         this.doc = dameDoc();
     }
 
     // Metodos del DAOCllientes
-    public int anadirRelacion(TransferRelacion tc) {//tr.getTipo().equalsIgnoreCase("Normal")
+    public int anadirRelacion(TransferRelacion tc) throws ExceptionAp {//tr.getTipo().equalsIgnoreCase("Normal")
         // Resultado que se devolvera
         int resultado = 0;
         // Sacamos la <ListaRelaciones>
@@ -116,7 +117,7 @@ public class DAORelaciones extends DAO {
         return transfer;
     }
 
-    public boolean modificarRelacion(TransferRelacion tc) {
+    public boolean modificarRelacion(TransferRelacion tc) throws ExceptionAp {
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Relacion
@@ -194,7 +195,7 @@ public class DAORelaciones extends DAO {
     }
 
 
-    public boolean borrarRelacion(TransferRelacion tc) {
+    public boolean borrarRelacion(TransferRelacion tc) throws ExceptionAp{
         Node RelacionBuscado = dameNodoRelacion(tc.getIdRelacion());
         NodeList LC = doc.getElementsByTagName("RelationList");
         // Sacamos el nodo

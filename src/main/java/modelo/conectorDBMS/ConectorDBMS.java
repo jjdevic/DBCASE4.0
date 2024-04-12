@@ -5,6 +5,8 @@ import modelo.servicios.Tabla;
 
 import java.sql.SQLException;
 
+import excepciones.ExceptionAp;
+
 /**
  * Clase que determina el comportamiento de los conectores a gestores de
  * bases de datos
@@ -44,8 +46,9 @@ public abstract class ConectorDBMS {
      * @param nombre
      * @throws SQLException Si se produce algún error al establecer la
      *                      base de datos
+     * @throws ExceptionAp
      */
-    public abstract void usarDatabase(String nombre) throws SQLException;
+    public abstract void usarDatabase(String nombre) throws SQLException, ExceptionAp;
 
     /**
      * Genera el código de creación de una tabla en SQL válido para el conector.

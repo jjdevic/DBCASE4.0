@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -17,7 +18,7 @@ public class ComandoQuitarEntidadPadre extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp  {
 		Contexto resultado = null;
 		TransferRelacion tr = (TransferRelacion) datos;
         //ctrl.setIdPadreAntigua(tr.getEntidadYAridad(0).getEntidad());

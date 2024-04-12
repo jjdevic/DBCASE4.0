@@ -572,5 +572,6 @@ public enum TC {
     GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta, EliminarRelacionIsA, Reset, GuardarYSalir, Abrir, AbrirCasos, NuevoWorkSpace, 
     Salir, EliminarAtributosRelacion, ModificarCardinalidadRelacion_1a1, EliminarSubatributosAtributo, ObtenerListaEntidades, ObtenerListaAtributos, 
     ObtenerListaRelaciones, ObtenerListaDominios, ObtenerListaAgregaciones, Guardar, Controlador_EjecutarEnDBMS, Controlador_Conexion,
-    Controlador_ModificarEntidad, Controlador_ModificarAtributo, Controlador_ModificarRelacion, Controlador_InsertarRelacionDebil
+    Controlador_ModificarEntidad, Controlador_ModificarAtributo, Controlador_ModificarRelacion, Controlador_InsertarRelacionDebil,
+    ERROR_, ERROR_PERSISTENCIA, FALLO_CREAR_ARCHIVO, SCRIPT_ERROR, MUST_GENERATE_SCRIPT, NO_DB_CONEXION, CANT_EXECUTE_SCRIPT, CANT_CLOSE_CONEXION
 }

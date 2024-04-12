@@ -7,13 +7,17 @@ import org.w3c.dom.Document;
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
+import excepciones.ExceptionAp;
 import misc.*;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
+import vista.componentes.MyFileChooser;
 import vista.frames.*;
 import vista.tema.Theme;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.*;
@@ -31,11 +35,12 @@ public class Controlador {
     private int valorZoom;
     private static Stack<Document> pilaDeshacer;
     
-    //TODO Mirar este atributo
     /** Indica si ha habido cambios */
     private boolean cambios;
-    /** Indica si se permite atributo nullable */
+    
+    /** Indica si se permiten atributos nullables */
     private boolean nullAttrs;
+    
     private boolean confirmarEliminaciones;
     private boolean cuadricula;
     private File filetemp;
@@ -86,6 +91,7 @@ public class Controlador {
         modoSoporte = false;
         cuadricula = false;
         factoriaGUI = new FactoriaGUI(this);
+        
         factoriaServicios = new FactoriaServicios();
         confirmarEliminaciones = true;
         //valorZoom=0; 
@@ -136,7 +142,7 @@ public class Controlador {
                 UtilsFunc.FileCopy(tempPath, guardarPath);
 
                 factoriaGUI.getGUI(TC.GUI_WorkSpace, true, false).setInactiva();
-                setCambios(false);
+                
                 //this.tiempoGuardado = System.currentTimeMillis()/1000;
                 break;
             }
@@ -169,7 +175,8 @@ public class Controlador {
         if (cambios && ti > 600) // si ha pasado mas de media hora
             this.guardarBackup();
 
-        switch (mensaje) {
+        try {
+        	switch (mensaje) {
             case PanelDiseno_Pertenece_A_Agregacion: {
                 Vector v = (Vector) datos;
                 TransferRelacion rel = (TransferRelacion) v.get(0);
@@ -246,7 +253,7 @@ public class Controlador {
             }
             case PanelDiseno_MoverEntidad: {
                 TransferEntidad te = (TransferEntidad) datos;
-                factoriaServicios.getServicioEntidades().moverPosicionEntidad(te);
+                contexto = factoriaServicios.getServicioEntidades().moverPosicionEntidad(te);
                 break;
             }
             case PanelDiseno_MoverAtributo: {
@@ -384,18 +391,22 @@ public class Controlador {
                 contexto = ejecutarComandoDelMensaje(mensaje, datos);
                 break;
             }
-            default:
-                break;
-        }
+            default: break;
+        	}
         
-        if(contexto != null) tratarContexto(contexto);
+        	if(contexto != null) tratarContexto(contexto);
+        
+        } catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
+        
     }
 
     // Mensajes que manda la GUIPrincipal al Controlador
     @SuppressWarnings("static-access")
     public void mensajeDesde_GUIPrincipal(TC mensaje, Object datos) {
     	Contexto contexto = null;
-        switch (mensaje) {
+    	
+    	try {
+        	switch (mensaje) {
             case GUIPrincipal_ObtenDBMSDisponibles: {
                 Vector<TransferConexion> vtc =
                 		factoriaServicios.getServicioSistema().obtenerTiposDeConexion();
@@ -575,7 +586,7 @@ public class Controlador {
                 			UtilsFunc.crearVector(Lenguaje.text(Lenguaje.WISH_SAVE), Lenguaje.text(Lenguaje.DBCASE), true), false);
                 	int respuesta = gui.setActiva(0);
                 	
-                	if(respuesta == 0) this.mensaje(TC.GuardarYSalir, null);
+                	if(respuesta == 0) this.mensaje(TC.Guardar, null);
                 	else if(respuesta == 2) actuar = false;
                 } 
                 if(actuar) this.mensaje(TC.AbrirCasos, null);
@@ -694,12 +705,25 @@ public class Controlador {
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoScriptSQL: {
-                String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true);
-                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo((String) info);
+            	File ruta = factoriaGUI.getGUIPrincipal().elegirArchivoGenerar(true);
+            	if(ruta != null) {
+	            	String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true, ruta);
+	                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo((String) info);
+	                
+	                this.factoriaGUI.getGUIPrincipal().mensajeInformativo(
+	                		Lenguaje.text(Lenguaje.INFO) + "\n" +
+	                                Lenguaje.text(Lenguaje.OK_FILE) + "\n" +
+	                                Lenguaje.text(Lenguaje.FILE) + ": " + ruta,
+	                                Lenguaje.text(Lenguaje.DBCASE));
+            	}
                 break;
             }
             case GUI_Principal_Click_BotonGenerarArchivoModelo: {
-                String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false);
+            	File ruta = factoriaGUI.getGUIPrincipal().elegirArchivoGenerar(false);
+            	if(ruta != null) {
+            		String info = factoriaServicios.getServicioSistema()
+            				.exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false, ruta);
+            	}
                 break;
             }
             case GUI_Principal_Click_BotonEjecutarEnDBMS: {
@@ -721,15 +745,20 @@ public class Controlador {
             }
             default:
                 break;
-        } // switch
+        	}
+        	
+        	if(contexto != null) tratarContexto(contexto);
+    	} 
+    	catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
         
-        if(contexto != null) tratarContexto(contexto);
     }
 
     // Mensajes que le mandan las GUIs al controlador
     public void mensajeDesde_GUI(TC mensaje, Object datos) {
     	Contexto contexto = null;
-        switch (mensaje) {
+    	
+    	try {
+        	switch (mensaje) {
             case GUIInsertarEntidad_Click_BotonInsertar: {
                 TransferEntidad te = (TransferEntidad) datos;
                 contexto = factoriaServicios.getServicioEntidades().anadirEntidad(te, pilaDeshacer);
@@ -964,13 +993,44 @@ public class Controlador {
              */
             case GUIConfigurarConexionDBMS_Click_BotonEjecutar: {
                 TransferConexion tc = (TransferConexion) datos;
+                TransferConexion conexionScriptGenerado = factoriaServicios.getServicioSistema().getConexScriptGenerado();
+                
+                //Comprobaciones previas
+                if(!factoriaServicios.getServicioSistema().mismoTipo(tc)) {
+	                int respuesta = JOptionPane.showConfirmDialog(null,
+	                        Lenguaje.text(Lenguaje.WARNING) + ".\n" +
+	                                Lenguaje.text(Lenguaje.SCRIPT_GENERATED_FOR) + ": \n" +
+	                                "     " + conexionScriptGenerado.getRuta() + " \n" +
+	                                Lenguaje.text(Lenguaje.CONEXION_TYPE_IS) + ": \n" +
+	                                "     " + tc.getRuta() + "\n" +
+	                                Lenguaje.text(Lenguaje.POSSIBLE_ERROR_SRIPT) + " \n" +
+	                                Lenguaje.text(Lenguaje.SHOULD_GENERATE_SCRIPT) + " \n" +
+	                                Lenguaje.text(Lenguaje.OF_CONEXION) + "\n" +
+	                                Lenguaje.text(Lenguaje.CONTINUE_ANYWAY),
+	                        Lenguaje.text(Lenguaje.DBCASE),
+	                        JOptionPane.OK_CANCEL_OPTION,
+	                        JOptionPane.WARNING_MESSAGE);
+	                
+	                if (respuesta == JOptionPane.CANCEL_OPTION) return;
+                }
+                
                 factoriaServicios.getServicioSistema().ejecutarScriptEnDBMS(tc, factoriaGUI.getGUIPrincipal().getInstrucciones());
+                
+                //Si ha habido excepciones ya han sido manejadas y no se ha llegado aquí.
+                factoriaGUI.getGUIPrincipal().mensajeInformativo(Lenguaje.text(Lenguaje.INFO) + "\n" +
+                        Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT), Lenguaje.text(Lenguaje.DBCASE));
+                
                 break;
             }
 
             case GUIConexionDBMS_PruebaConexion: {
                 TransferConexion tc = (TransferConexion) datos;
                 factoriaServicios.getServicioSistema().compruebaConexion(tc);
+                
+                //Si ha habido excepciones ya han sido manejadas y no se ha llegado aquí.
+                factoriaGUI.getGUIPrincipal().mensajeInformativo(Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT),
+                        Lenguaje.text(Lenguaje.DBCASE));
+                
                 break;
             }
             case GUIReport_ReportarIncidencia: {
@@ -987,10 +1047,13 @@ public class Controlador {
             }
             default:
                 break;
-        } // Switch
-        
-        if(contexto != null) tratarContexto(contexto);
-        factoriaServicios.getServicioSistema().reset();
+        	} // Switch
+        	
+        	if(contexto != null) tratarContexto(contexto);
+            factoriaServicios.getServicioSistema().reset();
+            
+    	}
+    	catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
     }
 
     private void borrarSiguientesDeshacer() {
@@ -1008,92 +1071,102 @@ public class Controlador {
     public Object mensaje(TC msj, Object datos) {
     	Object resultado = null;
     	Contexto contexto = null;
-    	switch(msj) {
-    	case GetNombreAtributo: {
-    		Integer id = (Integer) datos;
-    		resultado = getFactoriaServicios().getServicioAtributos().getNombreAtributo(id);
-    		break;
-    	}
-    	case EliminarRelacionIsA: {
-    		TransferRelacion tr = (TransferRelacion) datos;
-    		contexto = factoriaServicios.getServicioRelaciones().eliminarRelacionIsA(tr);
-            if(contexto.isExito()) factoriaServicios.getServicioEntidades().eliminarRelacionDeEntidad(tr);
-    		break;
-    	}
-    	case GuardarYSalir: this.guardarYSalir(); break;
-    	case Salir: this.salir(); break;
-    	case Reset: {
-    		filetemp.delete();
-            ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
-            setCambios(false);
-    		break;
-    	}
-    	case Abrir: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(1); break;
-    	case AbrirCasos: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(4); break;
-    	case NuevoWorkSpace: {
-    		filetemp.delete();
-            ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
-            setCambios(false);
-    		break;
-    	}
-    	case EliminarAtributosRelacion: {
-    		TransferRelacion tr = (TransferRelacion) datos;
-    		Vector lista_atributos = tr.getListaAtributos();
-            int cont = 0;
-            TransferAtributo ta = new TransferAtributo();
-            Boolean exito = true;
-            while (cont < lista_atributos.size()) {
-                String idAtributo = (String) lista_atributos.get(cont);
-                ta.setIdAtributo(Integer.parseInt(idAtributo));
-                
-                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-                
-                //Tratar los posibles subatributos
-                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
-                
-                //Tratar contexto principal
-                tratarContexto(ctxt);
-                
-                if(exito) exito = ctxt.isExito();
-                
-                cont++;
-            }
-            resultado = exito;
-            break;
-    	} 
-    	case ObtenerListaEntidades: {
-    		resultado = factoriaServicios.getServicioEntidades().ListaDeEntidadesNOVoid();
-    		break;
-    	}
-    	case ObtenerListaAtributos: {
-    		resultado = factoriaServicios.getServicioAtributos().getListaDeAtributos();; 
-    		break;
-    	}
-    	case ObtenerListaRelaciones: {
-    		resultado = factoriaServicios.getServicioRelaciones().ListaDeRelacionesNoVoid(); 
-    		break;
-    	}
-    	case ObtenerListaDominios: {
-    		resultado = factoriaServicios.getServicioDominios().getListaDeDominios();
-    		break;
-    	}
-    	case ObtenerListaAgregaciones: {
-    		resultado = factoriaServicios.getServicioAgregaciones().ListaDeAgregaciones();
-    		break;
-    	}
-    	case ModificarCardinalidadRelacion_1a1:
-    	case EliminarSubatributosAtributo: {
-    		contexto = ejecutarComandoDelMensaje(msj, datos);
-    		break;
-    	}
-    	case Guardar: {
-    		guardarConf(); 
-    		break;
-    	}
-    	default: break;
-    	}
     	
-    	if(contexto != null) tratarContexto(contexto);
+    	try {
+	    	switch(msj) {
+	    	case GetNombreAtributo: {
+	    		Integer id = (Integer) datos;
+	    		resultado = getFactoriaServicios().getServicioAtributos().getNombreAtributo(id);
+	    		break;
+	    	}
+	    	case EliminarRelacionIsA: {
+	    		TransferRelacion tr = (TransferRelacion) datos;
+	    		contexto = factoriaServicios.getServicioRelaciones().eliminarRelacionIsA(tr);
+	            if(contexto.isExito()) factoriaServicios.getServicioEntidades().eliminarRelacionDeEntidad(tr);
+	    		break;
+	    	}
+	    	case GuardarYSalir: {
+	    		guardarConf(); 
+	    		ejecutarComandoDelMensaje(TC.Guardar, getRutaNormalizadaGuardar());
+	    		salir();
+	    		break;
+	    	}
+	    	case Salir: this.salir(); break;
+	    	case Reset: {
+	    		filetemp.delete();
+	            ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
+	            setCambios(false);
+	    		break;
+	    	}
+	    	case Abrir: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(1); break;
+	    	case AbrirCasos: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(4); break;
+	    	case NuevoWorkSpace: {
+	    		filetemp.delete();
+	            ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
+	            setCambios(false);
+	    		break;
+	    	}
+	    	case EliminarAtributosRelacion: {
+	    		TransferRelacion tr = (TransferRelacion) datos;
+	    		Vector lista_atributos = tr.getListaAtributos();
+	            int cont = 0;
+	            TransferAtributo ta = new TransferAtributo();
+	            Boolean exito = true;
+	            while (cont < lista_atributos.size()) {
+	                String idAtributo = (String) lista_atributos.get(cont);
+	                ta.setIdAtributo(Integer.parseInt(idAtributo));
+	                
+	                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
+	                
+	                //Tratar los posibles subatributos
+	                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
+	                
+	                //Tratar contexto principal
+	                tratarContexto(ctxt);
+	                
+	                if(exito) exito = ctxt.isExito();
+	                
+	                cont++;
+	            }
+	            resultado = exito;
+	            break;
+	    	} 
+	    	case ObtenerListaEntidades: {
+	    		resultado = factoriaServicios.getServicioEntidades().ListaDeEntidadesNOVoid();
+	    		break;
+	    	}
+	    	case ObtenerListaAtributos: {
+	    		resultado = factoriaServicios.getServicioAtributos().getListaDeAtributos();; 
+	    		break;
+	    	}
+	    	case ObtenerListaRelaciones: {
+	    		resultado = factoriaServicios.getServicioRelaciones().ListaDeRelacionesNoVoid(); 
+	    		break;
+	    	}
+	    	case ObtenerListaDominios: {
+	    		resultado = factoriaServicios.getServicioDominios().getListaDeDominios();
+	    		break;
+	    	}
+	    	case ObtenerListaAgregaciones: {
+	    		resultado = factoriaServicios.getServicioAgregaciones().ListaDeAgregaciones();
+	    		break;
+	    	}
+	    	case ModificarCardinalidadRelacion_1a1:
+	    	case EliminarSubatributosAtributo: {
+	    		contexto = ejecutarComandoDelMensaje(msj, datos);
+	    		break;
+	    	}
+	    	case Guardar: {
+	    		guardarConf();
+	    		ejecutarComandoDelMensaje(msj, getRutaNormalizadaGuardar());
+	    		break;
+	    	}
+	    	default: break;
+	    	}
+    	
+	    	if(contexto != null) tratarContexto(contexto);
+    	} 
+    	catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
     	
     	return resultado;
     }
@@ -1158,11 +1231,6 @@ public class Controlador {
         conf.guardarFicheroCofiguracion();
     }
 
-    private void guardarYSalir() {
-        guardarConf();
-        salir();
-    }
-
     private void salir() {
         filetemp.delete();
         eliminarCarpetaDeshacer();
@@ -1193,7 +1261,18 @@ public class Controlador {
 	public void transferFocusRehacer() {
 		factoriaGUI.getGUIPrincipal().getMyMenu().transferFocusRehacer();
 	}
+	
+	public void crearAlmacenPers(String ruta) {
+		try {
+			factoriaServicios.getServicioGeneral().crearAlmacenPers(ruta);
+		} 
+		catch (ExceptionAp e) {mostrarError(e.getM(), e.getCad());};
+	}
 
+	/**
+     * Getters y Setters
+     */
+	
     public String getPath() {
         return Config.getPath();
     }
@@ -1254,10 +1333,6 @@ public class Controlador {
     public void setConfirmarEliminaciones(boolean confirmarEliminaciones) {
         this.confirmarEliminaciones = confirmarEliminaciones;
     }
-
-    /**
-     * Getters y Setters
-     */
 
     public boolean getModoSoporte() {
         return modoSoporte;
@@ -1382,24 +1457,43 @@ public class Controlador {
 	public void setPadreAntiguo(TransferEntidad padreAntiguo) {
 		this.padreAntiguo = padreAntiguo;
 	}
+	
+	private String getRutaNormalizadaGuardar() {
+		String ruta = getFileguardar().getAbsolutePath();
+        if (!ruta.endsWith(".xml")) ruta = ruta + ".xml";
+        return ruta;
+	}
 
 	protected Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
 		Contexto resultado = null;
-    	Comando com = FactoriaComandos.getComando(mensaje, this);
-    	if(com != null) resultado = com.ejecutar(datos);
-    	else throw new IllegalArgumentException("Comando no encontrado");
+		
+		try {
+	    	Comando com = FactoriaComandos.getComando(mensaje, this);
+	    	if(com != null) resultado = com.ejecutar(datos);
+	    	else throw new IllegalArgumentException("Comando no encontrado");
+		} 
+		catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
+		
     	return resultado;
     }
+	
+	public void mostrarError(TC c, String contenido_adicional) {
+		factoriaGUI.getGUIPrincipal().mostrarError(FactoriaMsj.getMsj(c) + contenido_adicional, Lenguaje.text(Lenguaje.ERROR));
+	}
     
     protected void tratarContexto(Contexto contexto) {
     	if(contexto == null) return;
+    	
     	else if(!contexto.isExito()) {
-    		JOptionPane.showMessageDialog(null, FactoriaMsj.getMsj(contexto.getMensaje()), Lenguaje.text(Lenguaje.ERROR), JOptionPane.ERROR_MESSAGE); return;
+    		mostrarError(contexto.getMensaje(), "");
     	}
     	else {
+    		
     		System.out.println("Tratando contexto...");
     		if(contexto.getMensaje() != null) System.out.println(contexto.getMensaje().toString());
     		//Funcionalidad deshacer/rehacer
+    		
+    		setCambios(true);
     		
     		//this.ultimoMensaje = mensaje;
             //this.ultimosDatos = datos;

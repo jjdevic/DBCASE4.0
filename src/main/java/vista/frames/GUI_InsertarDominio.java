@@ -268,7 +268,6 @@ public class GUI_InsertarDominio extends Parent_GUI {
 
 	@Override
 	public void setDatos(Object datos) {
-		//TODO
 	}
 
 	@Override

@@ -3,11 +3,12 @@ package persistencia;
 //import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.sun.org.apache.xml.internal.serialize.*;
+
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import org.w3c.dom.*;
 import vista.Lenguaje;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
@@ -23,7 +24,7 @@ public class DAOEntidades extends DAO{
     private final Document doc;
 
     // Constructora del DAO
-    public DAOEntidades(String path) {
+    public DAOEntidades(String path) throws ExceptionAp {
     	super(path);
         this.path = path;
         //this.path += "\\persistencia.xml";
@@ -31,7 +32,7 @@ public class DAOEntidades extends DAO{
     }
 
     // Metodos del DAOEntidades
-    public int anadirEntidad(TransferEntidad tc, Stack<Document> pilaDeshacer) {
+    public int anadirEntidad(TransferEntidad tc, Stack<Document> pilaDeshacer) throws ExceptionAp {
         // Resultado que se devolvera
         int resultado = 0;
         //sacamos la <ListaEntidades>
@@ -126,7 +127,7 @@ public class DAOEntidades extends DAO{
         return transfer;
     }
 
-    public boolean modificarEntidad(TransferEntidad tc) {
+    public boolean modificarEntidad(TransferEntidad tc) throws ExceptionAp {
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Entidad
@@ -222,7 +223,7 @@ public class DAOEntidades extends DAO{
         return respuesta;
     }
 
-    public boolean borrarEntidad(TransferEntidad tc) {
+    public boolean borrarEntidad(TransferEntidad tc) throws ExceptionAp {
         Node EntidadBuscado = dameNodoEntidad(tc.getIdEntidad());
         NodeList LC = doc.getElementsByTagName("EntityList");
         // Sacamos el nodo

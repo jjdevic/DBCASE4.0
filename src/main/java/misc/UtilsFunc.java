@@ -7,36 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
-import vista.Lenguaje;
-
 public class UtilsFunc {
-	
-	public static boolean creaFicheroXML(File f) {
-        FileWriter fw;
-        String ruta = f.getPath();
-        try {
-            fw = new FileWriter(ruta);
-            fw.write("<?xml version=" + '\"' + "1.0" + '\"' + " encoding="
-                    + '\"' + "utf-8" + '\"' + " ?>" + '\n');
-            //"ISO-8859-1"
-            fw.write("<Inf_dbcase>" + "\n");
-            fw.write("<EntityList proximoID=\"1\">" + "\n" + "</EntityList>" + "\n");
-            fw.write("<RelationList proximoID=\"1\">" + "\n" + "</RelationList>" + "\n");
-            fw.write("<AttributeList proximoID=\"1\">" + "\n" + "</AttributeList>" + "\n");
-            fw.write("<DomainList proximoID=\"1\">" + "\n" + "</DomainList>");
-            fw.write("<AggregationList proximoID=\"1\">" + "\n" + "</AggregationList>");
-            fw.write("</Inf_dbcase>" + "\n");
-            fw.close();
-            return true;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR_CREATING_FILE) + "\n" + ruta,
-                    Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
 	
 	public static void quicksort(Vector<String> a) {
         quicksort(a, 0, a.size() - 1);

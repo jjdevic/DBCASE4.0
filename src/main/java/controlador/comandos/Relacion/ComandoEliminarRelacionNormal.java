@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -21,7 +22,7 @@ public class ComandoEliminarRelacionNormal extends Comando{
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferRelacion tr = (TransferRelacion) v.get(0);

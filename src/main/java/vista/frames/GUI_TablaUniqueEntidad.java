@@ -401,12 +401,10 @@ public class GUI_TablaUniqueEntidad extends Parent_GUI {
 	@Override
 	public void setDatos(Object datos) {
 		this.entidad = (TransferEntidad) datos;
-		
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

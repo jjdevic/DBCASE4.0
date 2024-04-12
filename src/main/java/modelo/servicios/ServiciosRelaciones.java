@@ -3,6 +3,7 @@ package modelo.servicios;
 import misc.Config;
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.*;
 import persistencia.*;
 
@@ -13,7 +14,7 @@ import java.util.Vector;
 public class ServiciosRelaciones {
 
     //Devuelve actualizada la lista de relaciones
-    public Vector<TransferRelacion> ListaDeRelacionesNoVoid() {
+    public Vector<TransferRelacion> ListaDeRelacionesNoVoid() throws ExceptionAp  {
         // Creamos el DAO de relaciones
         DAORelaciones dao = new DAORelaciones(Config.getPath());
         // Utilizando el DAO obtenemos la lista de Relaciones
@@ -30,7 +31,7 @@ public class ServiciosRelaciones {
      * Si al usar el DAORelaciones se produce un error -> SR_InsertarRelacion_ERROR_DAO
      */
 
-    public Contexto anadirRelacion(TransferRelacion tr, int deOtro) {
+    public Contexto anadirRelacion(TransferRelacion tr, int deOtro) throws ExceptionAp  {
         if (tr.getNombre().isEmpty()) {
             return new Contexto(false, TC.SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio, null);
         }
@@ -78,7 +79,7 @@ public class ServiciosRelaciones {
      * Si el nombre ya existe -> SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste
      * Si al usar el DAORelaciones se produce un error -> SR_InsertarRelacion_ERROR_DAO
      */
-    public Contexto SePuedeAnadirRelacion(TransferRelacion tr) {
+    public Contexto SePuedeAnadirRelacion(TransferRelacion tr) throws ExceptionAp  {
         if (tr.getNombre().isEmpty()) {
         	return new Contexto(false, TC.SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio, null);
         }
@@ -104,7 +105,7 @@ public class ServiciosRelaciones {
     /*
      * Anadir una relacion IsA
      */
-    public Contexto anadirRelacionIsA(TransferRelacion tr) {
+    public Contexto anadirRelacionIsA(TransferRelacion tr) throws ExceptionAp {
         tr.setNombre("IsA");
         tr.setTipo("IsA");
         tr.setListaAtributos(new Vector());
@@ -124,7 +125,7 @@ public class ServiciosRelaciones {
     /*
      *  Eliminar una relación IsA
      */
-    public Contexto eliminarRelacionIsA(TransferRelacion tr) {
+    public Contexto eliminarRelacionIsA(TransferRelacion tr) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         if (!daoRelaciones.borrarRelacion(tr))
         	return new Contexto(false, TC.SR_EliminarRelacionIsA_ERROR_DAORelaciones, tr);
@@ -139,7 +140,7 @@ public class ServiciosRelaciones {
      *  Eliminar una relación Normal
      */
 
-    public Contexto eliminarRelacionNormal(TransferRelacion tr, int vieneDeEntidadDebil) {
+    public Contexto eliminarRelacionNormal(TransferRelacion tr, int vieneDeEntidadDebil) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<Object> v = new Vector<Object>();
         if (!daoRelaciones.borrarRelacion(tr))
@@ -152,7 +153,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto renombrarRelacion(TransferRelacion tr, String nuevoNombre) {
+    public Contexto renombrarRelacion(TransferRelacion tr, String nuevoNombre) throws ExceptionAp {
         Vector<Object> v = new Vector<Object>();
         v.add(tr);
         v.add(nuevoNombre);
@@ -205,7 +206,7 @@ public class ServiciosRelaciones {
      * Debilitar relacion
      * -> hay que invertir el valor de "debil"
      */
-    public Contexto debilitarRelacion(TransferRelacion tr) {
+    public Contexto debilitarRelacion(TransferRelacion tr) throws ExceptionAp  {
         String tipoViejo = tr.getTipo();
         if (tipoViejo.equals("Debil")) tr.setTipo("Normal");
         else tr.setTipo("Debil");
@@ -221,7 +222,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public void restablecerDebilidadRelaciones() {
+    public void restablecerDebilidadRelaciones() throws ExceptionAp  {
         DAORelaciones dao = new DAORelaciones(Config.getPath());
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferRelacion> lista_relaciones = dao.ListaDeRelaciones();
@@ -249,7 +250,7 @@ public class ServiciosRelaciones {
     /*
      *Devuelve cierto si la relación es débil y falso en caso contrario
      */
-    public boolean esDebil(TransferEntidad te) {
+    public boolean esDebil(TransferEntidad te) throws ExceptionAp  {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> listaRelaciones = daoRelaciones.ListaDeRelaciones();
         
@@ -262,7 +263,7 @@ public class ServiciosRelaciones {
         return false;
     }
 
-    public boolean tieneHermanoDebil(TransferEntidad te) {
+    public boolean tieneHermanoDebil(TransferEntidad te) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> listaRelaciones = daoRelaciones.ListaDeRelaciones();
         ServiciosEntidades sEntidades = new ServiciosEntidades();
@@ -289,7 +290,7 @@ public class ServiciosRelaciones {
         return false;
     }
 
-    public int numEntidadesDebiles(TransferRelacion tr) {
+    public int numEntidadesDebiles(TransferRelacion tr) throws ExceptionAp  {
         Vector<EntidadYAridad> vectorEntidadesAridades = tr.getListaEntidadesYAridades();
         int numero = 0;
         ServiciosEntidades sEntidades = new ServiciosEntidades();
@@ -302,7 +303,7 @@ public class ServiciosRelaciones {
         return numero;
     }
 
-    public int idEntidadDebil(TransferRelacion tr) {
+    public int idEntidadDebil(TransferRelacion tr) throws ExceptionAp {
         Vector<EntidadYAridad> vectorEntidadesAridades = tr.getListaEntidadesYAridades();
         int entidad = 0;
         ServiciosEntidades sEntidades = new ServiciosEntidades();
@@ -319,7 +320,7 @@ public class ServiciosRelaciones {
         return entidad;
     }
 
-    public void getSubesquema(TransferRelacion tr, Vector rel) {
+    public void getSubesquema(TransferRelacion tr, Vector rel) throws ExceptionAp {
         if (!rel.contains(tr.getIdRelacion())) {//si  est� en el vector que llevamos hasta ahora aqui se acaba esta rama
             rel.add(tr.getIdRelacion()); //si no, se a�ade y exploramos las entidades que tiene para ver sus relaciones
             Vector<EntidadYAridad> entidadesRelacionadas = tr.getListaEntidadesYAridades();
@@ -348,7 +349,7 @@ public class ServiciosRelaciones {
      * Anadir un atributo a una relacion
      * -> en v viene la relacion (pos 0) y el atributo (pos 1)
      */
-    public Contexto anadirAtributo(Vector v) {
+    public Contexto anadirAtributo(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         // Si nombre de atributo es vacio -> ERROR
@@ -396,7 +397,7 @@ public class ServiciosRelaciones {
     }
 
 
-    public Contexto anadirRestriccion(Vector v) {
+    public Contexto anadirRestriccion(Vector v) throws ExceptionAp  {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         String restriccion = (String) v.get(1);
 
@@ -420,7 +421,7 @@ public class ServiciosRelaciones {
         } else return new Contexto(false, TC.SR_RenombrarRelacion_ERROR_DAORelaciones, v);
     }
 
-    public Contexto quitarRestriccion(Vector v) {
+    public Contexto quitarRestriccion(Vector v) throws ExceptionAp {
         TransferRelacion te = (TransferRelacion) v.get(0);
         String restriccion = (String) v.get(1);
 
@@ -451,9 +452,13 @@ public class ServiciosRelaciones {
         else return new Contexto(false, null);
     }
 
-    public Contexto setRestricciones(Vector v) {
+    public Contexto setRestricciones(Vector v) throws ExceptionAp {
         Vector restricciones = (Vector) v.get(0);
         TransferRelacion tr = (TransferRelacion) v.get(1);
+        
+        //Cambiar el orden de los elementos en el vector para que el primer elemento sea el transfer.
+        v.set(0, tr);
+        v.set(1, restricciones);
 
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> lista = daoRelaciones.ListaDeRelaciones();
@@ -468,7 +473,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto anadirUnique(Vector v) {
+    public Contexto anadirUnique(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         String unique = (String) v.get(1);
 
@@ -494,7 +499,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto quitarUnique(Vector v) {
+    public Contexto quitarUnique(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         String unique = (String) v.get(1);
 
@@ -528,7 +533,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto setUniques(Vector v) {
+    public Contexto setUniques(Vector v) throws ExceptionAp {
         Vector uniques = (Vector) v.get(0);
         TransferRelacion tr = (TransferRelacion) v.get(1);
 
@@ -548,7 +553,7 @@ public class ServiciosRelaciones {
     /*
      * Quitar/poner un Unique unitario a la entidad
      * */
-    public Contexto setUniqueUnitario(Vector v) {
+    public Contexto setUniqueUnitario(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         Vector uniques = tr.getListaUniques();
@@ -576,7 +581,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto eliminarReferenciasUnitario(Vector v) {
+    public Contexto eliminarReferenciasUnitario(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         Vector uniques = tr.getListaUniques();
@@ -618,7 +623,7 @@ public class ServiciosRelaciones {
         }
     }
 
-    public Contexto renombraUnique(Vector v) {
+    public Contexto renombraUnique(Vector v) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         String antiguoNombre = (String) v.get(2);
@@ -650,7 +655,7 @@ public class ServiciosRelaciones {
     /*
      * Mover una relacion (cambiar su posicion)
      */
-    public Contexto moverPosicionRelacion(TransferRelacion tr) {
+    public Contexto moverPosicionRelacion(TransferRelacion tr) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         if (daoRelaciones.modificarRelacion(tr) == false)
             return new Contexto(false, TC.SR_MoverPosicionRelacion_ERROR_DAORelaciones, tr);
@@ -665,7 +670,7 @@ public class ServiciosRelaciones {
     /*
      * Establecer la entidad padre en una relacion IsA
      */
-    public Contexto establecerEntidadPadreEnRelacionIsA(Vector<Transfer> datos) {
+    public Contexto establecerEntidadPadreEnRelacionIsA(Vector<Transfer> datos) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) datos.get(0);
         TransferEntidad te = (TransferEntidad) datos.get(1);
         // Ponemos en la primera posicion de la lista de entidades la entidad padre
@@ -684,7 +689,7 @@ public class ServiciosRelaciones {
      * Quitar la entidad padre en una relacion IsA
      * - Se quita la entidad padre y todas las hijas si las tiene
      */
-    public Contexto quitarEntidadPadreEnRelacionIsA(TransferRelacion tr) {
+    public Contexto quitarEntidadPadreEnRelacionIsA(TransferRelacion tr) throws ExceptionAp  {
         tr.getListaEntidadesYAridades().removeAllElements();
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         if (!daoRelaciones.modificarRelacion(tr))
@@ -699,7 +704,7 @@ public class ServiciosRelaciones {
     /*
      * Anadir una entidad hija a una relacion IsA
      */
-    public Contexto anadirEntidadHijaEnRelacionIsA(Vector<Transfer> datos) {
+    public Contexto anadirEntidadHijaEnRelacionIsA(Vector<Transfer> datos) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) datos.get(0);
         TransferEntidad te = (TransferEntidad) datos.get(1);
         // Anadimos la entidad hija a la lista de entidades la entidad padre
@@ -717,7 +722,7 @@ public class ServiciosRelaciones {
     /*
      * Quitar una entidad hija en una relacion IsA
      */
-    public Contexto quitarEntidadHijaEnRelacionIsA(Vector<Transfer> datos) {
+    public Contexto quitarEntidadHijaEnRelacionIsA(Vector<Transfer> datos) throws ExceptionAp  {
         TransferRelacion tr = (TransferRelacion) datos.get(0);
         TransferEntidad te = (TransferEntidad) datos.get(1);
         // Quitamos la entidad hija de la lista de entidadesYaridades de la relacion
@@ -741,7 +746,7 @@ public class ServiciosRelaciones {
     /*
      * Anadir una entidad a una relacion
      */
-    public Contexto anadirEntidadARelacion(Vector v, int deOtro) {
+    public Contexto anadirEntidadARelacion(Vector v, int deOtro) throws ExceptionAp {
         // Sacamos los componentes del vector que sabemos que son correctos
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
@@ -845,7 +850,7 @@ public class ServiciosRelaciones {
     /*
      * Editar la aridad de una entidad en una relacion
      */
-    public Contexto editarAridadEntidad(Vector<Object> v) {
+    public Contexto editarAridadEntidad(Vector<Object> v) throws ExceptionAp {
         // Sacamos los componentes del vector que sabemos que son correctos
         TransferRelacion tr = (TransferRelacion) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
@@ -940,7 +945,7 @@ public class ServiciosRelaciones {
     /*
      * Quitar una entidad de una relacion
      */
-    public Contexto quitarEntidadARelacion(Vector<Object> datos) {
+    public Contexto quitarEntidadARelacion(Vector<Object> datos) throws ExceptionAp {
         TransferRelacion tr = (TransferRelacion) datos.get(0);
         TransferEntidad te = (TransferEntidad) datos.get(1);
         String rol = (String) datos.get(2);

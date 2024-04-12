@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
@@ -17,7 +18,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Vector v = (Vector<Transfer>) datos;
         getFactoriaServicios().getServicioRelaciones().setUniques(v);
         TransferRelacion relacion = (TransferRelacion) v.get(1);

@@ -90,32 +90,23 @@ public class GUI_Recientes extends Parent_GUI {
     }
 
 	@Override
-	protected void initComponents() {
-		// TODO Auto-generated method stub
-		
+	protected void initComponents() {		
 	}
 
 	@Override
 	public void setDatos(Object datos) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setInactiva() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setActiva() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public int setActiva(int op) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

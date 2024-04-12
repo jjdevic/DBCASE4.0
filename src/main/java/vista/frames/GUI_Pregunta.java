@@ -192,6 +192,7 @@ public class GUI_Pregunta extends Parent_GUI {
     
 	@Override
 	public void setDatos(Object datos) {
+		if(datos != null) return;
 		try {
 			Vector<Object> v = (Vector<Object>) datos;
 			

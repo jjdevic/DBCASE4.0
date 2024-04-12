@@ -3,6 +3,7 @@ package modelo.servicios;
 import misc.Config;
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -19,7 +20,7 @@ import java.util.Vector;
 public class ServiciosAgregaciones {
 
     //Devuelve actualizada la lista de agregaciones
-    public Vector<TransferAgregacion> ListaDeAgregaciones() {
+    public Vector<TransferAgregacion> ListaDeAgregaciones() throws ExceptionAp {
         // Creamos el DAO de agregaciones
         DAOAgregaciones dao = new DAOAgregaciones(Config.getPath());
         // Utilizando el DAO obtenemos la lista de agregaciones
@@ -28,7 +29,7 @@ public class ServiciosAgregaciones {
         return lista_agregaciones;
     }
 
-    public Contexto anadirAgregacion(TransferAgregacion ta) {
+    public Contexto anadirAgregacion(TransferAgregacion ta) throws ExceptionAp {
         if (ta.getNombre().isEmpty()) {
             return new Contexto(false, TC.SAG_InsertarAgregacion_ERROR_NombreVacio);
         }
@@ -68,7 +69,7 @@ public class ServiciosAgregaciones {
         }
     }
 
-    public boolean perteneceAgregacion(TransferRelacion rel) {
+    public boolean perteneceAgregacion(TransferRelacion rel) throws ExceptionAp {
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());
         Vector<TransferAgregacion> agregaciones = daoAgre.ListaDeAgregaciones();
         for (TransferAgregacion agre : agregaciones) {
@@ -80,7 +81,7 @@ public class ServiciosAgregaciones {
         return false;
     }
 
-    public Contexto renombrarAgregacion(TransferRelacion tr, String nuevoNombre) {
+    public Contexto renombrarAgregacion(TransferRelacion tr, String nuevoNombre) throws ExceptionAp {
         TransferAgregacion ta = this.buscarAgregaciondeRelacion(tr);
         Vector<Object> v = new Vector<Object>();
         v.add(ta);
@@ -136,7 +137,7 @@ public class ServiciosAgregaciones {
             return new Contexto(true, TC.SAG_RenombrarAgregacion_HECHO, v);
     }
 
-    private TransferAgregacion buscarAgregaciondeRelacion(TransferRelacion rel) {
+    private TransferAgregacion buscarAgregaciondeRelacion(TransferRelacion rel) throws ExceptionAp {
         TransferAgregacion ta = new TransferAgregacion();
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());
         Vector<TransferAgregacion> agregaciones = daoAgre.ListaDeAgregaciones();
@@ -147,8 +148,7 @@ public class ServiciosAgregaciones {
         return ta;
     }
 
-    //TODO mirar este caso por la recursion que habia
-    public Contexto eliminarAgregacion(TransferRelacion tr) {
+    public Contexto eliminarAgregacion(TransferRelacion tr) throws ExceptionAp {
         String idRel = Integer.toString(tr.getIdRelacion());
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());
         Vector<TransferAgregacion> agregaciones = daoAgre.ListaDeAgregaciones();
@@ -164,7 +164,7 @@ public class ServiciosAgregaciones {
         return new Contexto(false, null, null);
     }
 
-    public Contexto eliminarAgregacion(TransferAgregacion ta) {
+    public Contexto eliminarAgregacion(TransferAgregacion ta) throws ExceptionAp {
         DAOAgregaciones daoAgre = new DAOAgregaciones(Config.getPath());
         daoAgre.borrarAgregacion(ta);
         Vector<Object> v = new Vector<Object>();
@@ -172,7 +172,7 @@ public class ServiciosAgregaciones {
         return new Contexto(true, TC.SAG_EliminarAgregacion_HECHO, v);
     }
 
-    public Contexto anadirAtributo(Vector v) {
+    public Contexto anadirAtributo(Vector v) throws ExceptionAp {
         TransferAgregacion te = (TransferAgregacion) v.get(0);
         TransferAtributo ta = (TransferAtributo) v.get(1);
         // Si nombre de atributo es vacio -> ERROR

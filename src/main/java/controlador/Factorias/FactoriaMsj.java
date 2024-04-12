@@ -17,7 +17,7 @@ public class FactoriaMsj {
 		String resultado = null;
 		Integer msj;
 		switch(tc) {
-		//SAtrib
+		//Atrib
 		case SA_EliminarAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio: msj= Lenguaje.EMPTY_ATTRIB_NAME; break;
 		case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste: msj= Lenguaje.REPEATED_SUBATR_NAME; break;
@@ -37,7 +37,7 @@ public class FactoriaMsj {
 		case SA_EditarClavePrimariaAtributo_ERROR_DAOEntidades: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		case SA_MoverPosicionAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		
-		//SAAgreg
+		//Agreg
 		case SAG_InsertarAgregacion_ERROR_NombreVacio: msj = Lenguaje.EMPTY_AG_NAME; break;
         case SAG_InsertarAgregacion_ERROR_NombreDeYaExiste: msj = Lenguaje.REPEATED_AGREG_NAME; break;
         case SAG_InsertarAgregacion_ERROR_NombreDeEntYaExiste: msj = Lenguaje.REPEATED_ENT_NAME; break;
@@ -45,7 +45,7 @@ public class FactoriaMsj {
         case SAG_InsertarAgregacion_ERROR_DAO: msj = Lenguaje.AGGREGATIONS_FILE_ERROR; break;
         case SAG_RenombrarAgregacion_ERROR_NombreVacio: msj = Lenguaje.EMPTY_AGREG_NAME; break;
         
-        //SRelaciones
+        //Relaciones
         case SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio: msj = Lenguaje.EMPTY_REL_NAME; break;
         case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste: msj = Lenguaje.REPEATED_REL_NAME; break;
         case SR_InsertarRelacion_ERROR_NombreDeRelacionYaExisteComoEntidad: msj = Lenguaje.REPEATED_ENT_NAME; break;
@@ -88,7 +88,7 @@ public class FactoriaMsj {
         case SR_EditarCardinalidadEntidad_ERROR_InicioMayorQueFinal: msj = Lenguaje.INCORRECT_CARDINALITY5; break;
         case SR_EditarCardinalidadEntidad_ERROR_DAORelaciones: msj = Lenguaje.RELATIONS_FILE_ERROR; break;
         
-        //SDominio
+        //Dominio
         case SD_InsertarDominio_ERROR_NombreDeDominioEsVacio: msj = Lenguaje.EMPTY_DOM_NAME; break;
         case SD_InsertarDominio_ERROR_NombreDeDominioYaExiste: msj = Lenguaje.REPEATED_DOM_NAME; break;
         case SD_InsertarDominio_ERROR_DAO: msj = Lenguaje.DOMAINS_FILE_ERROR; break;
@@ -112,7 +112,7 @@ public class FactoriaMsj {
         case SD_InsertarDominio_ERROR_ValorNoValido_10: resultado = Lenguaje.text(Lenguaje.EMPTY_VALUE);
         case SD_InsertarDominio_ERROR_ValorNoValido_11: resultado = Lenguaje.text(Lenguaje.INCORRECT_NUMBER);
         
-        //SEntidad
+        //Entidad
         case SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio: msj = Lenguaje.EMPTY_ENT_NAME; break;
         case SE_ComprobarInsertarEntidad_ERROR_NombreDeEntidadEsVacio: msj = Lenguaje.EMPTY_ENT_NAME; break;
         case SE_InsertarEntidad_ERROR_NombreDeEntidadYaExiste: msj = Lenguaje.REPEATED_ENT_NAME; break;
@@ -135,6 +135,15 @@ public class FactoriaMsj {
         case SE_AnadirAtributoAEntidad_ERROR_DAOEntidades: msj = Lenguaje.ENTITIES_FILE_ERROR; break;
         case SE_EliminarEntidad_ERROR_DAOEntidades: msj = Lenguaje.ENTITIES_FILE_ERROR; break;
         case SE_MoverPosicionEntidad_ERROR_DAOEntidades: msj = Lenguaje.ENTITIES_FILE_ERROR; break;
+        
+        case FALLO_CREAR_ARCHIVO: msj = Lenguaje.ERROR_CREATING_FILE; break;
+        case SCRIPT_ERROR: msj = Lenguaje.SCRIPT_ERROR; break;
+        case MUST_GENERATE_SCRIPT: msj = Lenguaje.MUST_GENERATE_SCRIPT; break;
+        case NO_DB_CONEXION: msj = Lenguaje.NO_DB_CONEXION; break;
+        case CANT_CLOSE_CONEXION: msj = Lenguaje.CANT_CLOSE_CONEXION; break;
+        case CANT_EXECUTE_SCRIPT: msj = Lenguaje.CANT_EXECUTE_SCRIPT; break;
+        
+        case ERROR_PERSISTENCIA: msj = Lenguaje.UNESPECTED_XML_ERROR; break;
 		
 		default: msj = null; break;
 		}

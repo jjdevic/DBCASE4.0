@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -19,7 +20,7 @@ public class ComandoAnadirEntidadARelacion extends Comando{
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Contexto resultado = null;
 		// v tiene: [transferRelacion, idEntidad, inicioRango, finalRango, rol]
         Vector v = (Vector) datos;

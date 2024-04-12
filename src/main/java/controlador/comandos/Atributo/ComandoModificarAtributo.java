@@ -6,6 +6,7 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 
@@ -16,7 +17,7 @@ public class ComandoModificarAtributo extends Comando {
 	}
 
 	@Override
-	public Contexto ejecutar(Object datos) {
+	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Vector<Object> v = (Vector<Object>) datos;
         TransferAtributo ta = (TransferAtributo) v.get(0);
         

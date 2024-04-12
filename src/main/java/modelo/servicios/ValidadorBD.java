@@ -2,6 +2,7 @@ package modelo.servicios;
 
 import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import misc.Config;
 import modelo.transfers.*;
 import persistencia.*;
@@ -61,7 +62,7 @@ public class ValidadorBD{
      * metodo principal
      * boolean modelo: diferencia entre esquema logico y fisico
      */
-    protected Contexto validaBaseDeDatos(boolean modelo, StringBuilder warning) {
+    protected Contexto validaBaseDeDatos(boolean modelo, StringBuilder warning) throws ExceptionAp {
     	Contexto resultado = new Contexto(false, null);
         mensaje = "";
         warnings = "";
@@ -90,13 +91,13 @@ public class ValidadorBD{
         return resultado;
     }
 
-    private boolean esVacio() {
+    private boolean esVacio() throws ExceptionAp {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         return daoRelaciones.ListaDeRelaciones().isEmpty() && daoEntidades.ListaDeEntidades().isEmpty();
     }
 
-    private boolean validaEntidades() {
+    private boolean validaEntidades() throws ExceptionAp  {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
         boolean valido = true;
@@ -112,7 +113,7 @@ public class ValidadorBD{
         return valido;
     }
 
-    private boolean validaNombresAtributosEntidad(TransferEntidad te) {
+    private boolean validaNombresAtributosEntidad(TransferEntidad te) throws ExceptionAp {
         //comprueba que una entidad tenga atributos con nombres distintos.
         Vector<TransferAtributo> ats = ge.dameAtributosEnTransfer(te.getListaAtributos());
         Vector<int[]> resultados = entidadPerteneceAisA(te);
@@ -145,7 +146,7 @@ public class ValidadorBD{
         return valido;
     }
 
-    private boolean validaComponentesRelacionDebil(TransferRelacion tr) {
+    private boolean validaComponentesRelacionDebil(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
         int tam = veya.size();
@@ -179,7 +180,7 @@ public class ValidadorBD{
         return valida;
     }
 
-    private void validaFidelidadEntidadEnIsA(TransferEntidad te) {
+    private void validaFidelidadEntidadEnIsA(TransferEntidad te) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         //si la entidad es padre de una relacion isA comprueba que solo lo sea de una, sino, dara un aviso.
@@ -198,7 +199,7 @@ public class ValidadorBD{
     }
 
     //metodos privados de validacion de relaciones.
-    private boolean validaComponentesRelacionIsA(TransferRelacion tr) {
+    private boolean validaComponentesRelacionIsA(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         if (dameNumEntidadesDebiles(tr) > 0) {
             valida = false;
@@ -223,7 +224,7 @@ public class ValidadorBD{
         return valida;
     }
 
-    private int dameNumEntidadesDebiles(TransferRelacion tr) {
+    private int dameNumEntidadesDebiles(TransferRelacion tr) throws ExceptionAp {
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         TransferEntidad aux = new TransferEntidad();
         Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
@@ -236,7 +237,7 @@ public class ValidadorBD{
         return cont;
     }
 
-    private boolean misDebilesEstanEnDebiles(TransferRelacion rel) {
+    private boolean misDebilesEstanEnDebiles(TransferRelacion rel) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
@@ -268,7 +269,7 @@ public class ValidadorBD{
         return enDebil;
     }
 
-    private boolean validaComponentesRelacionNormal(TransferRelacion tr) {
+    private boolean validaComponentesRelacionNormal(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         if (dameNumEntidadesDebiles(tr) > 0 && !this.misDebilesEstanEnDebiles(tr)) {
             valida = false;
@@ -292,7 +293,7 @@ public class ValidadorBD{
         return valida;
     }
 
-    private boolean validaRelaciones() {
+    private boolean validaRelaciones() throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         boolean valido = true;
@@ -309,7 +310,7 @@ public class ValidadorBD{
         return valido;
     }
 
-    private boolean validaDominios() {
+    private boolean validaDominios() throws ExceptionAp {
         DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> dominios = daoDominios.ListaDeDominios();
         boolean valido = true;
@@ -366,7 +367,7 @@ public class ValidadorBD{
     }
 
     //metodos privados de validacion de entidades
-    private boolean validaKey(TransferEntidad te) {
+    private boolean validaKey(TransferEntidad te) throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         //valida si la entidad tiene clave y si esta dentro de sus atributos.
         //ademas si la entidad es debil, debe tener un atributo discriminante.
@@ -474,7 +475,7 @@ public class ValidadorBD{
      sino: si es padre -> 0
      si es hija -> 1
      */
-    private Vector<int[]> entidadPerteneceAisA(TransferEntidad te) {
+    private Vector<int[]> entidadPerteneceAisA(TransferEntidad te) throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         Vector<int[]> resultados = new Vector<int[]>();
@@ -505,7 +506,7 @@ public class ValidadorBD{
         return resultados;
     }
 
-    private boolean compruebaClaveCompuesto(Vector clavesEntidad, TransferAtributo ta) {
+    private boolean compruebaClaveCompuesto(Vector clavesEntidad, TransferAtributo ta) throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         int i = 0;
         boolean todosBien = true;
@@ -530,7 +531,7 @@ public class ValidadorBD{
      * - Cada atributo tiene un dominio definido
      * - Los atributos multivalorados no son clave
      */
-    private boolean validaAtributos() {
+    private boolean validaAtributos() throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
         boolean valido = true;
@@ -546,7 +547,7 @@ public class ValidadorBD{
     }
 
     // comprueba si el atributo pertenece solo a una entidad.
-    private boolean validaFidelidadAtributo(TransferAtributo ta) {
+    private boolean validaFidelidadAtributo(TransferAtributo ta) throws ExceptionAp {
         DAOAtributos daoAtributos = new DAOAtributos();
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());

@@ -2,6 +2,7 @@ package vista;
 
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.*;
 import vista.componentes.ArbolDominiosRender;
 import vista.componentes.ArbolElementosRender;
@@ -9,6 +10,7 @@ import vista.componentes.GUIPanels.ReportPanel;
 import vista.componentes.GUIPanels.TablaVolumenes;
 import vista.componentes.GUIPanels.addTransfersPanel;
 import vista.componentes.MyComboBoxRenderer;
+import vista.componentes.MyFileChooser;
 import vista.componentes.MyMenu;
 import vista.diagrama.PanelGrafo;
 import vista.diagrama.PanelThumbnail;
@@ -18,10 +20,12 @@ import vista.utils.ImagesPath;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -107,7 +111,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         setModoVista(modo);
         loadInfo();
         c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_IniciaFrames, null);
-        //TODO mirar esta linea
         //c.getTheGUIAnadirAtributo().setListaDominios(getListaDominios());
     }
 
@@ -500,7 +503,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
@@ -515,7 +519,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
@@ -530,8 +535,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesAtributo: {
-                TransferAtributo te = (TransferAtributo) datos;
-                panelDiseno.ModificaValorInterno(te);
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAtributo ta = (TransferAtributo) v.get(0);
+                panelDiseno.ModificaValorInterno(ta);
                 break;
             }
             case Controlador_AnadirUniqueEntidad: {
@@ -668,7 +674,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarAgregacion: {
-                TransferAgregacion tr = (TransferAgregacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAgregacion tr = (TransferAgregacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
@@ -1881,8 +1888,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-
     }
 	
 	/*private Runnable doFocus = new Runnable() {
@@ -1891,5 +1896,36 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 		}
 	};*/
 
+    public void mostrarError(String mensaje_error, String titulo) {
+    	JOptionPane.showMessageDialog(null, mensaje_error, titulo, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void mensajeInformativo(String mensaje, String titulo) {
+    	JOptionPane.showMessageDialog(null, mensaje, titulo, JOptionPane.PLAIN_MESSAGE);
+    }
 
+    public File elegirArchivoGenerar(boolean sql) throws ExceptionAp{
+    	File resultado = null;
+    	
+    	MyFileChooser jfc = new MyFileChooser();
+        jfc.setDialogTitle(Lenguaje.text(Lenguaje.DBCASE));
+        jfc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/projects"));
+        jfc.setFileFilter(new FileNameExtensionFilter("Text", "txt"));
+        if(sql) jfc.setFileFilter(new FileNameExtensionFilter(Lenguaje.text(Lenguaje.SQL_FILES), "sql"));
+        int resul = jfc.showSaveDialog(null);
+        
+        if (resul == 0) {
+        	File ruta = jfc.getSelectedFile();
+            String filePath = ruta.getAbsolutePath();
+            
+            if (jfc.getFileFilter().getDescription().equals("Text") && !filePath.endsWith(".txt"))
+                ruta = new File(filePath + ".txt");
+            else if (jfc.getFileFilter().getDescription().equals("SQL Files") && !filePath.endsWith(".sql"))
+                ruta = new File(filePath + ".sql");
+            
+            resultado = ruta;
+        }
+        
+        return resultado;
+    }
 }

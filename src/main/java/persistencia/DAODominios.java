@@ -3,9 +3,10 @@ package persistencia;
 import modelo.transfers.TipoDominio;
 import modelo.transfers.TransferDominio;
 import org.w3c.dom.*;
+
+import excepciones.ExceptionAp;
 import vista.Lenguaje;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileWriter;
@@ -20,13 +21,13 @@ public class DAODominios extends DAO{
     private Document doc;
 
     // Constructora del DAO
-    public DAODominios(String path) {
+    public DAODominios(String path)throws ExceptionAp {
     	super(path);
         this.doc = dameDoc();
     }
 
     // Metodos del DAODominios
-    public int anadirDominio(TransferDominio tc) {
+    public int anadirDominio(TransferDominio tc) throws ExceptionAp{
         // Resultado que se devolvera
         int resultado = 0;
         //sacamos la <ListaDominios>
@@ -82,7 +83,7 @@ public class DAODominios extends DAO{
         return transfer;
     }
 
-    public boolean modificarDominio(TransferDominio tc) {
+    public boolean modificarDominio(TransferDominio tc) throws ExceptionAp {
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Dominio
@@ -118,7 +119,7 @@ public class DAODominios extends DAO{
         return respuesta;
     }
 
-    public boolean borrarDominio(TransferDominio tc) {
+    public boolean borrarDominio(TransferDominio tc) throws ExceptionAp{
         Node DominioBuscado = dameNodoDominio(tc.getIdDominio());
         NodeList LC = doc.getElementsByTagName("DomainList");
         // Sacamos el nodo

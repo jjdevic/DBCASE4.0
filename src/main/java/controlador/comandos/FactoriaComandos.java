@@ -26,7 +26,7 @@ public class FactoriaComandos {
 		
 		case GUI_WorkSpace_Nuevo: res = new ComandoWorkspaceNuevo(ctrl); break;
 		case GUI_WorkSpace_Click_Abrir: res = new ComandoAbrir(ctrl); break;
-		case GUI_WorkSpace_Click_Guardar: res = new ComandoGuardar(ctrl); break;
+		case GUI_WorkSpace_Click_Guardar: case Guardar: res = new ComandoGuardar(ctrl); break;
 		case GUI_WorkSpace_Click_Guardar_Backup: res = new ComandoGuardarBackup(ctrl); break;
 		
 		case PanelDiseno_Click_EliminarEntidad: res = new ComandoEliminarEntidad(ctrl); break;
