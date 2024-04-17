@@ -822,7 +822,7 @@ public class MenuDesplegable extends JPopupMenu {
             for (Transfer t : ps.getPicked()) {
                 Vector<Object> v = new Vector<Object>();
                 v.add(t);
-                v.add(respuesta == 1); //TODO Mirar este
+                v.add(respuesta == 1); 
                 if (cont2 == 0) v.add(0);
                 else v.add(1);
                 if (t instanceof TransferEntidad) {

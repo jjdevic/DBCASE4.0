@@ -54,8 +54,7 @@ public class ComandoEliminarAtributo extends Comando{
             TransferAtributo clon_atributo3 = ta.clonar();
             resultado = getFactoriaServicios().getServicioAtributos().eliminarAtributo(clon_atributo3, intAux);
         }
-        //Tratar los posibles contextos derivados de eliminar subatributos
-        if(resultado != null) tratarContextos(aVectorContextos((Vector) resultado.getDatos(), 3));
+        
         return resultado;
 	}
 

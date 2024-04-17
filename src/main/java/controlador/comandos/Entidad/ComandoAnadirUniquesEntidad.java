@@ -20,7 +20,8 @@ public class ComandoAnadirUniquesEntidad extends Comando {
 	@Override
 	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Vector v = (Vector<Transfer>) datos;
-        getFactoriaServicios().getServicioEntidades().setUniques(v);
+        
+		tratarContexto(getFactoriaServicios().getServicioEntidades().setUniques(v));
         TransferEntidad entidad = (TransferEntidad) v.get(1);
         ActualizaArbol(entidad);
         getFactoriaServicios().getServicioSistema().reset();
@@ -52,7 +53,7 @@ public class ComandoAnadirUniquesEntidad extends Comando {
                         //Hacer el atributo j unique
                         final TransferAtributo atributo = (TransferAtributo) listaAtributos.get(numAtributo);
                         TransferAtributo clon_atributo = atributo.clonar();
-                        getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                        tratarContexto(getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo));
                     }
                 }
         }
@@ -81,7 +82,7 @@ public class ComandoAnadirUniquesEntidad extends Comando {
                     final TransferAtributo atributo = (TransferAtributo) listaAtributos.get(numAtributo);
                     TransferAtributo clon_atributo = atributo.clonar();
                     //EditarUniqueAtributo hace unique = !unique
-                    getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                    tratarContexto(getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo));
                 }
             }
         }

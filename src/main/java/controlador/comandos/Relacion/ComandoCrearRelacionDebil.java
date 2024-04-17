@@ -80,6 +80,7 @@ public class ComandoCrearRelacionDebil extends Comando{
             w.add(true);
             w.add(false);
             w.add(false);
+            w.add(false); //Hacemos que CardinalidadMaxima1 sea falso
             
             contexto = ejecutarComando(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, w);
         }

@@ -20,7 +20,8 @@ public class ComandoAnadirUniquesRelacion extends Comando {
 	@Override
 	public Contexto ejecutar(Object datos) throws ExceptionAp {
 		Vector v = (Vector<Transfer>) datos;
-        getFactoriaServicios().getServicioRelaciones().setUniques(v);
+        tratarContexto(getFactoriaServicios().getServicioRelaciones().setUniques(v));
+        
         TransferRelacion relacion = (TransferRelacion) v.get(1);
         ActualizaArbol(relacion);
         getFactoriaServicios().getServicioSistema().reset();
@@ -43,7 +44,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
                         }
                         final TransferAtributo atributo = (TransferAtributo) listaAtributos.get(numAtributo);
                         TransferAtributo clon_atributo = atributo.clonar();
-                        getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                        tratarContexto(getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo));
                     }
                 }
         }
@@ -66,7 +67,7 @@ public class ComandoAnadirUniquesRelacion extends Comando {
                     }
                     final TransferAtributo atributo = (TransferAtributo) listaAtributos.get(numAtributo);
                     TransferAtributo clon_atributo = atributo.clonar();
-                    getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo);
+                    tratarContexto(getFactoriaServicios().getServicioAtributos().editarUniqueAtributo(clon_atributo));
                 }
             }
         }

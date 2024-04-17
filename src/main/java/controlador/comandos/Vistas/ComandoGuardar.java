@@ -25,7 +25,7 @@ public class ComandoGuardar extends Comando{
 		String guardarPath = (String) datos;
         String tempPath = ctrl.getFiletemp().getAbsolutePath();
         UtilsFunc.FileCopy(tempPath, guardarPath);
-        ctrl.getFactoriaGUI().getGUI(TC.GUI_WorkSpace, null, false).setInactiva();
+        ctrl.getFactoriaGUI().getGUI(TC.GUI_WorkSpace, false, false).setInactiva();
         ctrl.setCambios(false);
         
         ctrl.setTiempoGuardado(System.currentTimeMillis() / 1000);

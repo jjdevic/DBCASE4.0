@@ -225,7 +225,7 @@ public class Controlador {
                             "ERROR.\nAdd an entity, a relation or an aggregation first\n",
                             Lenguaje.text(Lenguaje.DELETE),
                             JOptionPane.PLAIN_MESSAGE);
-                else factoriaGUI.getGUI(mensaje, datos, false).setActiva();
+                else factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, false).setActiva();
                 break;
             }
             
@@ -347,13 +347,17 @@ public class Controlador {
                 this.copiado = (Transfer) datos;
                 break;
             }
+            
+            case PanelDiseno_Click_TablaUniqueAEntidad:
+	        case PanelDiseno_Click_TablaUniqueARelacion:
+	        	//Volver a crear las tablas (destruir previo = true).
+	        	factoriaGUI.getGUI(FactoriaTCCtrl.getTCCtrl(mensaje), datos, true).setActiva();
+                break;
 
             //Casos que solo activan una GUI
             case PanelDiseno_Click_AnadirRestriccionAEntidad:
 	        case PanelDiseno_Click_AnadirRestriccionAAtributo:
 	        case PanelDiseno_Click_AnadirRestriccionARelacion:
-	        case PanelDiseno_Click_TablaUniqueAEntidad:
-	        case PanelDiseno_Click_TablaUniqueARelacion:
 	        case PanelDiseno_Click_AnadirAtributoEntidad: 
 	        case PanelDiseno_Click_RenombrarAtributo:
 	        case PanelDiseno_Click_InsertarRelacionNormal: 
@@ -1098,8 +1102,8 @@ public class Controlador {
 	            setCambios(false);
 	    		break;
 	    	}
-	    	case Abrir: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(1); break;
-	    	case AbrirCasos: factoriaGUI.getGUI(TC.GUI_WorkSpace, null, false).setActiva(4); break;
+	    	case Abrir: factoriaGUI.getGUI(TC.GUI_WorkSpace, false, false).setActiva(1); break;
+	    	case AbrirCasos: factoriaGUI.getGUI(TC.GUI_WorkSpace, false, false).setActiva(4); break;
 	    	case NuevoWorkSpace: {
 	    		filetemp.delete();
 	            ejecutarComandoDelMensaje(TC.GUI_WorkSpace_Nuevo, null);
@@ -1117,9 +1121,6 @@ public class Controlador {
 	                ta.setIdAtributo(Integer.parseInt(idAtributo));
 	                
 	                Contexto ctxt = getFactoriaServicios().getServicioAtributos().eliminarAtributo(ta, 1);
-	                
-	                //Tratar los posibles subatributos
-	                tratarContextos(aVectorContextos((Vector) ctxt.getDatos(), 3));
 	                
 	                //Tratar contexto principal
 	                tratarContexto(ctxt);
@@ -1464,6 +1465,14 @@ public class Controlador {
         return ruta;
 	}
 
+	/**
+	 * Ejecuta el comando asociado al mensaje si existe.
+	 * 
+	 * @param mensaje
+	 * @param datos
+	 * @throws IllegalArgumentException si el comando no es encontrado.
+	 * @return
+	 */
 	protected Contexto ejecutarComandoDelMensaje(TC mensaje, Object datos) {
 		Contexto resultado = null;
 		
@@ -1481,9 +1490,21 @@ public class Controlador {
 		factoriaGUI.getGUIPrincipal().mostrarError(FactoriaMsj.getMsj(c) + contenido_adicional, Lenguaje.text(Lenguaje.ERROR));
 	}
     
+	/**
+	 * @param contexto Espera recibir un contexto que cumpla que su campo datos es un vector, y que
+	 * 					el primer componente de ese vector es un transfer.
+	 */
     protected void tratarContexto(Contexto contexto) {
-    	if(contexto == null) return;
     	
+    	//Si hay sub-contextos que tratar, tratarlos.
+    	if(contexto != null && contexto.getSubContextos() != null) {
+    		for(Contexto subC: contexto.getSubContextos()) {
+    			tratarContexto(subC);
+    		}
+    	}
+    	
+    	//Tratar contexto principal
+    	if(contexto == null) return;
     	else if(!contexto.isExito()) {
     		mostrarError(contexto.getMensaje(), "");
     	}
@@ -1537,19 +1558,6 @@ public class Controlador {
             ActualizaArbol(tr);
     	}
     }
-    
-    /** Devuelve el subvector que empieza en inicio (incluido), como vector de contextos */
-    protected Vector<Contexto> aVectorContextos(Vector<Object> v, int inicio) {
-    	int size = v.size();
-    	Vector<Contexto> v_c = new Vector<Contexto>();
-    	for(int i = inicio; i < size; i++) { v_c.add((Contexto) v.get(i)); }
-        return v_c;
-    }
-    
-    protected void tratarContextos(Vector<Contexto> v) {
-    	for(Contexto c: v) {tratarContexto(c);}
-    }
-    
 	
 	/*public void funcionDeshacer(TC mensaje, Object datos) {
 		switch (mensaje) {

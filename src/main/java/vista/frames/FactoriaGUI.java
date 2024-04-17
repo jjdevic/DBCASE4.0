@@ -34,7 +34,7 @@ public class FactoriaGUI {
 		return gui_principal;
 	}
 	
-	/* @param destroyPreviousAndCreate Si es true y hay una gui asociada al parámetro 'mensaje' ya almacenada, se destruye 
+	/** @param destroyPreviousAndCreate Si es true y hay una gui asociada al parámetro 'mensaje' ya almacenada, se destruye 
 	 * 									y se crea una nueva.						
 	 * */
 	public Parent_GUI getGUI(TC mensaje, Object datos, boolean destroyPreviousAndCreate) {
@@ -81,6 +81,7 @@ public class FactoriaGUI {
             case Controlador_ModificarEntidad: gui = new GUI_ModificarEntidad(ctrl); break;
             case Controlador_ModificarAtributo: gui = new GUI_ModificarAtributo(ctrl); break;
             case Controlador_ModificarRelacion: gui = new GUI_ModificarRelacion(ctrl); break;
+            case Controlador_Eliminar: gui = new GUI_Eliminar(ctrl); break;
             case GUI_WorkSpace: gui = new GUI_SaveAs(ctrl, (Boolean) datos); break;
             case GUI_Recientes: gui = new GUI_Recientes(ctrl, (ArrayList<File>) datos); break;
             case GUI_Principal_REPORT: gui = new GUI_Report(ctrl); break;

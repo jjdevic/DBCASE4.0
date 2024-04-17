@@ -551,12 +551,14 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setUniquesEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
             case Controlador_setUniqueUnitarioEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
@@ -571,12 +573,14 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setUniquesRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
             case Controlador_setUniqueUnitarioRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }

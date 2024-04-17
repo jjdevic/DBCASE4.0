@@ -218,7 +218,7 @@ public class ServiciosRelaciones {
         } else {
         	Vector<Object> v = new Vector<Object>();
             v.add(tr);
-        	return new Contexto(true, TC.SR_DebilitarRelacion_HECHO, tr);
+        	return new Contexto(true, TC.SR_DebilitarRelacion_HECHO, v);
         }
     }
 
@@ -536,17 +536,22 @@ public class ServiciosRelaciones {
     public Contexto setUniques(Vector v) throws ExceptionAp {
         Vector uniques = (Vector) v.get(0);
         TransferRelacion tr = (TransferRelacion) v.get(1);
+        
+        //Preparar la salida.
+        Vector<Object> v_aux = new Vector<Object>();
+        v_aux.add(tr);
+        v_aux.add(uniques);
 
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> lista = daoRelaciones.ListaDeRelaciones();
         if (lista == null) {
-        	return new Contexto(false, TC.SR_RenombrarRelacion_ERROR_DAOEntidades, v);
+        	return new Contexto(false, TC.SR_RenombrarRelacion_ERROR_DAOEntidades, v_aux);
         }
         tr.setListaUniques(uniques);
         if (daoRelaciones.modificarRelacion(tr))
-        	return new Contexto(true, TC.SR_setUniquesARelacion_HECHO, v);
+        	return new Contexto(true, TC.SR_setUniquesARelacion_HECHO, v_aux);
         else {
-        	return new Contexto(false, TC.SR_RenombrarRelacion_ERROR_DAOEntidades, v);
+        	return new Contexto(false, TC.SR_RenombrarRelacion_ERROR_DAOEntidades, v_aux);
         }
     }
 
@@ -631,7 +636,7 @@ public class ServiciosRelaciones {
         Vector uniquesCopia = new Vector();
         int i = 0;
         while (i < uniques.size()) {
-            if (((TransferAtributo) uniques.get(i)).getNombre().contains(antiguoNombre)) {
+            if (uniques.get(i).toString().equals(antiguoNombre)) {
                 String s = uniques.get(i).toString();
                 s = s.replaceAll(antiguoNombre, ta.getNombre());
                 uniquesCopia.add(s);

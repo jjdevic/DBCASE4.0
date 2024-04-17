@@ -16,11 +16,11 @@ public class FactoriaMsj {
 	public static String getMsj(TC tc) {
 		String resultado = null;
 		Integer msj;
-		switch(tc) {
+		switch(tc) { 
 		//Atrib
 		case SA_EliminarAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		case SA_RenombrarAtributo_ERROR_NombreDeAtributoEsVacio: msj= Lenguaje.EMPTY_ATTRIB_NAME; break;
-		case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste: msj= Lenguaje.REPEATED_SUBATR_NAME; break;
+		case SA_RenombrarAtributo_ERROR_NombreDeAtributoYaExiste: msj= Lenguaje.REPEATED_ATTRIB_NAME; break;
 		case SA_RenombrarAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		case SA_EditarDominioAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
 		case SA_EditarDominioAtributo_ERROR_TamanoNoEsEntero: msj= Lenguaje.INCORRECT_SIZE1; break;

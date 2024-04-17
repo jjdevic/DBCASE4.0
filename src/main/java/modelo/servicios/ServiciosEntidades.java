@@ -468,18 +468,23 @@ public class ServiciosEntidades {
     public Contexto setUniques(Vector v) throws ExceptionAp {
         Vector uniques = (Vector) v.get(0);
         TransferEntidad te = (TransferEntidad) v.get(1);
+        
+        //Preparar la salida.
+        Vector<Object> v_aux = new Vector<Object>();
+        v_aux.add(te);
+        v_aux.add(uniques);
 
         DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> lista = daoEntidades.ListaDeEntidades();
         if (lista == null) {
-            return new Contexto(false, TC.SE_RenombrarEntidad_ERROR_DAOEntidades, v);
+            return new Contexto(false, TC.SE_RenombrarEntidad_ERROR_DAOEntidades, v_aux);
         }
         te.setListaUniques(uniques);
         if (daoEntidades.modificarEntidad(te)) {
-            return new Contexto(true, TC.SE_setUniquesAEntidad_HECHO, v);
+            return new Contexto(true, TC.SE_setUniquesAEntidad_HECHO, v_aux);
         }
         else {
-        	return new Contexto(false, TC.SE_RenombrarEntidad_ERROR_DAOEntidades, v);
+        	return new Contexto(false, TC.SE_RenombrarEntidad_ERROR_DAOEntidades, v_aux);
         }
     }
 
@@ -571,7 +576,7 @@ public class ServiciosEntidades {
         
         int i = 0;
         while (i < uniques.size()) {
-            if (((TransferAtributo) uniques.get(i)).getNombre().contains(antiguoNombre)) {
+            if (uniques.get(i).toString().equals(antiguoNombre)) {
                 String s = uniques.get(i).toString();
                 s = s.replaceAll(antiguoNombre, ta.getNombre());
                 uniquesCopia.add(s);

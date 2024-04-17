@@ -31,7 +31,6 @@ public class ComandoEditarCompuestoAtrib extends Comando{
             int respuesta = gui.setActiva(0);
             if(respuesta != 0) {
             	actuar = false;
-            	ta.getListaComponentes().clear();
             }
         }
         

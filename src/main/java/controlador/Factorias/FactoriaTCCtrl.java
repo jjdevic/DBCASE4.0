@@ -45,7 +45,9 @@ public class FactoriaTCCtrl {
 		case SR_QuitarEntidadARelacion_HECHO: case PanelDiseno_Click_QuitarEntidadARelacion: resultado = TC.Controlador_QuitarEntidadARelacion; break; 
 		case SR_EditarCardinalidadEntidad_HECHO: case PanelDiseno_Click_EditarCardinalidadEntidad: resultado = TC.Controlador_EditarCardinalidadEntidad; break; 
 		case SD_RenombrarDominio_HECHO: case PanelDiseno_Click_RenombrarDominio: resultado = TC.Controlador_RenombrarDominio; break; 
-        //TODO revisar este caso porque hay dos de modificar dominio
+        
+		case SD_EliminarDominio_HECHO: resultado = TC.Controlador_EliminarDominio; break;
+		case SD_ModificarElementosDominio_HECHO: resultado = TC.Controlador_ModificarValoresDominio; break;
 		case SD_ModificarTipoBaseDominio_HECHO: case PanelDiseno_Click_ModificarDominio: resultado = TC.Controlador_ModificarTipoBaseDominio; break; 
 		case PanelDiseno_Click_EditarAgregacion: resultado = TC.Controlador_EditarAgregacion; break; 
 		case SE_InsertarEntidad_HECHO: case PanelDiseno_Click_InsertarEntidad: case GUIInsertarEntidadDebil_Click_BotonInsertar: resultado = TC.Controlador_InsertarEntidad; break; 
@@ -66,11 +68,18 @@ public class FactoriaTCCtrl {
 		case SE_MoverPosicionEntidad_HECHO: resultado = TC.Controlador_MoverEntidad_HECHO; break;
 		case SE_setRestriccionesAEntidad_HECHO: resultado = TC.Controlador_setRestriccionesEntidad; break;
 		case SR_setRestriccionesARelacion_HECHO: resultado = TC.Controlador_setRestriccionesRelacion; break;
+		case SE_DebilitarEntidad_HECHO: resultado = TC.Controlador_DebilitarEntidad; break;
+		case SR_DebilitarRelacion_HECHO: resultado = TC.Controlador_DebilitarRelacion; break;
+		case SE_setUniqueUnitarioAEntidad_HECHO: resultado = TC.Controlador_setUniqueUnitarioEntidad; break;
+		case SR_setUniqueUnitarioARelacion_HECHO: resultado = TC.Controlador_setUniqueUnitarioRelacion; break;
+		case SR_EliminarRelacionIsA_HECHO: resultado = TC.Controlador_EliminarRelacionIsA; break;
+		case SE_setUniquesAEntidad_HECHO: resultado = TC.Controlador_setUniquesEntidad; break;
+		case SR_setUniquesARelacion_HECHO: resultado = TC.Controlador_setUniquesRelacion; break;
 		
 		case PanelDiseno_Click_AddAgregacion: case SAG_InsertarAgregacion_HECHO: resultado = TC.Controlador_InsertarAgregacion; break;
 		case PanelDiseno_Click_EliminarAgregacion: case SAG_EliminarAgregacion_HECHO: resultado = TC.Controlador_EliminarAgregacion; break;
 		case GUIAnadirAtributoAgregacion_Click_BotonAnadir: case SAG_AnadirAtributoAAgregacion_HECHO: resultado = TC.Controlador_AnadirAtributoAAgregacion; break;
-		
+		case PanelDiseno_Click_Eliminar: resultado = TC.Controlador_Eliminar; break;
 		default: break;
 		}
 		return resultado;

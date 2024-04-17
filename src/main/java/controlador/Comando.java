@@ -49,21 +49,6 @@ public abstract class Comando {
 	protected void ActualizaArbol(Transfer tr) {
 		ctrl.ActualizaArbol(tr);
 	}
-	
-	/**
-	 * LLama al metodo aVectorContextos del controlador
-	 */
-	protected Vector<Contexto> aVectorContextos(Vector<Object> v, int inicio) {
-    	return ctrl.aVectorContextos(v, inicio);
-    }
-    
-	/**
-	 * LLama al metodo tratarContextos del controlador
-	 * @param v
-	 */
-    protected void tratarContextos(Vector<Contexto> v) {
-    	ctrl.tratarContextos(v);
-    }
     
     /**
      * LLama al metodo del controlador dedicado a ejecutar comandos
