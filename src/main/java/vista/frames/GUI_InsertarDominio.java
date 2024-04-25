@@ -17,8 +17,8 @@ import java.util.Vector;
 
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_InsertarDominio extends Parent_GUI {
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    
+    private JTextField cajaNombre;
     private JTextField cajaValores;
     private JComboBox comboTipo;
     private JLabel explicacion;
@@ -26,11 +26,11 @@ public class GUI_InsertarDominio extends Parent_GUI {
     private JLabel textValues;
     private JButton botonInsertar;
 
-    public GUI_InsertarDominio() {
-        initComponents();
+    public GUI_InsertarDominio(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Lenguaje.text(Lenguaje.ADD_DOMAIN));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -38,6 +38,7 @@ public class GUI_InsertarDominio extends Parent_GUI {
         setModal(true);
         getContentPane().setLayout(null);
         setSize(300, 250);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -147,8 +148,9 @@ public class GUI_InsertarDominio extends Parent_GUI {
         String name = this.cajaNombre.getText().replace("(", "");
         td.setNombre(name.replace(")", ""));
         td.setTipoBase((TipoDominio) this.comboTipo.getSelectedItem());
-        td.setListaValores(listaValores());
-        // Mandamos mensaje + datos al controlador
+    	td.setListaValores(listaValores());
+    	
+    	// Mandamos mensaje + datos al controlador
         this.getControlador().mensajeDesde_GUI(TC.GUIInsertarDominio_Click_BotonInsertar, td);
     }
 
@@ -211,17 +213,18 @@ public class GUI_InsertarDominio extends Parent_GUI {
     /*
      * Utilidades
      */
-    //TODO Nota: deberiamos controlar repeticiones y más casos raros
+    //TODO Comprobar repeticiones
     private Vector listaValores() {
         Vector v = new Vector();
         String s = this.cajaValores.getText();
+        //boolean repeticiones = false;
         int pos0 = 0;
         int comilla1 = s.indexOf("'");
         int comilla2 = s.indexOf("'", comilla1 + 1);
         int pos1;
         if (comilla2 != -1) pos1 = s.indexOf(",", comilla2);
         else pos1 = s.indexOf(",");
-        while (pos0 != -1) {
+        while (pos0 != -1 /*&& !repeticiones*/) {
             String subS;
             if (pos1 != -1) subS = s.substring(pos0, pos1);
             else subS = s.substring(pos0, s.length());
@@ -239,7 +242,15 @@ public class GUI_InsertarDominio extends Parent_GUI {
                 subS = subS.replaceAll(",", "");
             }
             v.add(subS);
+            /*if(v.contains(subS)) v.add(subS);
+            else repeticiones = true;*/
         }
+        
+        /*if(repeticiones) {
+        	//Mostrar error
+        	
+        	v = null;
+        }*/
         return v;
     }
 
@@ -253,4 +264,13 @@ public class GUI_InsertarDominio extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

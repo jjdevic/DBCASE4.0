@@ -4,15 +4,26 @@ import vista.Lenguaje;
 import vista.tema.Theme;
 
 import javax.swing.*;
+
+import controlador.Controlador;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial")
-public class Parent_GUI extends javax.swing.JDialog implements KeyListener, MouseListener {
+public abstract class Parent_GUI extends javax.swing.JDialog implements KeyListener, MouseListener {
 
     protected Theme theme = Theme.getInstancia();
+    protected Controlador controlador;
+    
+    public Parent_GUI() {}
+    
+    public Parent_GUI(Controlador controlador) {
+    	this.controlador = controlador;
+    	initComponents();
+    }
 
     public void centraEnPantalla() {
         setAlwaysOnTop(false);
@@ -47,37 +58,48 @@ public class Parent_GUI extends javax.swing.JDialog implements KeyListener, Mous
         return boton;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        this.requestFocus();
-    }
+    protected abstract void initComponents();
+    
+    public abstract void setDatos(Object datos);
+    
+    public abstract void setActiva();
+    
+    /**
+     * @param op Opciones de activacion
+     */
+    public abstract int setActiva(int op);
+    
+    public abstract void setInactiva();
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
 
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
 }

@@ -3,19 +3,10 @@ package controlador;
 public enum TC {
 
     //---------------------------------------------------------------------------------
-    // Mensajes desde la GUIPrincipal al controlador
+    // Mensajes desde la GUIPrincipal al controlador o viceversa.
     //---------------------------------------------------------------------------------
     // Obtención de DBMS
     GUIPrincipal_ObtenDBMSDisponibles,
-
-    // Actualizaciones de listas
-    GUIPrincipal_ActualizameLaListaDeEntidades,
-    GUIPrincipal_ActualizameLaListaDeAtributos,
-    GUIPrincipal_ActualizameLaListaDeRelaciones,
-
-    GUIPrincipal_ActualizameLaListaDeAgregaciones,
-
-    GUIPrincipal_ActualizameLaListaDeDominios,
     //about
     GUI_Principal_ABOUT,
     //report
@@ -66,24 +57,31 @@ public enum TC {
     GUI_Principal_Click_BotonEjecutarEnDBMS,
     //Menu conceptual
     GUI_Principal_Click_SubmenuAnadirEntidad,
+    
+    //Otros
+    GUI_Principal_NULLATTR,
+    GUI_Principal_ConfirmarEliminaciones,
+    GUI_Principal_Cuadricula,
+    GUI_Principal_ModoSoporte,
+    GUI_Principal_IniciaFrames,
+    GUI_Principal_EditarEntidad,
+    GUI_Principal_EditarRelacion,
+    GUI_Principal_EditarAtributo, 
 
     //---------------------------------------------------------------------------------
-    // Mensaje desde la GUI_WorkSpace al Controlador
+    // Mensaje desde la GUI_WorkSpace al Controlador o viceversa
     //---------------------------------------------------------------------------------
     GUI_WorkSpace_PrimeraSeleccion,
     GUI_WorkSpace_Nuevo,
     GUI_WorkSpace_Recent,
     GUI_WorkSpace_Click_Abrir,
     GUI_WorkSpace_Click_Guardar,
-
     GUI_WorkSpace_Click_Guardar_Backup,
-
     GUI_WorkSpace_Click_GuardarDeshacer,
-
     GUI_WorkSpace_ClickBotonCancelar,
     GUI_WorkSpace_ERROR_CreacionFicherosXML,
-
-
+    GUI_WorkSpace,
+    
     //---------------------------------------------------------------------------------
     // Mensajes desde las GUIs al controlador
     //---------------------------------------------------------------------------------
@@ -95,15 +93,11 @@ public enum TC {
     GUIModificarEntidad_Click_ModificarEntidad,
     GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos,
     GUIAnadirAtributoEntidad_Click_BotonAnadir,
-    GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios,
     GUIRenombrarAtributo_Click_BotonRenombrar,
     GUIEditarDominioAtributo_Click_BotonEditar,
-    GUIEditarDominioAtributo_ActualizameLaListaDeDominios,
     GUIEditarCompuestoAtributo_Click_BotonAceptar,
     GUIEditarMultivaloradoAtributo_Click_BotonAceptar,
     GUIAnadirSubAtributoAtributo_Click_BotonAnadir,
-    GUIEditarClavePrimariaAtributo_ActualizameListaEntidades,
-    GUIEditarClavePrimariaAtributo_ActualizameListaAtributos,
     GUIEditarClavePrimariaAtributo_Click_BotonAceptar,
     GUIInsertarRelacion_Click_BotonInsertar,
     GUIInsertarRelacionDebil_Click_BotonInsertar,
@@ -119,22 +113,15 @@ public enum TC {
     GUIPonerUniquesARelacion_Click_BotonAceptar,
     GUIModificarAtributo_Click_ModificarAtributo,
     // Relaciones IsA
-    GUIEstablecerEntidadPadre_ActualizameListaEntidades,
     GUIEstablecerEntidadPadre_ClickBotonAceptar,
     GUIQuitarEntidadPadre_ClickBotonSi,
-    GUIAnadirEntidadHija_ActualizameListaEntidades,
     GUIAnadirEntidadHija_ClickBotonAnadir,
-    GUIQuitarEntidadHija_ActualizameListaEntidades,
     GUIQuitarEntidadHija_ClickBotonQuitar,
     // Relaciones Normales
-    GUIAnadirEntidadARelacion_ActualizameListaEntidades,
     GUIAnadirEntidadARelacion_ClickBotonAnadir,
-    GUIQuitarEntidadARelacion_ActualizameListaEntidades,
     GUIQuitarEntidadARelacion_ClickBotonQuitar,
-    GUIEditarCardinalidadEntidad_ActualizameListaEntidades,
     GUIEditarCardinalidadEntidad_ClickBotonEditar,
     GUIAnadirAtributoRelacion_Click_BotonAnadir,
-    GUIAnadirAtributoRelacion_ActualizameLaListaDeDominios,
     GUIInsertarRestriccionARelacion_Click_BotonAnadir,
     GUIQuitarRestriccionARelacion_Click_BotonAnadir,
     // Dominios
@@ -143,11 +130,12 @@ public enum TC {
     GUIModificarValoresDominio_Click_BotonEditar,
     GUIModificarDominio_Click_BotonEditar,
 
-    GUIAnadirSubAtributoAtributo_ActualizameLaListaDeDominios,
-
     // Conexión a DBMS
     GUIConfigurarConexionDBMS_Click_BotonEjecutar,
     GUIConexionDBMS_PruebaConexion,
+    GUISeleccionarConexion_ClickNueva, 
+    GUISeleccionarConexion_ClickEditar, 
+    GUIConexion_ClickConectar,
 
     //Reporte de incidencias
     GUIReport_ReportarIncidencia,
@@ -158,7 +146,10 @@ public enum TC {
     GUIInsertarAgregacion,
     GUIAnadirAtributoAgregacion_Click_BotonAnadir,
     GUIRenombrarAgregacion_Click_BotonRenombrar,
-
+    
+    //Otros 
+    GUI_Recientes, 
+    GUI_Pregunta,
 
     //---------------------------------------------------------------------------------
     // Mensajes desde el Panel de Diseño
@@ -273,8 +264,6 @@ public enum TC {
     SE_QuitarUniqueAEntidad_HECHO,
     SE_setUniquesAEntidad_HECHO,
     SE_setUniqueUnitarioAEntidad_HECHO,
-    // Listar entidades
-    SE_ListarEntidades_HECHO,
     // Mover posicion Entidad en el panel de diseño
     SE_MoverPosicionEntidad_ERROR_DAOEntidades,
     SE_MoverPosicionEntidad_HECHO,
@@ -294,8 +283,6 @@ public enum TC {
     SA_AnadirAtributo_HECHO,
     SA_AnadirAtributo_ERROR_NombreDeAtributoEsVacio,
     SA_AnadirAtributo_ERROR_DAOAtributos,
-    // Listar atributos
-    SA_ListarAtributos_HECHO,
     // Eliminar atributo
     SA_EliminarAtributo_ERROR_DAOAtributos,
     SA_EliminarAtributo_HECHO,
@@ -350,7 +337,6 @@ public enum TC {
     SAG_InsertarAgregacion_ERROR_DAO,
     SAG_RenombrarAgregacion_ERROR_NombreVacio,
     SAG_RenombrarAgregacion_HECHO,
-    SAG_ListarAgregacion_HECHO,
     SAG_InsertarAgregacion_HECHO,
     SAG_AnadirAtributoAAgregacion_HECHO,
     SAG_EliminarAgregacion_HECHO,
@@ -361,8 +347,6 @@ public enum TC {
     //---------------------------------------------------------------------------------
     // Mensajes desde los Servicios de Relaciones
     //---------------------------------------------------------------------------------
-    // Listar relaciones
-    SR_ListarRelaciones_HECHO,
     // Insertar relacion
     SR_InsertarRelacion_ERROR_NombreDeRelacionEsVacio,
     SR_InsertarRelacion_ERROR_NombreDeRelacionYaExiste,
@@ -462,7 +446,17 @@ public enum TC {
     SD_InsertarDominio_HECHO,
     SD_InsertarDominio_ERROR_NombreDeDominioEsVacio,
     SD_InsertarDominio_ERROR_NombreDeDominioYaExiste,
-    SD_InsertarDominio_ERROR_ValorNoValido,
+    SD_InsertarDominio_ERROR_ValorNoValido_1,
+    SD_InsertarDominio_ERROR_ValorNoValido_2,
+    SD_InsertarDominio_ERROR_ValorNoValido_3,
+    SD_InsertarDominio_ERROR_ValorNoValido_4,
+    SD_InsertarDominio_ERROR_ValorNoValido_5,
+    SD_InsertarDominio_ERROR_ValorNoValido_6,
+    SD_InsertarDominio_ERROR_ValorNoValido_7,
+    SD_InsertarDominio_ERROR_ValorNoValido_8,
+    SD_InsertarDominio_ERROR_ValorNoValido_9,
+    SD_InsertarDominio_ERROR_ValorNoValido_10,
+    SD_InsertarDominio_ERROR_ValorNoValido_11,
     SD_InsertarDominio_ERROR_DAO,
     // Renombrar dominios
     SD_RenombrarDominio_HECHO,
@@ -489,9 +483,8 @@ public enum TC {
     SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio,
     SD_ModificarElementosDominio_ERROR_ValorNoValido,
     SD_ModificarElementosDominio_HECHO,
-    // Listar dominios
-    SD_ListarDominios_HECHO,
-
+    
+    ERROR_SERVICIOS,
 
     //---------------------------------------------------------------------------------
     // Mensajes desde los Servicios de Relaciones al Controlador
@@ -504,7 +497,7 @@ public enum TC {
 
 
     //---------------------------------------------------------------------------------
-    // Mensajes desde el Controlador a la GUIPrincipal
+    // Mensajes desde el Controlador a la GUIPrincipal u otros.
     //---------------------------------------------------------------------------------
     Controlador_InsertarEntidad,
     Controlador_RenombrarEntidad,
@@ -519,6 +512,7 @@ public enum TC {
     Controlador_InsertarAgregacion,
 
     Controlador_EditarDominioAtributo,
+    Controlador_InsertarAtributo,
     Controlador_EditarCompuestoAtributo,
     Controlador_EditarMultivaloradoAtributo,
     Controlador_EditarNotNullAtributo,
@@ -577,9 +571,44 @@ public enum TC {
     Controlador_MostrarDatosEnTablaDeVolumenes,
     PanelDiseno_ActualizarDatosEnTablaDeVolumenes,
     Controlador_ActualizarDatosEnTablaDeVolumenes,
-    GUI_Principal_NULLATTR,
-    GUI_Principal_ConfirmarEliminaciones,
-    GUI_Principal_Cuadricula,
-    GUI_Principal_ModoSoporte,
-    GUI_Principal_IniciaFrames,
+    Controlador_TablaUniqueAEntidad,
+    Controlador_TablaUniqueARelacion,
+    Controlador_EditarAgregacion,
+    Controlador_ConfigurarConexionDBMS, 
+    Controlador_EjecutarEnDBMS, 
+    Controlador_Conexion,
+    Controlador_ModificarEntidad, 
+    Controlador_ModificarAtributo, 
+    Controlador_ModificarRelacion, 
+    Controlador_InsertarRelacionDebil,
+    Controlador_Eliminar,
+    
+    //---------------------------------------------------------------------------------
+    // Otros mensajes que recibe el controlador
+    //---------------------------------------------------------------------------------
+    GetNombreAtributo, 
+    EliminarRelacionIsA, 
+    Reset, 
+    GuardarYSalir, 
+    Abrir, 
+    AbrirCasos, 
+    NuevoWorkSpace, 
+    Salir, 
+    EliminarAtributosRelacion, 
+    ModificarCardinalidadRelacion_1a1, 
+    EliminarSubatributosAtributo, 
+    ObtenerListaEntidades, 
+    ObtenerListaAtributos, 
+    ObtenerListaRelaciones, 
+    ObtenerListaDominios, 
+    ObtenerListaAgregaciones, 
+    Guardar, 
+    ERROR_, 
+    ERROR_PERSISTENCIA, 
+    FALLO_CREAR_ARCHIVO, 
+    SCRIPT_ERROR, 
+    MUST_GENERATE_SCRIPT, 
+    NO_DB_CONEXION, 
+    CANT_EXECUTE_SCRIPT, 
+    CANT_CLOSE_CONEXION
 }

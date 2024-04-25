@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class GUI_SaveAs extends Parent_GUI {
-    private Controlador controlador;
+    
     private JPanel panelPrincipal;
     private MyFileChooser jfc;
     private JLabel jLabel1;
@@ -30,12 +30,13 @@ public class GUI_SaveAs extends Parent_GUI {
     private boolean modoSoporte = false;
     private boolean projects;
 
-    public GUI_SaveAs(boolean dir) {
+    public GUI_SaveAs(Controlador controlador, boolean dir) {
+    	super(controlador);
         this.projects = dir;
         this.initComponents();
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         this.setTitle(Lenguaje.text(Lenguaje.DBCASE));
         this.setModal(true);
         this.setResizable(false);
@@ -76,9 +77,9 @@ public class GUI_SaveAs extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
 
-    //devuelve siempre true, salvo si se ha pulsado en cancelar
-    public boolean setActiva(int b) {
-        actuado = false;
+    //devuelve siempre 1, salvo si se ha pulsado en cancelar
+    public int setActiva(int b) {
+        int actuado = 0;
         switch (b) {
             case 1: {//abrir
                 if (this.modoSoporte) {
@@ -88,6 +89,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
             case 2: {//guardar
@@ -97,9 +99,10 @@ public class GUI_SaveAs extends Parent_GUI {
                     this.centraEnPantalla();
                     this.setVisible(true);
                 } else {
-                    actuado = true;
+                	actuado = 1;
                     guardarProyecto();
                 }
+                
                 break;
             }
             case 3: {//guardarComo
@@ -107,6 +110,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
             case 4: {
@@ -114,6 +118,7 @@ public class GUI_SaveAs extends Parent_GUI {
                 abrir = b;
                 this.centraEnPantalla();
                 this.setVisible(true);
+                actuado = 1;
                 break;
             }
         }
@@ -218,24 +223,6 @@ public class GUI_SaveAs extends Parent_GUI {
         return this.jfc;
     }
 
-    @SuppressWarnings("static-access")
-    public void nuevoTemp() {
-        try {
-            controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-            controlador.creaFicheroXML(controlador.getFiletemp());
-            String ruta = controlador.getFiletemp().getAbsolutePath();
-            this.controlador.mensajeDesde_GUIWorkSpace(TC.GUI_WorkSpace_Nuevo, ruta);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
-                    Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-        }
-
-        //controlador.setFileguardar(null);
-
-    }
-
-
     /*
      * METODOS PARA MANEJAR LOS FICHEROS XML
      */
@@ -297,4 +284,13 @@ public class GUI_SaveAs extends Parent_GUI {
     public void setModoSoporte(boolean modoSoporte) {
         this.modoSoporte = modoSoporte;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		if(datos != null) this.modoSoporte = (Boolean) datos;
+	}
+
+	@Override
+	public void setActiva() {
+	}
 }

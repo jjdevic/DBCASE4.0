@@ -93,7 +93,6 @@ public class EntidadYAridad {
     }
 
     public boolean tieneFlecha() {
-        if (!marcadaConCardinalidad) return false;
         if (!marcadaConMinMax && fRango == 1) return true;
         if (marcadaConMinMax && marcadaConCardinalidadMax1) return true;
         return false;

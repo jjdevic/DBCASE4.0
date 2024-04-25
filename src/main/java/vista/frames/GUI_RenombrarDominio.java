@@ -16,17 +16,17 @@ import java.util.Vector;
 @SuppressWarnings("serial")
 public class GUI_RenombrarDominio extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferDominio dominio;
     private JButton botonRenombrar;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    private JTextField cajaNombre;
     private JLabel explicacion;
 
-    public GUI_RenombrarDominio() {
-        initComponents();
+    public GUI_RenombrarDominio(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
 
         setTitle(Lenguaje.text(Lenguaje.RENAME_DOMAIN));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -35,6 +35,7 @@ public class GUI_RenombrarDominio extends Parent_GUI {
         setModal(true);
         getContentPane().setLayout(null);
         this.setSize(300, 170);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -152,4 +153,15 @@ public class GUI_RenombrarDominio extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.dominio = (TransferDominio) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

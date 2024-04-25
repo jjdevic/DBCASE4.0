@@ -20,8 +20,8 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_ModificarAtributo extends Parent_GUI {
 
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 85);
+    
+    private JTextField cajaNombre;
     private JCheckBox opcionClavePrimaria;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
@@ -40,16 +40,17 @@ public class GUI_ModificarAtributo extends Parent_GUI {
     private TransferAtributo ta;
     private String nombrePadre;
 
-    public GUI_ModificarAtributo() {
-        this.initComponents();
+    public GUI_ModificarAtributo(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.MODIFY_ATRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 85);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -159,6 +160,7 @@ public class GUI_ModificarAtributo extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva() {
+    	this.listaDominios = (Vector<TransferDominio>) this.getControlador().mensaje(TC.ObtenerListaDominios, null);
         Object[] nuevos = new Object[this.listaDominios.size()];
         this.centraEnPantalla();
         this.opcionClavePrimaria.setSelected(ta.isClavePrimaria());
@@ -177,7 +179,7 @@ public class GUI_ModificarAtributo extends Parent_GUI {
         this.cajaTamano.setText(cadenaTamano);
         this.cajaNombre.setText(ta.getNombre());
         this.elementoPadre.setText(this.nombrePadre);
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
+        listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
 
         //Genera Transfers
 
@@ -541,4 +543,19 @@ public class GUI_ModificarAtributo extends Parent_GUI {
         public void keyTyped(KeyEvent e) {
         }
     };
+
+	@Override
+	public void setDatos(Object datos) {
+		if(datos != null) {
+			Vector<Object> v = (Vector<Object>) datos;
+			
+			this.ta = (TransferAtributo) v.get(0);
+			this.nombrePadre = (String) v.get(1);
+		}
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

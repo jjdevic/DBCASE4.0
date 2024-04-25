@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -16,7 +17,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "serial", "unchecked"})
 public class GUI_QuitarEntidadARelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private TransferRelacion relacion;
     private JComboBox comboEntidades;
@@ -27,11 +28,11 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
     private Vector<String> items;
     private Vector<String> itemsRoles;
 
-    public GUI_QuitarEntidadARelacion() {
-        initComponents();
+    public GUI_QuitarEntidadARelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.QUIT_ENTITY));
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -63,7 +64,7 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
                     Lenguaje.text(Lenguaje.QUIT_ENTITY),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIQuitarEntidadARelacion_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items (ya filtrados)
             this.items = this.generaItems();
             comboEntidades.setModel(new javax.swing.DefaultComboBoxModel(this.items));
@@ -298,5 +299,16 @@ public class GUI_QuitarEntidadARelacion extends Parent_GUI {
         }
         return i;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }
 

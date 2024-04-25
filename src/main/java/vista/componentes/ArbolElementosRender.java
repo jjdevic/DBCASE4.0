@@ -12,7 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-/*
+/**
  * Clase para representar el arbol de elementos del panel de informacion
  * */
 @SuppressWarnings("serial")

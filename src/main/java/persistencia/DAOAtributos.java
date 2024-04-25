@@ -1,14 +1,12 @@
 package persistencia;
 
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import controlador.Controlador;
+import misc.Config;
 import modelo.transfers.TransferAtributo;
 import org.w3c.dom.*;
+
+import excepciones.ExceptionAp;
 import vista.Lenguaje;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
@@ -18,25 +16,19 @@ import java.io.StringWriter;
 import java.util.Vector;
 
 @SuppressWarnings("rawtypes")
-public class DAOAtributos {
+public class DAOAtributos extends DAO {
 
     // Atributos
     private Document doc;
-    private String path;
-    private Controlador c;
 
     // Constructora del DAO
-    public DAOAtributos(Controlador c) {
-        this.c = c;
-        this.path = c.getPath();
-        //this.path += "\\persistencia.xml";
-        this.path = this.path.replace(" ", "%20");
-        this.path = this.path.replace('\\', '/');
+    public DAOAtributos() throws ExceptionAp {
+        super(Config.getPath());
         this.doc = dameDoc();
     }
 
     // Metodos del DAOAtributos
-    public int anadirAtributo(TransferAtributo tc) {
+    public int anadirAtributo(TransferAtributo tc) throws ExceptionAp{
         // Resultado que se devolvera
         int resultado = 0;
         // Generamos el id del nuevo Atributo
@@ -103,7 +95,7 @@ public class DAOAtributos {
         // Actualizamos el resultado
         resultado = proximoID;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         // Devolvemos el resultado de la operacion
         return resultado;
@@ -121,7 +113,7 @@ public class DAOAtributos {
         return transfer;
     }
 
-    public boolean modificarAtributo(TransferAtributo tc) {
+    public boolean modificarAtributo(TransferAtributo tc) throws ExceptionAp{
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Atributo
@@ -175,14 +167,14 @@ public class DAOAtributos {
         } else
             respuesta = false;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         // Devolvemos la respuesta
         return respuesta;
     }
 
 
-    public boolean borrarAtributo(TransferAtributo tc) {
+    public boolean borrarAtributo(TransferAtributo tc) throws ExceptionAp{
         Node atributoBuscado = dameNodoAtributo(tc.getIdAtributo());
         NodeList LC = doc.getElementsByTagName("AttributeList");
         // Sacamos el nodo
@@ -192,7 +184,7 @@ public class DAOAtributos {
             raiz.removeChild(atributoBuscado);
             borrado = true;
         }
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         return borrado;
     }
@@ -200,8 +192,8 @@ public class DAOAtributos {
     public Vector<TransferAtributo> ListaDeAtributos() {
         // Vector que devolveremos
         Vector<TransferAtributo> vectorDeTransfers = new Vector<TransferAtributo>();
-        TransferAtributo ta = new TransferAtributo(c);
-        TransferAtributo aux = new TransferAtributo(c);
+        TransferAtributo ta = new TransferAtributo();
+        TransferAtributo aux = new TransferAtributo();
         // Obtenemos los atributos y los vamos anadiendo
         NodeList lista = doc.getElementsByTagName("Attribute");
         int numAtributos = lista.getLength(); //vemos cuantos atributoss hay en el XML
@@ -307,7 +299,7 @@ public class DAOAtributos {
         // Creamos el transfer
 		/*TransferAtributo transfer = SingletonFactoriaTransfers
 				.obtenerInstancia().generaTransferAtributo();*/
-        TransferAtributo transfer = new TransferAtributo(c);
+        TransferAtributo transfer = new TransferAtributo();
         transfer.setIdAtributo(id);
         transfer.setNombre(nombre);
         transfer.setCompuesto(compuesto);
@@ -381,58 +373,4 @@ public class DAOAtributos {
         return p;
 
     }
-
-    // Metodos para el tratamiento del fichero xml
-    private Document dameDoc() {
-        Document doc = null;
-        DocumentBuilder parser = null;
-        try {
-            DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
-            parser = factoria.newDocumentBuilder();
-            doc = parser.parse(this.path);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    Lenguaje.text(Lenguaje.ERROR) + ":\n" +
-                            Lenguaje.text(Lenguaje.UNESPECTED_XML_ERROR) + " \"" + path + ".xml\"",
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.ERROR_MESSAGE);
-
-        }
-        return doc;
-    }
-
-    private void guardaDoc() {
-        OutputFormat formato = new OutputFormat(doc.toString(), "utf-8", true);
-        StringWriter s = new StringWriter();
-        XMLSerializer ser = new XMLSerializer(s, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // El FileWriter necesita espacios en la ruta
-        this.path = this.path.replace("%20", " ");
-        FileWriter f = null;
-        /*debido a que la funcion FileWriter da un error de acceso
-         * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
-        boolean centinela = true;
-        while (centinela == true) {
-            try {
-                f = new FileWriter(this.path);
-                centinela = false;
-            } catch (IOException e) {
-                centinela = true;
-            }
-        }
-        this.path = this.path.replace(" ", "%20");
-        ser = new XMLSerializer(f, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
-

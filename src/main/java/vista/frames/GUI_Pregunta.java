@@ -4,10 +4,15 @@ package vista.frames;
 import vista.Lenguaje;
 
 import javax.swing.*;
+
+import controlador.Controlador;
+import controlador.TC;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class GUI_Pregunta extends Parent_GUI {
@@ -18,11 +23,11 @@ public class GUI_Pregunta extends Parent_GUI {
     private JButton botonSi;
     private JButton botonCancelar;
 
-    public GUI_Pregunta() {
-        this.initComponents();
+    public GUI_Pregunta(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         getContentPane().setLayout(null);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setModal(true);
@@ -154,7 +159,7 @@ public class GUI_Pregunta extends Parent_GUI {
     }
 
     private void botonSiActionPerformed(KeyEvent evt) {
-        respuesta = 0;
+    	respuesta = 0;
         setInactiva();
     }
 
@@ -182,4 +187,41 @@ public class GUI_Pregunta extends Parent_GUI {
         respuesta = 2;
         this.setVisible(false);
     }
+
+    
+    
+	@Override
+	public void setDatos(Object datos) {
+		if(datos == null) return;
+		try {
+			Vector<Object> v = (Vector<Object>) datos;
+			
+			/* Esperamos un vector cuya primera componente sea el mensaje, la segunda el titulo, la tercera
+			*  si se permite o no la opción cancelar.*/
+			
+			String mensaje = (String) v.get(0);
+			String titulo = (String) v.get(1);
+			Boolean cancelar = (Boolean) v.get(2);
+			
+			pregunta.setText(mensaje);
+	        setTitle(titulo);
+	        if(cancelar != null) botonCancelar.setVisible(cancelar);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setActiva() {
+		this.centraEnPantalla();
+        this.setVisible(true);
+	}
+
+	@Override
+	public int setActiva(int op) {
+		respuesta = -1;
+		this.centraEnPantalla();
+	    this.setVisible(true);
+		return respuesta;
+	}
 }

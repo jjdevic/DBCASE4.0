@@ -4,6 +4,7 @@ import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.graph.Graph;
 import modelo.transfers.Transfer;
 
+/** Clase destinada a la gestión de los vértices en el panel de diseño */
 public class GrafoLayout<V, E> extends AbstractLayout<V, E> {
 
     protected GrafoLayout(Graph<V, E> graph) {

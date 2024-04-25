@@ -1,6 +1,5 @@
 package modelo.servicios;
 
-import controlador.Controlador;
 import vista.Lenguaje;
 
 import java.awt.*;
@@ -13,12 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class ServiciosReporte {
-    private Controlador controlador;
 
-    public void crearIncidencia(String textoIncidencia, boolean anadirDiagrama) {
+    public void crearIncidencia(String textoIncidencia, boolean anadirDiagrama, File filetemp) {
         try {
             //Creamos la carpeta donde incluiremos la incidencia
-            File nuevaCarpeta = new File(System.getProperty("user.dir") + "/incidences/INC-" + controlador.getFiletemp().getName());
+            File nuevaCarpeta = new File(System.getProperty("user.dir") + "/incidences/INC-" + filetemp.getName());
             if (!nuevaCarpeta.exists()) nuevaCarpeta.mkdir();
 
             String ruta = nuevaCarpeta.getAbsolutePath() + "/incidencia.txt";
@@ -34,7 +32,7 @@ public class ServiciosReporte {
             bw.close();
             if (anadirDiagrama) {
                 file = new File(nuevaCarpeta.getAbsolutePath() + "/diagrama.xml");
-                Files.copy(controlador.getFiletemp().toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(filetemp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
 
         } catch (Exception e) {
@@ -50,7 +48,7 @@ public class ServiciosReporte {
         textoMail = textoMail.replace("\n", "%0A");
 
         Desktop desktop = Desktop.getDesktop();
-        String asunto = "INC-" + controlador.getFiletemp().getName();
+        String asunto = "INC-" + filetemp.getName();
         String message = "mailto:ggarvi@ucm.es?subject=" + asunto + "&body=" + textoMail;
         URI uri = URI.create(message);
 
@@ -58,19 +56,7 @@ public class ServiciosReporte {
             desktop.mail(uri);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
-    }
-
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
     }
 }

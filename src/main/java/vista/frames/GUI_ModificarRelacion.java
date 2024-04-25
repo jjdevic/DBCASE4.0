@@ -15,24 +15,26 @@ import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class GUI_ModificarRelacion extends Parent_GUI {
-    private Controlador controlador;
+    
     private TransferRelacion relacion;
     private JButton botonRenombrar;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    private JTextField cajaNombre;
     private JLabel explicacion;
 
-    public GUI_ModificarRelacion() {
-        initComponents();
+    public GUI_ModificarRelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.MODIFY_RELATION));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
-        this.setAlwaysOnTop(true);
+        //this.setAlwaysOnTop(true);
+        setModal(true);
         getContentPane().setLayout(null);
         this.setSize(300, 170);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -151,4 +153,14 @@ public class GUI_ModificarRelacion extends Parent_GUI {
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

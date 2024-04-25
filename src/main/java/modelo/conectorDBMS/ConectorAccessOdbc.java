@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import excepciones.ExceptionAp;
+
 /**
  * Conecta la aplicación a una base de datos de Microsoft Access
  *
@@ -239,7 +241,7 @@ public class ConectorAccessOdbc extends ConectorDBMS {
     }
 
     @Override
-    public void usarDatabase(String nombre) throws SQLException {
+    public void usarDatabase(String nombre) throws SQLException, ExceptionAp {
         return;
     }
 }

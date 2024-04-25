@@ -115,7 +115,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
                 // Añado sus atributos
                 for (Iterator<String> it2 = relation.getListaAtributos().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
-                    graph.addEdge(new Double(Math.random()), relation, this.atributos.get(id));
+                    graph.addEdge(Math.random(), relation, this.atributos.get(id));
                 }
             if (!relation.getListaEntidadesYAridades().isEmpty())
                 for (Iterator<EntidadYAridad> it3 = relation.getListaEntidadesYAridades().iterator(); it3.hasNext(); ) {
@@ -129,7 +129,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
             if (!entity.getListaAtributos().isEmpty())
                 for (Iterator<String> it2 = entity.getListaAtributos().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
-                    graph.addEdge(new Double(Math.random()), entity, this.atributos.get(id));
+                    graph.addEdge(Math.random(), entity, this.atributos.get(id));
                 }
             // Señala la/s claves primarias como tales
             if (!entity.getListaClavesPrimarias().isEmpty())
@@ -144,7 +144,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
             if (atrib.getCompuesto())
                 for (Iterator<String> it2 = atrib.getListaComponentes().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
-                    graph.addEdge(new Double(Math.random()), atrib, this.atributos.get(id));
+                    graph.addEdge(Math.random(), atrib, this.atributos.get(id));
                 }
         }
 
@@ -488,10 +488,10 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
         }
 
         // Inserta las agregaciones con su id como clave
-        for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
+        /*for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
             TransferAgregacion agregacion = it.next();
             this.agregaciones.put(agregacion.getIdAgregacion(), agregacion);
-        }
+        }*/
 
         creaArrayTablas();
     }
@@ -538,7 +538,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
             case 89: //CTR Y
                 if (e.isControlDown())
                     this.controlador.mensajeDesde_GUIPrincipal(TC.GUI_Principal_REHACER, null);
-                this.controlador.getTheGUIPrincipal().getMyMenu().getRehacer().transferFocus();
+                this.controlador.transferFocusRehacer();
                 this.grabFocus();
                 break;
 
@@ -756,7 +756,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
                 for (Iterator<String> it2 = antigua.getListaAtributos().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
                     if (!graph.areNeighbors(antigua, this.atributos.get(id))) { // Añade aristas que no existiesen
-                        graph.addEdge(new Double(Math.random()), antigua, this.atributos.get(id));
+                        graph.addEdge(Math.random(), antigua, this.atributos.get(id));
                     }
                 }
             }
@@ -773,7 +773,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
                 for (Iterator<String> it2 = antigua.getListaComponentes().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
                     if (!graph.areNeighbors(antigua, this.atributos.get(id))) { // Añade aristas que no existiesen
-                        graph.addEdge(new Double(Math.random()), antigua, this.atributos.get(id));
+                        graph.addEdge(Math.random(), antigua, this.atributos.get(id));
                     }
                 }
             }
@@ -795,7 +795,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
                 // Añado sus atributos
                 for (Iterator<String> it2 = antigua.getListaAtributos().iterator(); it2.hasNext(); ) {
                     Integer id = Integer.parseInt(it2.next());
-                    graph.addEdge(new Double(Math.random()), antigua, this.atributos.get(id));
+                    graph.addEdge(Math.random(), antigua, this.atributos.get(id));
                 }
             // Añado las aristas del grafo con las aridades.
             if (!antigua.getListaEntidadesYAridades().isEmpty()) {
@@ -848,7 +848,7 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
             // Añado sus atributos
             for (Iterator<String> it2 = antigua.getListaAtributos().iterator(); it2.hasNext(); ) {
                 Integer id = Integer.parseInt(it2.next());
-                graph.addEdge(new Double(Math.random()), antigua, this.atributos.get(id));
+                graph.addEdge(Math.random(), antigua, this.atributos.get(id));
             }
         }
         // Añado las aristas del grafo con las aridades.

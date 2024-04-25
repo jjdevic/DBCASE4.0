@@ -3,6 +3,7 @@ package vista.frames;
 import controlador.ConfiguradorInicial;
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.TransferConexion;
 import vista.Lenguaje;
@@ -21,7 +22,7 @@ import java.util.Hashtable;
 @SuppressWarnings("serial")
 public class GUI_SeleccionarConexion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferConexion _conexion;
     private JScrollPane jScrollPane1;
     private JButton botonNueva;
@@ -31,11 +32,11 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
     private JButton botonBorrar;
     private JButton botonEditar;
 
-    public GUI_SeleccionarConexion() {
-        initComponents();
+    public GUI_SeleccionarConexion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -248,8 +249,7 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
     }
 
     private void botonNuevaActionPerformed(ActionEvent evt) {
-        controlador.getTheGUIConfigurarConexionDBMS().setConexion(_conexion);
-        controlador.getTheGUIConfigurarConexionDBMS().setActiva(true, "", null);
+    	controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickNueva, UtilsFunc.crearVector(true, "", _conexion));
     }
 
     private void botonBorrarActionPerformed(ActionEvent evt) {
@@ -282,8 +282,8 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
         ConfiguradorInicial config = new ConfiguradorInicial();
         config.leerFicheroConfiguracion();
         TransferConexion tc = config.obtenConexion(elegido);
-
-        controlador.getTheGUIConfigurarConexionDBMS().setActiva(false, elegido, tc);
+        
+        controlador.mensajeDesde_GUI(TC.GUISeleccionarConexion_ClickEditar, UtilsFunc.crearVector(false, elegido, tc));
     }
 
     private String getElementoSeleccionado() {
@@ -377,4 +377,14 @@ public class GUI_SeleccionarConexion extends Parent_GUI {
     public void setConexion(TransferConexion con) {
         this._conexion = con;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this._conexion = (TransferConexion) datos;
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

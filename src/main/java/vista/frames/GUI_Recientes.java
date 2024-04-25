@@ -15,17 +15,16 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class GUI_Recientes extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private JPanel panelPrincipal;
     private JLabel jLabel1;
     private JComboBox<String> combo;
     private ArrayList<File> recientes = new ArrayList<File>();
 
 
-    public GUI_Recientes(ArrayList<File> files, Controlador c) {
-
+    public GUI_Recientes(Controlador c, ArrayList<File> files) { 
+    	super(c);
         recientes = files;
-        controlador = c;
 
         this.setTitle(Lenguaje.text(Lenguaje.DBCASE));
         this.setModal(true);
@@ -89,5 +88,26 @@ public class GUI_Recientes extends Parent_GUI {
         this.dispose();
 
     }
+
+	@Override
+	protected void initComponents() {		
+	}
+
+	@Override
+	public void setDatos(Object datos) {
+	}
+
+	@Override
+	public void setInactiva() {
+	}
+
+	@Override
+	public void setActiva() {
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 
 }

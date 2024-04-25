@@ -18,7 +18,7 @@ import java.util.Vector;
 @SuppressWarnings("serial")
 public class GUI_InsertarRestriccionARelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private TransferRelacion relacion;
     private JScrollPane jScrollPane1;
     private JButton botonNueva;
@@ -26,11 +26,11 @@ public class GUI_InsertarRestriccionARelacion extends Parent_GUI {
     private JButton botonAceptar;
     private JTable tabla;
 
-    public GUI_InsertarRestriccionARelacion() {
-        initComponents();
+    public GUI_InsertarRestriccionARelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
@@ -277,4 +277,15 @@ public class GUI_InsertarRestriccionARelacion extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

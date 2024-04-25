@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -17,9 +18,9 @@ import java.util.Vector;
 
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_InsertarEntidad extends Parent_GUI {
-    private Controlador controlador;
+    
     private Point2D posicionEntidad;
-    private JTextField cajaNombre = this.getCajaNombre(100, 10);
+    private JTextField cajaNombre;
     private JCheckBox CasillaEsDebil;
     private JLabel explicacion;
     private JButton botonInsertar;
@@ -32,17 +33,18 @@ public class GUI_InsertarEntidad extends Parent_GUI {
     private TransferRelacion relacion;
     private boolean factibleEntidad;//Sirve para la comprobación de si se puede añadir una entidad debil
 
-    public GUI_InsertarEntidad() {
-        initComponents();
+    public GUI_InsertarEntidad(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Lenguaje.text(Lenguaje.INSERT_ENTITY));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setResizable(false);
         setModal(true);
         getContentPane().setLayout(null);
+        cajaNombre = this.getCajaNombre(100, 10);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -121,7 +123,7 @@ public class GUI_InsertarEntidad extends Parent_GUI {
             CasillaEsDebil.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
                     if (CasillaEsDebil.isSelected()) {
-                        controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ActualizameListaEntidades, null);
+                    	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
                         //Generamos los items del comboEntidades
                         items = generaItems();
                         //Los ordenamos alfabeticamente
@@ -239,8 +241,11 @@ public class GUI_InsertarEntidad extends Parent_GUI {
         else if (!this.cajaNombre.getText().isEmpty()) {
             TransferEntidad te = new TransferEntidad();
 
+            if(items.size() == 0) {
+            	JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.CREATE_STRONG_ENTITY), Lenguaje.text(Lenguaje.ERROR), 0);
+            }
             //Si la entidad débil y la relación se llaman de diferente manera
-            if (!this.cajaNombre.getText().equals(this.jTextRelacion.getText())) {
+            else if (!this.cajaNombre.getText().equals(this.jTextRelacion.getText())) {
                 //Generamos el transfer que mandaremos al controlador para generar la entidad débil
                 te.setPosicion(this.getPosicionEntidad());
                 te.setNombre(this.cajaNombre.getText());
@@ -250,8 +255,16 @@ public class GUI_InsertarEntidad extends Parent_GUI {
                 te.setListaClavesPrimarias(new Vector());
                 te.setListaRestricciones(new Vector());
                 te.setListaUniques(new Vector());
+                
+                //Crear el vector con los datos
+                Vector<Object> datos = new Vector<Object>();
+                datos.add(te);
+                datos.add(this.getPosicionEntidad());
+                datos.add(this.jTextRelacion.getText());
+                datos.add(this.getListaEntidades().get(indiceAsociado(this.comboEntidadesFuertes.getSelectedIndex())));
+                
                 // Mandamos mensaje + datos al controlador
-                this.getControlador().mensajeDesde_GUI(TC.GUIInsertarEntidadDebil_Click_BotonInsertar, te);
+                this.getControlador().mensajeDesde_GUI(TC.GUIInsertarEntidadDebil_Click_BotonInsertar, datos);
             } else {
                 te.setNombre(this.cajaNombre.getText());
                 this.getControlador().mensajeDesde_GUI(TC.GUIInsertarEntidadDebil_Entidad_Relacion_Repetidos, te);
@@ -259,91 +272,6 @@ public class GUI_InsertarEntidad extends Parent_GUI {
                 return;
             }
         }
-    }
-
-    public void comprobadaEntidad(boolean factibleEntidad) {
-        this.factibleEntidad = factibleEntidad;
-        //Si la entidad va a poder añadirse compruebo si la relación también va a poder añadirse
-        if (factibleEntidad) {
-            //Generamos el transfer que mandaremos al controlador para generar la relación
-            TransferRelacion tr = new TransferRelacion();
-            tr.setPosicion((this.getPosicionEntidad()));
-            tr.setNombre(this.jTextRelacion.getText());
-            tr.setListaAtributos(new Vector());
-            tr.setListaEntidadesYAridades(new Vector());
-            tr.setListaRestricciones(new Vector());
-            tr.setListaUniques(new Vector());
-            tr.setTipo("Debil");
-            // Mandamos mensaje + datos al controlador
-            this.getControlador().mensajeDesde_GUI(TC.GUIInsertarRelacionDebil_Click_BotonInsertar, tr);
-        }
-    }
-
-    public void comprobadaRelacion(boolean factibleRelacion) {
-        /*Si la entidad va a poder añadirse compruebo si la relación también va a poder añadirse
-         *  y la relacion también entonces es cuando creamos la entidad, y la relación*/
-        if ((items.size() != 0) && (factibleRelacion) && (this.factibleEntidad)) {
-            //Generamos el transfer que mandaremos al controlador para crear la entidad
-            TransferEntidad te = new TransferEntidad();
-            te.setPosicion(this.getPosicionEntidad());
-            te.setNombre(this.cajaNombre.getText());
-            te.setDebil(this.CasillaEsDebil.isSelected());
-            te.setListaAtributos(new Vector());
-            te.setListaRelaciones(new Vector());
-            te.setListaClavesPrimarias(new Vector());
-            te.setListaRestricciones(new Vector());
-            te.setListaUniques(new Vector());
-            // Mandamos mensaje + datos al controlador
-            this.getControlador().mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, te);
-
-            //Generamos el transfer que mandaremos al controlador para crear la relación
-            TransferRelacion tr = new TransferRelacion();
-            Point2D p = new Point();
-            p.setLocation(this.getPosicionEntidad().getX(), this.getPosicionEntidad().getY() + 150);
-            tr.setPosicion(p);
-            tr.setNombre(this.jTextRelacion.getText());
-            tr.setListaAtributos(new Vector());
-            tr.setListaEntidadesYAridades(new Vector());
-            tr.setListaRestricciones(new Vector());
-            tr.setListaUniques(new Vector());
-            tr.setTipo("Debil");
-            // Mandamos mensaje + datos al controlador
-
-            this.getControlador().mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, tr);
-            //Unir la entidad fuerte con la relación
-            //Mandaremos el siguiente vector al controlador
-            Vector<Object> v = new Vector<Object>();
-            v.add(tr);
-            v.add(this.getListaEntidades().get(indiceAsociado(this.comboEntidadesFuertes.getSelectedIndex())));
-            v.add(Integer.toString(0));//Inicio
-            v.add("1");//Fin
-            v.add("");//Rol
-            //INcluimos en el vector MarcadaConCardinalidad(false), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-
-            v.add(true);
-
-            v.add(false);
-            v.add(false);
-            // Mandamos el mensaje y el vector con los datos
-            this.controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, v);
-            //Dudaa
-            //Unir la entidad debil con la relación
-            //Mandaremos el siguiente vector al controlador
-            Vector<Object> w = new Vector<Object>();
-            w.add(tr);
-            w.add(te);
-            w.add(Integer.toString(1));//Inicio
-            w.add("n");//Fin
-            w.add("");//Rol
-            //INcluimos en el vector MarcadaConCardinalidad(true), MarcadaConParticipacion(false), MarcadaConMinMax(false)
-            w.add(true);
-            w.add(false);
-            w.add(false);
-            // Mandamos el mensaje y el vector con los datos
-            this.controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, w);
-        }
-        if (items.size() == 0)
-            JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.CREATE_STRONG_ENTITY), Lenguaje.text(Lenguaje.ERROR), 0);
     }
 
     private void botonCancelarActionPerformed(java.awt.event.ActionEvent evt) {
@@ -463,5 +391,27 @@ public class GUI_InsertarEntidad extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	/**
+	 * @param datos 
+	 */
+	public void setDatos(Object datos) {
+		if(datos != null) {
+			//Se espera un vector con tres componentes: Valor para la posicion de la entidad, entidad comprobada, relacion comprobada.
+			//Si alguna componente es null, no se actualiza el atributo correspondiente.
+			Vector<Object> v = (Vector<Object>) datos;
+			if(v.size() == 3) {
+				if(v.get(0) != null) this.posicionEntidad = (Point2D) v.get(0);
+				//if(v.get(1) != null) comprobadaEntidad((boolean) v.get(1));
+				//if(v.get(2) != null) comprobadaRelacion((boolean) v.get(2));
+			}
+		}
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 
 }

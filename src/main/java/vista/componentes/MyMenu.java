@@ -3,12 +3,13 @@ package vista.componentes;
 
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferAgregacion;
+import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferConexion;
-import persistencia.DAOAgregaciones;
-import persistencia.DAOAtributos;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
+import modelo.transfers.TransferEntidad;
+import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
 import vista.iconos.IconLabel;
 import vista.iconos.perspective.allIcon;
@@ -25,6 +26,7 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Vector;
 
 import static vista.utils.ImagesPath.*;
@@ -32,6 +34,9 @@ import static vista.utils.ImagesPath.*;
 
 // ICONOS: https://icon-icons.com/es/
 
+/**
+ * Clase dedicada al menú principal de la aplicación.
+ */
 @SuppressWarnings("serial")
 public class MyMenu extends JMenuBar {
 
@@ -118,7 +123,7 @@ public class MyMenu extends JMenuBar {
         try {
             nuevo.setImage(ImageIO.read(classLoader.getResourceAsStream(NUEVO)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
+            
             System.out.println(e1);
         }
         submenuNuevo.setIcon(nuevo);
@@ -138,7 +143,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrir.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrir.setIcon(abrir);
@@ -159,7 +163,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrirCasos.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR_CASOS)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrirCasos.setIcon(abrirCasos);
@@ -180,7 +183,6 @@ public class MyMenu extends JMenuBar {
         try {
             abrir2.setImage(ImageIO.read(classLoader.getResourceAsStream(ABRIR_RECIENTE)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuAbrirRecentFiles.setIcon(abrir2);
@@ -204,7 +206,6 @@ public class MyMenu extends JMenuBar {
         try {
             save.setImage(ImageIO.read(classLoader.getResourceAsStream(SAVE)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuGuardar.setIcon(save);
@@ -226,7 +227,6 @@ public class MyMenu extends JMenuBar {
         try {
             saveAs.setImage(ImageIO.read(classLoader.getResourceAsStream(SAVE_AS)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuGuardarComo.setIcon(saveAs);
@@ -252,7 +252,6 @@ public class MyMenu extends JMenuBar {
         try {
             print.setImage(ImageIO.read(classLoader.getResourceAsStream(PRINT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuImprimir.setIcon(print);
@@ -272,7 +271,6 @@ public class MyMenu extends JMenuBar {
         try {
             exportar.setImage(ImageIO.read(classLoader.getResourceAsStream(EXPORT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuExportarJPEG.setIcon(exportar);
@@ -294,7 +292,6 @@ public class MyMenu extends JMenuBar {
         try {
             exit.setImage(ImageIO.read(classLoader.getResourceAsStream(EXIT)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuSalir.setIcon(exit);
@@ -431,7 +428,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista1.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA1)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista1.setIcon(vista1);
@@ -451,7 +447,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista2.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA2)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista2.setIcon(vista2);
@@ -471,7 +466,6 @@ public class MyMenu extends JMenuBar {
         try {
             vista3.setImage(ImageIO.read(classLoader.getResourceAsStream(VISTA3)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuVista3.setIcon(vista3);
@@ -491,7 +485,6 @@ public class MyMenu extends JMenuBar {
         try {
             cuadricula.setImage(ImageIO.read(classLoader.getResourceAsStream(CUADRICULA)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuCuadricula.setIcon(cuadricula);
@@ -513,7 +506,6 @@ public class MyMenu extends JMenuBar {
         try {
             zoom.setImage(ImageIO.read(classLoader.getResourceAsStream(ZOOM)));
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             System.out.println(e1);
         }
         submenuZoom.setIcon(zoom);
@@ -541,7 +533,7 @@ public class MyMenu extends JMenuBar {
         submenuAnadirEntidad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 Point2D p = new Point2D.Double(coords[0], coords[1]);
-                c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, p);
+                c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, UtilsFunc.crearVector(p, null, null));
                 aumentaCoords();
             }
         });
@@ -580,14 +572,10 @@ public class MyMenu extends JMenuBar {
         submenuAnadirAtributo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 listaTransfers = new Vector<Transfer>();
-                DAORelaciones daoRelaciones = new DAORelaciones(c.getPath());
-                listaTransfers.addAll(daoRelaciones.ListaDeRelaciones());
-                DAOEntidades daoEntidades = new DAOEntidades(c.getPath());
-                listaTransfers.addAll(daoEntidades.ListaDeEntidades());
-                DAOAtributos daoAtributos = new DAOAtributos(c);
-                listaTransfers.addAll(daoAtributos.ListaDeAtributos());
-                DAOAgregaciones daoAgregaciones = new DAOAgregaciones(c.getPath());
-                listaTransfers.addAll(daoAgregaciones.ListaDeAgregaciones());
+                listaTransfers.addAll((Collection<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null));
+                listaTransfers.addAll((Collection<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null));
+                listaTransfers.addAll((Collection<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null));
+                listaTransfers.addAll((Collection<TransferAgregacion>) c.mensaje(TC.ObtenerListaAgregaciones, null));
                 c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarAtributo, listaTransfers);
             }
         });
@@ -609,7 +597,6 @@ public class MyMenu extends JMenuBar {
                 new Thread(new Runnable() {
                     public void run() {
                         c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarModeloRelacional, null);
-                        c.getTheGUIPrincipal().getModeloText().goToTop();
                     }
                 }).start();
             }
@@ -624,7 +611,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoModelo, c.getTheGUIPrincipal().getModeloText().getText());
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoModelo, null);
                     }
                 });
                 hilo.start();
@@ -664,12 +651,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.getTheGUIPrincipal().getConexionActual().setDatabase("");
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarScriptSQL, c.getTheGUIPrincipal().getConexionActual());
-
-                        // Restaurar el sistema
-                        c.getTheGUIPrincipal().getConexionActual().setDatabase("");
-                        c.getTheGUIPrincipal().getModeloText().goToTop();
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarScriptSQL, null);
                     }
                 });
                 hilo.start();
@@ -685,7 +667,7 @@ public class MyMenu extends JMenuBar {
             public void actionPerformed(ActionEvent evt) {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoScriptSQL, c.getTheGUIPrincipal().getCodigoText().getText());
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonGenerarArchivoScriptSQL, null);
                     }
                 });
                 hilo.start();
@@ -703,7 +685,7 @@ public class MyMenu extends JMenuBar {
                 Thread hilo = new Thread(new Runnable() {
                     public void run() {
                         // Comprobar si hay codigo
-                        if (!c.getTheGUIPrincipal().getScriptGeneradoCorrectamente()) {
+                        if (!c.isScriptGeneradoCorrectamente()) {
                             JOptionPane.showMessageDialog(null,
                                     Lenguaje.text(Lenguaje.ERROR) + ".\n" +
                                             Lenguaje.text(Lenguaje.MUST_GENERATE_SCRIPT_EX),
@@ -713,11 +695,7 @@ public class MyMenu extends JMenuBar {
                         }
 
                         // Ejecutar en DBMS
-                        TransferConexion tc = new TransferConexion(
-                                c.getTheGUIPrincipal().getCBO().getSelectedIndex(),
-                                c.getTheGUIPrincipal().getCBO().getSelectedItem().toString());
-
-                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonEjecutarEnDBMS, tc);
+                        c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_Click_BotonEjecutarEnDBMS, null);
                     }
                 });
                 hilo.start();
@@ -944,6 +922,10 @@ public class MyMenu extends JMenuBar {
                     Lenguaje.text(Lenguaje.DBCASE),
                     JOptionPane.PLAIN_MESSAGE);
         }
+    }
+    
+    public void transferFocusRehacer() {
+    	this.rehacer.transferFocus();
     }
 
     /************

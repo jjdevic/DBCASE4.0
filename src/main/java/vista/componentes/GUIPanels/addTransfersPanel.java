@@ -2,11 +2,12 @@ package vista.componentes.GUIPanels;
 
 import controlador.Controlador;
 import controlador.TC;
+import misc.UtilsFunc;
 import modelo.transfers.Transfer;
-import persistencia.DAOAgregaciones;
-import persistencia.DAOAtributos;
-import persistencia.DAOEntidades;
-import persistencia.DAORelaciones;
+import modelo.transfers.TransferAgregacion;
+import modelo.transfers.TransferAtributo;
+import modelo.transfers.TransferEntidad;
+import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
 import vista.iconos.*;
 import vista.tema.Theme;
@@ -16,9 +17,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.Collection;
 import java.util.Random;
 import java.util.Vector;
 
+/** Panel desde el que se pueden añadir elementos al panel de diseño */
 @SuppressWarnings("serial")
 public class addTransfersPanel extends JPanel {
     private Controlador controlador;
@@ -60,7 +63,7 @@ public class addTransfersPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point2D p = new Point2D.Double(coords[0], coords[1]);
-                controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, p);
+                controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, UtilsFunc.crearVector(p, null, null));
                 aumentaCoords();
             }
         });
@@ -99,14 +102,10 @@ public class addTransfersPanel extends JPanel {
 
     private void getListaTransfers() {
         listaTransfers = new Vector<Transfer>();
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
-        listaTransfers.addAll(daoRelaciones.ListaDeRelaciones());
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
-        listaTransfers.addAll(daoEntidades.ListaDeEntidades());
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
-        listaTransfers.addAll(daoAtributos.ListaDeAtributos());
-        DAOAgregaciones daoAgregaciones = new DAOAgregaciones(controlador.getPath());
-        listaTransfers.addAll(daoAgregaciones.ListaDeAgregaciones());
+        listaTransfers.addAll((Collection<TransferRelacion>) controlador.mensaje(TC.ObtenerListaRelaciones, null));
+        listaTransfers.addAll((Collection<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null));
+        listaTransfers.addAll((Collection<TransferAtributo>) controlador.mensaje(TC.ObtenerListaAtributos, null));
+        listaTransfers.addAll((Collection<TransferAgregacion>) controlador.mensaje(TC.ObtenerListaAgregaciones, null));
     }
 
     private void aumentaCoords() {

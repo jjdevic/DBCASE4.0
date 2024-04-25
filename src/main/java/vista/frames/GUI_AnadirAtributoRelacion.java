@@ -22,8 +22,8 @@ import java.util.Vector;
 public class GUI_AnadirAtributoRelacion extends Parent_GUI {
 
     private TransferRelacion relacion;
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 45);
+    
+    private JTextField cajaNombre;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
     private JCheckBox opcionNotnull;
@@ -34,19 +34,18 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
     private JTextField cajaTamano;
     private JLabel jTextPane2;
     private JLabel explicacion;
-    private Vector<TransferDominio> listaDominios;
 
-
-    public GUI_AnadirAtributoRelacion() {
-        this.initComponents();
+    public GUI_AnadirAtributoRelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_ATTRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 45);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -116,7 +115,7 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
      * Oyentes de los botones
      */
     private void botonAnadirActionPerformed(java.awt.event.ActionEvent evt) {
-        TransferAtributo ta = new TransferAtributo(controlador);
+        TransferAtributo ta = new TransferAtributo();
         ta.setNombre(this.cajaNombre.getText());
         String tamano = "";
 
@@ -186,6 +185,7 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
         controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_Click_BotonAnadir, v);
 
         //actualizamos la tabla de Uniques de la relacion
+        //TODO? daba error
         if (((String) v.get(v.size() - 1)) != "0" && this.opcionUnique.isSelected()) {
             Vector<Object> ve = new Vector<Object>();
             TransferAtributo clon_atributo = ta.clonar();
@@ -242,9 +242,9 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
         this.comboDominios.setEnabled(true);
         this.cajaNombre.setText("");
         this.cajaTamano.setText("");
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoRelacion_ActualizameLaListaDeDominios, null);
-
-        Object[] nuevos = new Object[this.listaDominios.size()];
+ 
+        Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
+        Object[] nuevos = new Object[listaDominios.size()];
         this.generaItems(nuevos);
 
 
@@ -489,23 +489,17 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
     }
 
     private Object[] generaItems(Object[] items) {
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         // Generamos los items
         int cont = 0;
-        while (cont < this.listaDominios.size()) {
-            TransferDominio td = this.listaDominios.get(cont);
+        while (cont < listaDominios.size()) {
+            TransferDominio td = listaDominios.get(cont);
             items[cont] = td.getNombre();
             cont++;
         }
         return items;
     }
 
-    public Vector<TransferDominio> getListaDominios() {
-        return listaDominios;
-    }
-
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
 
     /**
      * Metodos privados
@@ -527,5 +521,16 @@ public class GUI_AnadirAtributoRelacion extends Parent_GUI {
 
         }
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 
 }

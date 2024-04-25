@@ -2,7 +2,9 @@ package modelo.conectorDBMS;
 
 import vista.Lenguaje;
 
-import javax.swing.*;
+import controlador.TC;
+import excepciones.ExceptionAp;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.sql.DriverManager;
@@ -21,7 +23,7 @@ public class ConectorAccessMdb extends ConectorAccessOdbc {
     }
 
     @Override
-    public void usarDatabase(String nombre) throws SQLException {
+    public void usarDatabase(String nombre) throws SQLException, ExceptionAp {
         // Obtener el conector
         String rutaCompleta = "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ="
                 + nombre;
@@ -39,13 +41,8 @@ public class ConectorAccessMdb extends ConectorAccessOdbc {
 
         boolean creado = copyfile("/data/void.mdb", nombre);
         if (!creado) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            "File could not be created. Check permissions and " +
-                            "that there is space enough in the hard drive.",
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            return;
+        	throw new ExceptionAp(TC.FALLO_CREAR_ARCHIVO);
+            
         }
         _conexion = DriverManager.getConnection(rutaCompleta, _usuario, _password);
         if (!_conexion.isClosed())

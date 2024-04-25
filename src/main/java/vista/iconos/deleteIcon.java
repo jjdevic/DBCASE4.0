@@ -18,7 +18,6 @@ public class deleteIcon extends icon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        // TODO Auto-generated method stub
         Graphics2D g2d = (Graphics2D) g;
         Theme theme = Theme.getInstancia();
         g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));

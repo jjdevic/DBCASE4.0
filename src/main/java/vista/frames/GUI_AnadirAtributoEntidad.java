@@ -22,8 +22,8 @@ import java.util.Vector;
 public class GUI_AnadirAtributoEntidad extends Parent_GUI {
 
     private TransferEntidad entidad;
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 45);
+
+    private JTextField cajaNombre;
     private JCheckBox opcionClavePrimaria;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
@@ -35,18 +35,18 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     private JTextField cajaTamano;
     private JLabel jTextPane2;
     private JLabel explicacion;
-    private Vector<TransferDominio> listaDominios;
 
-    public GUI_AnadirAtributoEntidad() {
-        this.initComponents();
+    public GUI_AnadirAtributoEntidad(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_ATTRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 45);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -135,7 +135,7 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
      * Oyentes de los botones
      */
     private void botonAnadirActionPerformed(java.awt.event.ActionEvent evt) {
-        TransferAtributo ta = new TransferAtributo(controlador);
+        TransferAtributo ta = new TransferAtributo();
         ta.setNombre(this.cajaNombre.getText());
         String tamano = "";
 
@@ -212,6 +212,7 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
             clon_atributo2.setClavePrimaria(false);
             v1.add(clon_atributo2);
             v1.add(entidad);
+            entidad.getIdEntidad();
             v1.add(1);
             controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo, v1);
         }
@@ -269,9 +270,9 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
         this.comboDominios.setEnabled(true);
         this.cajaTamano.setText("");
         this.cajaNombre.setText("");
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
+        Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
 
-        Object[] nuevos = new Object[this.listaDominios.size()];
+        Object[] nuevos = new Object[listaDominios.size()];
         this.generaItems(nuevos);
 
 
@@ -531,24 +532,17 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
     }
 
     private Object[] generaItems(Object[] items) {
-        // Generamos los items
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
+    	// Generamos los items
         int cont = 0;
-        while (cont < this.listaDominios.size()) {
-            TransferDominio td = this.listaDominios.get(cont);
+        while (cont < listaDominios.size()) {
+            TransferDominio td = listaDominios.get(cont);
             items[cont] = td.getNombre();
             cont++;
         }
         return items;
     }
-
-    public Vector<TransferDominio> getListaDominios() {
-        return listaDominios;
-    }
-
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
-
+    
     /**
      * Metodos privados
      */
@@ -569,23 +563,18 @@ public class GUI_AnadirAtributoEntidad extends Parent_GUI {
 
         }
     }
+    
+	@Override
+	public void setDatos(Object datos) {
+		if(datos != null) {
+			this.entidad = (TransferEntidad) datos;
+		}
+	}
+	
+	public TransferEntidad getEntidad() { return entidad; }
 
-    /*
-     * Getters y Setters
-     */
-    public TransferEntidad getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(TransferEntidad entidad) {
-        this.entidad = entidad;
-    }
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-    }
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

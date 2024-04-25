@@ -18,7 +18,6 @@ public class TransferAgregacion extends Transfer {
     private int offsetAttr = 0;//?
 
     public void CopiarAgregacion(TransferAgregacion agreg) {
-        // TODO Auto-generated method stub
         this.idAgregacion = agreg.idAgregacion;
         this.nombre = agreg.nombre;
         this.listaRelaciones = agreg.listaRelaciones;
@@ -30,7 +29,6 @@ public class TransferAgregacion extends Transfer {
     }
 
     public TransferAgregacion clonar() {
-        // TODO Auto-generated method stub
         TransferAgregacion agreg = new TransferAgregacion();
         agreg.setIdAgregacion(this.idAgregacion);
         agreg.setNombre(this.nombre);
@@ -86,7 +84,6 @@ public class TransferAgregacion extends Transfer {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
         return this.nombre;
     }
 
@@ -98,27 +95,21 @@ public class TransferAgregacion extends Transfer {
 
     @Override
     public int getVolumen() {
-        // TODO Auto-generated method stub
         return volumen;
     }
 
     @Override
     public int getFrecuencia() {
-        // TODO Auto-generated method stub
         return frecuencia;
     }
 
     @Override
     public void setVolumen(int v) {
-        // TODO Auto-generated method stub
         volumen = v;
-
     }
 
     @Override
     public void setFrecuencia(int f) {
-        // TODO Auto-generated method stub
-
         frecuencia = f;
     }
 

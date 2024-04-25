@@ -1,16 +1,15 @@
 package modelo.servicios;
 
-import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
+import misc.Config;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.*;
 import persistencia.*;
 import vista.Lenguaje;
-import vista.componentes.MyFileChooser;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class GeneradorEsquema {
-    protected Controlador controlador;
     //atributos para la generacion de los modelos
     private String sqlHTML = "";
     private String mr = "";
@@ -36,6 +34,10 @@ public class GeneradorEsquema {
     private Hashtable<Integer, Enumerado> tiposEnumerados = new Hashtable<Integer, Enumerado>();
     private ValidadorBD validadorBD;
 
+    public GeneradorEsquema() {
+    	this.validadorBD = ValidadorBD.getInstancia(this);
+    }
+    
     protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor) {
         int i = 0;
         boolean encontrado = false;
@@ -48,8 +50,8 @@ public class GeneradorEsquema {
         return encontrado;
     }
 
-    protected TransferRelacion dameRel(String id) {
-        DAORelaciones daoRel = new DAORelaciones(this.controlador.getPath());
+    protected TransferRelacion dameRel(String id) throws ExceptionAp {
+        DAORelaciones daoRel = new DAORelaciones(Config.getPath());
         Vector relaciones = daoRel.ListaDeRelaciones();
         TransferRelacion rel = null;
         for (int i = 0; i < relaciones.size(); ++i) {
@@ -59,8 +61,8 @@ public class GeneradorEsquema {
         return rel;
     }
 
-    protected TransferEntidad dameEnt(int id) {
-        DAOEntidades daoEnt = new DAOEntidades(this.controlador.getPath());
+    protected TransferEntidad dameEnt(int id) throws ExceptionAp {
+        DAOEntidades daoEnt = new DAOEntidades(Config.getPath());
         Vector entidades = daoEnt.ListaDeEntidades();
         TransferEntidad ent = null;
         for (int i = 0; i < entidades.size(); ++i) {
@@ -73,7 +75,7 @@ public class GeneradorEsquema {
 
 
     private void generaTablasAgregaciones() {
-		/*DAOAgregaciones daoAgregaciones = new DAOAgregaciones(controlador.getPath());
+		/*DAOAgregaciones daoAgregaciones = new DAOAgregaciones(Config.getPath());
 		Vector<TransferAgregacion> agregaciones = daoAgregaciones.ListaDeAgregaciones();
 		
 		
@@ -118,15 +120,15 @@ public class GeneradorEsquema {
 		}*/
     }
 
-    private void generaTablasEntidades() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+    private void generaTablasEntidades() throws ExceptionAp {
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
 
         //recorremos las entidades generando las tablas correspondientes.
         for (int i = 0; i < entidades.size(); i++) {
             Vector<TransferAtributo> multivalorados = new Vector<TransferAtributo>();
             TransferEntidad te = entidades.elementAt(i);
-            Tabla tabla = new Tabla(te.getNombre(), te.getListaRestricciones(), controlador);
+            Tabla tabla = new Tabla(te.getNombre(), te.getListaRestricciones());
             Vector<TransferAtributo> atribs = this.dameAtributosEnTransfer(te.getListaAtributos());
             for (String rest : (Vector<String>) te.getListaRestricciones()) {
                 restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), rest, restriccionPerdida.TABLA));
@@ -173,8 +175,8 @@ public class GeneradorEsquema {
         }
     }
 
-    private void generaTablasRelaciones() {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private void generaTablasRelaciones() throws ExceptionAp {
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         // recorremos las relaciones creando sus tablas, en funcion de su tipo.
         for (int i = 0; i < relaciones.size(); i++) {
@@ -187,7 +189,7 @@ public class GeneradorEsquema {
                 restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), rest, restriccionPerdida.TABLA));
             if (tr.getTipo().equalsIgnoreCase("Normal")) {
                 // creamos la tabla
-                Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones(), controlador);
+                Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones());
                 // aniadimos los atributos propios.
                 Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
                 for (int a = 0; a < ats.size(); a++) {
@@ -339,7 +341,7 @@ public class GeneradorEsquema {
                      * entidades fuertes y las debiles que aparezcan, pues este sera
                      * el criterio a seguir a la hora de reasignar las claves.
                      */
-                    DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+                    DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
                     Vector<TransferEntidad> fuertes = new Vector<TransferEntidad>();
                     Vector<TransferEntidad> debiles = new Vector<TransferEntidad>();
                     for (int s = 0; s < veya.size(); s++) {
@@ -370,8 +372,8 @@ public class GeneradorEsquema {
         }
     }
 
-    private void generaTiposEnumerados() {
-        DAODominios daoDominios = new DAODominios(controlador.getPath());
+    private void generaTiposEnumerados() throws ExceptionAp {
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> dominios = daoDominios.ListaDeDominios();
 
         //recorremos los dominios creando sus tipos enumerados
@@ -397,10 +399,11 @@ public class GeneradorEsquema {
         sqlHTML = "";
     }
 
-    public void generaScriptSQL(TransferConexion conexion) {
+    public Contexto generaScriptSQL(TransferConexion conexion) throws ExceptionAp {
         reset();
         StringBuilder warnings = new StringBuilder();
-        if (!validadorBD.validaBaseDeDatos(false, warnings)) return;
+        Contexto aux = validadorBD.validaBaseDeDatos(false, warnings);
+        if (!aux.isExito()) return new Contexto(false, null, aux.getDatos());
         // Eliminar tablas anteriores, pero recordar que el modelo a ha sido validado
         reset();
         conexionScriptGenerado = conexion;
@@ -418,62 +421,33 @@ public class GeneradorEsquema {
         creaEnums(conexion);
         ponClaves(conexion);
         ponRestricciones(conexion);
-        controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL, sqlHTML);
+        
+        return new Contexto(true, TC.SS_GeneracionScriptSQL, sqlHTML);
     }
 
-    public void exportarCodigo(String text, boolean sql) {
-        if (!validadorBD.validaBaseDeDatos(false, new StringBuilder())) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.SCRIPT_ERROR),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            return;
+    public String exportarCodigo(String text, boolean sql, File ruta) throws ExceptionAp {
+    	Contexto aux = validadorBD.validaBaseDeDatos(false, new StringBuilder());
+    	
+        if (!aux.isExito()) {
+        	throw new ExceptionAp(TC.SCRIPT_ERROR);
         }
         if (text.isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.MUST_GENERATE_SCRIPT),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            return;
+        	throw new ExceptionAp(TC.MUST_GENERATE_SCRIPT);
         }
+        
         text = "# " + Lenguaje.text(Lenguaje.SCRIPT_GENERATED) + "\n" +
                 (sql ? "# " + Lenguaje.text(Lenguaje.SYNTAX) + ": " + conexionScriptGenerado.getRuta() + "\n\n" : "") + text;
-        // Si ya se ha generado el Script
-        MyFileChooser jfc = new MyFileChooser();
-        jfc.setDialogTitle(Lenguaje.text(Lenguaje.DBCASE));
-        jfc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/projects"));
-        jfc.setFileFilter(new FileNameExtensionFilter("Text", "txt"));
-        if (sql) jfc.setFileFilter(new FileNameExtensionFilter(Lenguaje.text(Lenguaje.SQL_FILES), "sql"));
-        int resul = jfc.showSaveDialog(null);
-        if (resul == 0) {
-            File ruta = jfc.getSelectedFile();
-            String filePath = ruta.getAbsolutePath();
-            if (jfc.getFileFilter().getDescription().equals("Text") && !filePath.endsWith(".txt"))
-                ruta = new File(filePath + ".txt");
-            else if (jfc.getFileFilter().getDescription().equals("SQL Files") && !filePath.endsWith(".sql"))
-                ruta = new File(filePath + ".sql");
-            try {
-                FileWriter file = new FileWriter(ruta);
-                file.write(text);
-                file.close();
-                JOptionPane.showMessageDialog(
-                        null,
-                        Lenguaje.text(Lenguaje.INFO) + "\n" +
-                                Lenguaje.text(Lenguaje.OK_FILE) + "\n" +
-                                Lenguaje.text(Lenguaje.FILE) + ": " + ruta,
-                        Lenguaje.text(Lenguaje.DBCASE),
-                        JOptionPane.PLAIN_MESSAGE);
+        
+        try {
+            FileWriter file = new FileWriter(ruta);
+            file.write(text);
+            file.close();
 
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null,
-                        Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                                Lenguaje.text(Lenguaje.SCRIPT_ERROR),
-                        Lenguaje.text(Lenguaje.DBCASE),
-                        JOptionPane.PLAIN_MESSAGE);
-            }
+        } catch (IOException e) {
+        	throw new ExceptionAp(TC.SCRIPT_ERROR);
         }
+        
+        return (String) aux.getDatos();
     }
 
     public Vector<TransferConexion> obtenerTiposDeConexion() {
@@ -485,26 +459,16 @@ public class GeneradorEsquema {
             conexiones.add(new TransferConexion(i, nombres.get(i)));
         return conexiones;
     }
+    
+    public TransferConexion getConexScriptGenerado() {
+    	return conexionScriptGenerado;
+    }
 
-    public void ejecutarScriptEnDBMS(TransferConexion tc, String sql) {
-
-        // Comprobaciones previas
-        if (tc.getTipoConexion() != conexionScriptGenerado.getTipoConexion()) {
-            int respuesta = JOptionPane.showConfirmDialog(null,
-                    Lenguaje.text(Lenguaje.WARNING) + ".\n" +
-                            Lenguaje.text(Lenguaje.SCRIPT_GENERATED_FOR) + ": \n" +
-                            "     " + conexionScriptGenerado.getRuta() + " \n" +
-                            Lenguaje.text(Lenguaje.CONEXION_TYPE_IS) + ": \n" +
-                            "     " + tc.getRuta() + "\n" +
-                            Lenguaje.text(Lenguaje.POSSIBLE_ERROR_SRIPT) + " \n" +
-                            Lenguaje.text(Lenguaje.SHOULD_GENERATE_SCRIPT) + " \n" +
-                            Lenguaje.text(Lenguaje.OF_CONEXION) + "\n" +
-                            Lenguaje.text(Lenguaje.CONTINUE_ANYWAY),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.WARNING_MESSAGE);
-            if (respuesta == JOptionPane.CANCEL_OPTION) return;
-        }
+    public boolean mismoTipo(TransferConexion tc) {
+    	return tc.getTipoConexion() == conexionScriptGenerado.getTipoConexion();
+    }
+    
+    public void ejecutarScriptEnDBMS(TransferConexion tc, String sql) throws ExceptionAp{
 
         // Ejecutar en DBMS
         System.out.println("Datos de conexion a la base de datos");
@@ -523,16 +487,9 @@ public class GeneradorEsquema {
             System.out.println("MOTIVO");
             System.out.println(e.getMessage());
 
-            // Avisar por GUI
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.NO_DB_CONEXION) + " \n" +
-                            Lenguaje.text(Lenguaje.REASON) + ": \n" + e.getMessage(),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            // Terminar
-            return;
+            throw new ExceptionAp(TC.NO_DB_CONEXION, ": \n" + e.getMessage());
         }
+        
         String ordenActual = null;
         try {
             // Crear la base de datos
@@ -553,38 +510,20 @@ public class GeneradorEsquema {
                 }
             }
         } catch (SQLException e) {
-            // Avisar por GUI
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.CANT_EXECUTE_SCRIPT) + " \n" +
-                            Lenguaje.text(Lenguaje.ENQUIRY_ERROR) + ": \n" + ordenActual + "\n" +
-                            Lenguaje.text(Lenguaje.REASON) + ": \n" + e.getMessage(),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-
-            // Terminar
-            return;
+            throw new ExceptionAp(TC.CANT_EXECUTE_SCRIPT, ": \n" + ordenActual + "\n" + e.getMessage());
         }
+        
         try {
             conector.cerrarConexion();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,
-                    Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.CANT_CLOSE_CONEXION) + " \n" +
-                            Lenguaje.text(Lenguaje.REASON) + " \n" + e.getMessage(),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            return;
+        	throw new ExceptionAp(TC.CANT_CLOSE_CONEXION, ": \n" + e.getMessage());
         }
+        
         System.out.println("Conexion cerrada correctamente");
-        JOptionPane.showMessageDialog(null,
-                Lenguaje.text(Lenguaje.INFO) + "\n" +
-                        Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT),
-                Lenguaje.text(Lenguaje.DBCASE),
-                JOptionPane.PLAIN_MESSAGE);
+        
     }
 
-    private void creaTablas(TransferConexion conexion) {
+    private void creaTablas(TransferConexion conexion) throws ExceptionAp {
         sqlHTML += "<div class='card'><h2>" + Lenguaje.text(Lenguaje.TABLES) + "</h2>";
 
         Iterator tablasM = tablasMultivalorados.iterator();
@@ -617,9 +556,9 @@ public class GeneradorEsquema {
         sqlHTML += "<p></p></div>";
     }
 
-    private boolean esPadreEnIsa(Tabla tabla) {
+    private boolean esPadreEnIsa(Tabla tabla) throws ExceptionAp {
         boolean encontrado = false;
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
 
         // recorremos las relaciones buscando las isa
@@ -631,12 +570,12 @@ public class GeneradorEsquema {
                 Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
                 int idPadre = veya.firstElement().getEntidad();
 
-                DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+                DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
                 TransferEntidad te = new TransferEntidad();
                 te.setIdEntidad(idPadre);
                 te = daoEntidades.consultarEntidad(te);
 
-                Tabla t = new Tabla(te.getNombre(), te.getListaRestricciones(), controlador);
+                Tabla t = new Tabla(te.getNombre(), te.getListaRestricciones());
                 t = t.creaClonSinAmbiguedadNiEspacios();
 
                 encontrado = t.getNombreTabla().equalsIgnoreCase(tabla.getNombreTabla());
@@ -682,7 +621,7 @@ public class GeneradorEsquema {
         sqlHTML += "<p></p></div>";
     }
 
-    private void ponClaves(TransferConexion conexion) {
+    private void ponClaves(TransferConexion conexion) throws ExceptionAp {
         sqlHTML += "<div class='card'><h2>" + Lenguaje.text(Lenguaje.KEYS_SECTION) + "</h2>";
 
         String restEntidad = "";
@@ -770,10 +709,11 @@ public class GeneradorEsquema {
         return code;
     }
 
-    public void generaModeloRelacional() {
+    public Contexto generaModeloRelacional() throws ExceptionAp {
         reset();
         StringBuilder warnings = new StringBuilder();
-        if (!validadorBD.validaBaseDeDatos(true, warnings)) return;
+        Contexto aux = validadorBD.validaBaseDeDatos(true, warnings);
+        if (!aux.isExito()) return new Contexto(false, null, aux.getDatos());
         restriccionesPerdidas = new RestriccionesPerdidas();
         generaTablasAgregaciones(); //creamos primero las de las agregaciones porque ahi se impide que se creen las tablas de sus relaciones internas
         generaTablasEntidades();
@@ -808,7 +748,8 @@ public class GeneradorEsquema {
         mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.LOST_CONSTR) + "</h2>";
         mr += restriccionesPerdidas();
         mr += "<p></p></div>";
-        controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional, mr);
+        
+        return new Contexto(true, TC.SS_GeneracionModeloRelacional, mr);
     }
 
     //metodos auxiliares.
@@ -820,7 +761,7 @@ public class GeneradorEsquema {
      * @param nombreEntidad el nombre de la entidad de la que proviene.
      * @param procedencia   es la cadena de nombres de los atributos padre.
      */
-    private Vector<String[]> atributoCompuesto(TransferAtributo ta, String nombreEntidad, String procedencia) {
+    private Vector<String[]> atributoCompuesto(TransferAtributo ta, String nombreEntidad, String procedencia) throws ExceptionAp {
         Vector<TransferAtributo> subs = this.dameAtributosEnTransfer(ta.getListaComponentes());
         Vector<String[]> lista = new Vector<String[]>();
 
@@ -848,12 +789,12 @@ public class GeneradorEsquema {
      * @param ta        El atributo multivalorado en cuestion
      * @param idEntidad El identificador de la entidad a la que pertenece.
      */
-    private void atributoMultivalorado(TransferAtributo ta, int idEntidad) {
+    private void atributoMultivalorado(TransferAtributo ta, int idEntidad) throws ExceptionAp {
         // sacamos la tabla de la entidad propietaria del atributo.
         Tabla tablaEntidad = tablasEntidades.get(idEntidad);
 
         //creamos la tabla.
-        Tabla tablaMulti = new Tabla(tablaEntidad.getNombreTabla() + "_" + ta.getNombre(), ta.getListaRestricciones(), controlador);
+        Tabla tablaMulti = new Tabla(tablaEntidad.getNombreTabla() + "_" + ta.getNombre(), ta.getListaRestricciones());
 
         // aniadimos el campo del atributo, incluso teniendo en cuenta que sea
         // compuesto.
@@ -879,10 +820,10 @@ public class GeneradorEsquema {
         return Integer.parseInt((String) ob);
     }
 
-    protected Vector<TransferAtributo> dameAtributosEnTransfer(Vector sinParam) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+    protected Vector<TransferAtributo> dameAtributosEnTransfer(Vector sinParam) throws ExceptionAp {
+        DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> claves = new Vector<TransferAtributo>();
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         for (int i = 0; i < sinParam.size(); i++) {
             aux.setIdAtributo(this.objectToInt(sinParam.elementAt(i)));
             aux = daoAtributos.consultarAtributo(aux);
@@ -891,38 +832,21 @@ public class GeneradorEsquema {
         return claves;
     }
 
-    public void compruebaConexion(TransferConexion tc) {
+    public void compruebaConexion(TransferConexion tc) throws ExceptionAp{
         System.out.println("Datos de conexion a la base de datos");
         System.out.println("------------------------------------");
         System.out.println("DBMS: " + tc.getRuta() + "(" + tc.getTipoConexion() + ")");
         System.out.println("Usuario: " + tc.getUsuario());
         System.out.println("Intentando conectar...");
         ConectorDBMS conector = FactoriaConectores.obtenerConector(tc.getTipoConexion());
+        
         try {
             conector.abrirConexion(tc.getRuta(), tc.getUsuario(), tc.getPassword());
             conector.cerrarConexion();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ERROR) + ".\n" +
-                            Lenguaje.text(Lenguaje.NO_DB_CONEXION) + " \n" +
-                            Lenguaje.text(Lenguaje.REASON) + ": \n" + e.getMessage(),
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.PLAIN_MESSAGE);
-            return;
+        	throw new ExceptionAp(TC.NO_DB_CONEXION, ": \n" + e.getMessage());
         }
-        JOptionPane.showMessageDialog(null,
-                Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT),
-                Lenguaje.text(Lenguaje.DBCASE),
-                JOptionPane.PLAIN_MESSAGE);
+        
         return;
-    }
-
-    public Controlador getControlador() {
-        return controlador;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-        this.validadorBD = ValidadorBD.getInstancia();
-        this.validadorBD.setControlador(controlador);
     }
 }

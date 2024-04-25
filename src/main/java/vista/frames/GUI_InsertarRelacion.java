@@ -19,22 +19,23 @@ import java.util.Vector;
 public class GUI_InsertarRelacion extends Parent_GUI {
 
     private Point2D posicionRelacion;
-    private Controlador controlador;
+    
     private JLabel explicacion;
-    private JTextField cajaNombre = this.getCajaNombre(25, 50);
+    private JTextField cajaNombre;
     private JButton botonInsertar;
 
-    public GUI_InsertarRelacion() {
-        initComponents();
+    public GUI_InsertarRelacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Lenguaje.text(Lenguaje.INSERT_RELATION));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setModal(true);
         setResizable(false);
         getContentPane().setLayout(null);
+        this.cajaNombre = this.getCajaNombre(25, 50);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -165,5 +166,15 @@ public class GUI_InsertarRelacion extends Parent_GUI {
     public void setPosicionRelacion(Point2D posicionRelacion) {
         this.posicionRelacion = posicionRelacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.posicionRelacion = (Point2D) datos;
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 
 }

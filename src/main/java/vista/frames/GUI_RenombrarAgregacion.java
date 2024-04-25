@@ -16,15 +16,15 @@ import java.util.Vector;
 public class GUI_RenombrarAgregacion extends Parent_GUI {
     private TransferRelacion relacion;
     private JLabel explicacion;
-    private JTextField cajaNombre = this.getCajaNombre(25, 40);
+    private JTextField cajaNombre;
     private JButton botonRenombrar;
-    private Controlador controlador;
+    
 
-    public GUI_RenombrarAgregacion() {
-        initComponents();
+    public GUI_RenombrarAgregacion(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.RENAME_AGGREGATION));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -32,6 +32,7 @@ public class GUI_RenombrarAgregacion extends Parent_GUI {
         setModal(true);
         getContentPane().setLayout(null);
         this.setSize(300, 170);
+        cajaNombre = this.getCajaNombre(25, 40);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -149,4 +150,14 @@ public class GUI_RenombrarAgregacion extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

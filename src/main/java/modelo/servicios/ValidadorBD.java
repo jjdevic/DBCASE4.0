@@ -1,7 +1,9 @@
 package modelo.servicios;
 
-import controlador.Controlador;
+import controlador.Contexto;
 import controlador.TC;
+import excepciones.ExceptionAp;
+import misc.Config;
 import modelo.transfers.*;
 import persistencia.*;
 import vista.Lenguaje;
@@ -9,22 +11,20 @@ import vista.Lenguaje;
 import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class ValidadorBD extends GeneradorEsquema {
+public class ValidadorBD{
     private String mensaje;
     private static ValidadorBD INSTANCE;
     private String errores = "";
     private String warnings = "";
-
-    public ValidadorBD() {
+    private GeneradorEsquema ge;
+    
+    public ValidadorBD(GeneradorEsquema ge) {
+    	this.ge = ge;
     }
 
-    public static ValidadorBD getInstancia() {
-        if (INSTANCE == null) INSTANCE = new ValidadorBD();
+    public static ValidadorBD getInstancia(GeneradorEsquema ge) {
+        if (INSTANCE == null) INSTANCE = new ValidadorBD(ge);
         return INSTANCE;
-    }
-
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
     }
 
     //Dado un transfer y un texto, genera un error (formato html)
@@ -62,7 +62,8 @@ public class ValidadorBD extends GeneradorEsquema {
      * metodo principal
      * boolean modelo: diferencia entre esquema logico y fisico
      */
-    protected boolean validaBaseDeDatos(boolean modelo, StringBuilder warning) {
+    protected Contexto validaBaseDeDatos(boolean modelo, StringBuilder warning) throws ExceptionAp {
+    	Contexto resultado = new Contexto(false, null);
         mensaje = "";
         warnings = "";
         this.errores = "";
@@ -80,20 +81,24 @@ public class ValidadorBD extends GeneradorEsquema {
         // Mostrar el texto
         construyeErroresWarnings();
         if (!valido)
-            if (modelo) controlador.mensajeDesde_SS(TC.SS_ValidacionM, mensaje);
-            else controlador.mensajeDesde_SS(TC.SS_ValidacionC, mensaje);
+            if (modelo) resultado.setMensaje(TC.SS_ValidacionM);
+            else resultado.setMensaje(TC.SS_ValidacionC);
+        
         warning.append(mensaje);
-        return valido;
+        resultado.setDatos(mensaje);
+        resultado.setExito(valido);
+        
+        return resultado;
     }
 
-    private boolean esVacio() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private boolean esVacio() throws ExceptionAp {
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         return daoRelaciones.ListaDeRelaciones().isEmpty() && daoEntidades.ListaDeEntidades().isEmpty();
     }
 
-    private boolean validaEntidades() {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+    private boolean validaEntidades() throws ExceptionAp  {
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
         boolean valido = true;
         int i = 0;
@@ -108,9 +113,9 @@ public class ValidadorBD extends GeneradorEsquema {
         return valido;
     }
 
-    private boolean validaNombresAtributosEntidad(TransferEntidad te) {
+    private boolean validaNombresAtributosEntidad(TransferEntidad te) throws ExceptionAp {
         //comprueba que una entidad tenga atributos con nombres distintos.
-        Vector<TransferAtributo> ats = dameAtributosEnTransfer(te.getListaAtributos());
+        Vector<TransferAtributo> ats = ge.dameAtributosEnTransfer(te.getListaAtributos());
         Vector<int[]> resultados = entidadPerteneceAisA(te);
         if (resultados.size() > 0) {
             if (ats.size() < 1 && resultados.elementAt(0)[1] != 1) {
@@ -141,7 +146,7 @@ public class ValidadorBD extends GeneradorEsquema {
         return valido;
     }
 
-    private boolean validaComponentesRelacionDebil(TransferRelacion tr) {
+    private boolean validaComponentesRelacionDebil(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
         int tam = veya.size();
@@ -175,8 +180,8 @@ public class ValidadorBD extends GeneradorEsquema {
         return valida;
     }
 
-    private void validaFidelidadEntidadEnIsA(TransferEntidad te) {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private void validaFidelidadEntidadEnIsA(TransferEntidad te) throws ExceptionAp {
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         //si la entidad es padre de una relacion isA comprueba que solo lo sea de una, sino, dara un aviso.
         int i = 0;
@@ -194,7 +199,7 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     //metodos privados de validacion de relaciones.
-    private boolean validaComponentesRelacionIsA(TransferRelacion tr) {
+    private boolean validaComponentesRelacionIsA(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         if (dameNumEntidadesDebiles(tr) > 0) {
             valida = false;
@@ -219,8 +224,8 @@ public class ValidadorBD extends GeneradorEsquema {
         return valida;
     }
 
-    private int dameNumEntidadesDebiles(TransferRelacion tr) {
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
+    private int dameNumEntidadesDebiles(TransferRelacion tr) throws ExceptionAp {
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         TransferEntidad aux = new TransferEntidad();
         Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
         int cont = 0;
@@ -232,9 +237,9 @@ public class ValidadorBD extends GeneradorEsquema {
         return cont;
     }
 
-    private boolean misDebilesEstanEnDebiles(TransferRelacion rel) {
-        DAORelaciones daoRelaciones = new DAORelaciones(this.getControlador().getPath());
-        DAOEntidades daoEntidades = new DAOEntidades(this.getControlador().getPath());
+    private boolean misDebilesEstanEnDebiles(TransferRelacion rel) throws ExceptionAp {
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         boolean enDebil = false;
         boolean encontrada = false;
@@ -264,7 +269,7 @@ public class ValidadorBD extends GeneradorEsquema {
         return enDebil;
     }
 
-    private boolean validaComponentesRelacionNormal(TransferRelacion tr) {
+    private boolean validaComponentesRelacionNormal(TransferRelacion tr) throws ExceptionAp {
         boolean valida = true;
         if (dameNumEntidadesDebiles(tr) > 0 && !this.misDebilesEstanEnDebiles(tr)) {
             valida = false;
@@ -288,8 +293,8 @@ public class ValidadorBD extends GeneradorEsquema {
         return valida;
     }
 
-    private boolean validaRelaciones() {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private boolean validaRelaciones() throws ExceptionAp {
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         boolean valido = true;
         int i = 0;
@@ -305,8 +310,8 @@ public class ValidadorBD extends GeneradorEsquema {
         return valido;
     }
 
-    private boolean validaDominios() {
-        DAODominios daoDominios = new DAODominios(super.controlador.getPath());
+    private boolean validaDominios() throws ExceptionAp {
+        DAODominios daoDominios = new DAODominios(Config.getPath());
         Vector<TransferDominio> dominios = daoDominios.ListaDeDominios();
         boolean valido = true;
         int i = 0;
@@ -347,7 +352,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 }
             }
             // Comprobar si se usa (esto solo da un aviso si falla)
-            DAOAtributos daoAtributos = new DAOAtributos(controlador);
+            DAOAtributos daoAtributos = new DAOAtributos();
             Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
             boolean esta = false;
             int k = 0;
@@ -362,8 +367,8 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     //metodos privados de validacion de entidades
-    private boolean validaKey(TransferEntidad te) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+    private boolean validaKey(TransferEntidad te) throws ExceptionAp {
+        DAOAtributos daoAtributos = new DAOAtributos();
         //valida si la entidad tiene clave y si esta dentro de sus atributos.
         //ademas si la entidad es debil, debe tener un atributo discriminante.
         boolean valido = true;
@@ -372,7 +377,7 @@ public class ValidadorBD extends GeneradorEsquema {
         Vector atbs = te.getListaAtributos();
         Vector keys = te.getListaClavesPrimarias();
         int contador = 0;
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         Vector<int[]> resultados = entidadPerteneceAisA(te);
         int enIsA = 0;
 
@@ -392,7 +397,7 @@ public class ValidadorBD extends GeneradorEsquema {
         boolean relacionada = false;
         if (keys.isEmpty() && enIsA <= 0) {
             // Comprobar que no esta asociada a ninguna relacion
-            DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+            DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
             Vector<TransferRelacion> rels = daoRelaciones.ListaDeRelaciones();
             int k = 0;
             while (k < rels.size() && !relacionada) {
@@ -417,7 +422,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 //dos casos. que la clave sea un atbto compuesto o que no haya clave.
                 //comprobamos que hay un atbto compuesto y si lo hay, lo comprobamos.
                 while (contador < atbs.size()) {
-                    aux.setIdAtributo(this.objectToInt(atbs.elementAt(contador)));
+                    aux.setIdAtributo(ge.objectToInt(atbs.elementAt(contador)));
                     aux = daoAtributos.consultarAtributo(aux);
                     if (aux.getCompuesto()) {
                         if (compruebaClaveCompuesto(keys, aux)) compuesto = true;
@@ -432,7 +437,7 @@ public class ValidadorBD extends GeneradorEsquema {
                 }
             } else { // comprobamos que no haya una clave que sea un atributo multivalorado.
                 while (contador < keys.size() && noMulti) {
-                    aux.setIdAtributo(this.objectToInt(keys.elementAt(contador)));
+                    aux.setIdAtributo(ge.objectToInt(keys.elementAt(contador)));
                     aux = daoAtributos.consultarAtributo(aux);
                     if (aux.isMultivalorado()) {
                         valido = false;
@@ -453,7 +458,7 @@ public class ValidadorBD extends GeneradorEsquema {
         for (int i = 0; i < subVector.size(); i++) {
             esta = false;
             for (int j = 0; j < vector.size(); j++)
-                if (objectToInt(subVector.elementAt(i)) == objectToInt(vector.elementAt(j))) esta = true;
+                if (ge.objectToInt(subVector.elementAt(i)) == ge.objectToInt(vector.elementAt(j))) esta = true;
             contiene = esta && contiene;
         }
         return contiene;
@@ -470,8 +475,8 @@ public class ValidadorBD extends GeneradorEsquema {
      sino: si es padre -> 0
      si es hija -> 1
      */
-    private Vector<int[]> entidadPerteneceAisA(TransferEntidad te) {
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private Vector<int[]> entidadPerteneceAisA(TransferEntidad te) throws ExceptionAp {
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
         Vector<int[]> resultados = new Vector<int[]>();
 
@@ -501,18 +506,18 @@ public class ValidadorBD extends GeneradorEsquema {
         return resultados;
     }
 
-    private boolean compruebaClaveCompuesto(Vector clavesEntidad, TransferAtributo ta) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+    private boolean compruebaClaveCompuesto(Vector clavesEntidad, TransferAtributo ta) throws ExceptionAp {
+        DAOAtributos daoAtributos = new DAOAtributos();
         int i = 0;
         boolean todosBien = true;
         Vector subs = ta.getListaComponentes();
-        TransferAtributo aux = new TransferAtributo(controlador);
+        TransferAtributo aux = new TransferAtributo();
         if (!ta.getCompuesto()) {
-            if (estaEnVectorDeEnteros(clavesEntidad, ta.getIdAtributo())) return true;
+            if (ge.estaEnVectorDeEnteros(clavesEntidad, ta.getIdAtributo())) return true;
             else return false;
         } else {
             while (i < subs.size() && todosBien) {
-                aux.setIdAtributo(objectToInt(subs.elementAt(i)));
+                aux.setIdAtributo(ge.objectToInt(subs.elementAt(i)));
                 aux = daoAtributos.consultarAtributo(aux);
                 todosBien = todosBien && compruebaClaveCompuesto(clavesEntidad, aux);
                 i++;
@@ -526,12 +531,12 @@ public class ValidadorBD extends GeneradorEsquema {
      * - Cada atributo tiene un dominio definido
      * - Los atributos multivalorados no son clave
      */
-    private boolean validaAtributos() {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
+    private boolean validaAtributos() throws ExceptionAp {
+        DAOAtributos daoAtributos = new DAOAtributos();
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
         boolean valido = true;
         int i = 0;
-        TransferAtributo t = new TransferAtributo(controlador);
+        TransferAtributo t = new TransferAtributo();
         while (i < atributos.size()) {
             t = atributos.elementAt(i);
             valido &= validaFidelidadAtributo(t) && validaDominioDeAtributo(t);
@@ -542,10 +547,10 @@ public class ValidadorBD extends GeneradorEsquema {
     }
 
     // comprueba si el atributo pertenece solo a una entidad.
-    private boolean validaFidelidadAtributo(TransferAtributo ta) {
-        DAOAtributos daoAtributos = new DAOAtributos(controlador);
-        DAOEntidades daoEntidades = new DAOEntidades(controlador.getPath());
-        DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
+    private boolean validaFidelidadAtributo(TransferAtributo ta) throws ExceptionAp {
+        DAOAtributos daoAtributos = new DAOAtributos();
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
+        DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
         Vector<TransferAtributo> atributos = daoAtributos.ListaDeAtributos();
         Vector<TransferEntidad> entidades = daoEntidades.ListaDeEntidades();
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
@@ -557,7 +562,7 @@ public class ValidadorBD extends GeneradorEsquema {
         int i = 0;
         while (i < entidades.size() && cont <= 1) {
             te = entidades.elementAt(i);
-            if (estaEnVectorDeEnteros(te.getListaAtributos(), ta.getIdAtributo())) {
+            if (ge.estaEnVectorDeEnteros(te.getListaAtributos(), ta.getIdAtributo())) {
                 cont++;
                 enEntidad = true;
             }
@@ -568,7 +573,7 @@ public class ValidadorBD extends GeneradorEsquema {
             i = 0;
             while (i < relaciones.size() && cont <= 1) {
                 tr = relaciones.elementAt(i);
-                if (estaEnVectorDeEnteros(tr.getListaAtributos(), ta.getIdAtributo())) cont++;
+                if (ge.estaEnVectorDeEnteros(tr.getListaAtributos(), ta.getIdAtributo())) cont++;
                 i++;
             }
         }
@@ -577,11 +582,11 @@ public class ValidadorBD extends GeneradorEsquema {
             //entonces es un subatributo, comprobamos q no esta repetido entre los subatributos
             i = 0;
             int contSubAtrib = 0;
-            TransferAtributo aux = new TransferAtributo(controlador);
+            TransferAtributo aux = new TransferAtributo();
             while (i < atributos.size() && contSubAtrib <= 1) {
                 aux = atributos.elementAt(i);
                 if (aux.getCompuesto())
-                    if (estaEnVectorDeEnteros(aux.getListaComponentes(), ta.getIdAtributo()))
+                    if (ge.estaEnVectorDeEnteros(aux.getListaComponentes(), ta.getIdAtributo()))
                         contSubAtrib++;
                 i++;
             }

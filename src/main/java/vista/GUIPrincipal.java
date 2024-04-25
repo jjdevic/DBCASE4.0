@@ -2,6 +2,7 @@ package vista;
 
 import controlador.Controlador;
 import controlador.TC;
+import excepciones.ExceptionAp;
 import modelo.transfers.*;
 import vista.componentes.ArbolDominiosRender;
 import vista.componentes.ArbolElementosRender;
@@ -9,6 +10,7 @@ import vista.componentes.GUIPanels.ReportPanel;
 import vista.componentes.GUIPanels.TablaVolumenes;
 import vista.componentes.GUIPanels.addTransfersPanel;
 import vista.componentes.MyComboBoxRenderer;
+import vista.componentes.MyFileChooser;
 import vista.componentes.MyMenu;
 import vista.diagrama.PanelGrafo;
 import vista.diagrama.PanelThumbnail;
@@ -18,10 +20,12 @@ import vista.utils.ImagesPath;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -33,13 +37,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     private TransferConexion conexionActual = null;
     private boolean scriptGeneradoCorrectamente = false;
     private Vector<TransferConexion> listaConexiones;
-    private Vector<TransferEntidad> listaEntidades;
-    private Vector<TransferAtributo> listaAtributos;
-    private Vector<TransferRelacion> listaRelaciones;
-
-    private Vector<TransferAgregacion> listaAgregaciones;
-
-    private Vector<TransferDominio> listaDominios;
+   
     private TablaVolumenes tablaVolumenes;
     private JPanel panelTablas;
     private JButton botonLimpiarPantalla;
@@ -113,7 +111,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         setModoVista(modo);
         loadInfo();
         c.mensajeDesde_GUIPrincipal(TC.GUI_Principal_IniciaFrames, null);
-        c.getTheGUIAnadirAtributo().setListaDominios(getListaDominios());
+        //c.getTheGUIAnadirAtributo().setListaDominios(getListaDominios());
     }
 
     public static void changeFont(Component component, Font font) {
@@ -159,12 +157,13 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         JSplitPane splitTabMapa = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitTabMapa.add(infoTabPane, JSplitPane.RIGHT);
         infoTabPane.setFocusable(false);
-        // Actualizacion de listas y creacion del grafo
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeEntidades, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAtributos, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeRelaciones, null);
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAgregaciones, null);
-        panelDiseno = new PanelGrafo(listaEntidades, listaAtributos, listaRelaciones, listaAgregaciones);
+        
+        Vector<TransferAtributo> lista_atrib = (Vector<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null);
+        Vector<TransferEntidad> lista_entidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
+        Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null);
+        
+        //Creacion del grafo
+        panelDiseno = new PanelGrafo(lista_entidades, lista_atrib, lista_relaciones, null/*c.getListaAgregaciones*/);
         panelDiseno.setControlador(this.getControlador());
 
         panelInfo = new JPanel();
@@ -236,9 +235,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         tituloDiseno.add(title, BorderLayout.CENTER);
         Vector<Transfer> listaTransfers = new Vector<Transfer>();
-        listaTransfers.addAll(listaEntidades);
-        listaTransfers.addAll(listaRelaciones);
-        listaTransfers.addAll(listaAgregaciones);
+        listaTransfers.addAll(lista_entidades);
+        listaTransfers.addAll(lista_relaciones);
+        //listaTransfers.addAll(listaAgregaciones);
 
         addTransfersPanel botonesAnadir = new addTransfersPanel(c, listaTransfers);
         /*Listener del tamano del panel*/
@@ -470,7 +469,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
@@ -503,7 +503,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
@@ -518,7 +519,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
@@ -533,8 +535,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setRestriccionesAtributo: {
-                TransferAtributo te = (TransferAtributo) datos;
-                panelDiseno.ModificaValorInterno(te);
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAtributo ta = (TransferAtributo) v.get(0);
+                panelDiseno.ModificaValorInterno(ta);
                 break;
             }
             case Controlador_AnadirUniqueEntidad: {
@@ -548,12 +551,14 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setUniquesEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
             case Controlador_setUniqueUnitarioEntidad: {
-                TransferEntidad te = (TransferEntidad) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferEntidad te = (TransferEntidad) v.get(0);
                 panelDiseno.ModificaValorInterno(te);
                 break;
             }
@@ -568,12 +573,14 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_setUniquesRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
             case Controlador_setUniqueUnitarioRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
@@ -582,7 +589,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 TransferAtributo ta = (TransferAtributo) vectorAtributoYElemMod.get(0);
                 Transfer t_elemMod = (Transfer) vectorAtributoYElemMod.get(1);
                 panelDiseno.eliminaNodo(ta);
-                panelDiseno.ModificaValorInterno(t_elemMod);
+                if(t_elemMod != null) panelDiseno.ModificaValorInterno(t_elemMod);
                 loadInfo();
                 break;
             }
@@ -603,7 +610,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarAtributo: {
-                TransferAtributo ta = (TransferAtributo) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAtributo ta = (TransferAtributo) v.get(0);
                 panelDiseno.ModificaValorInterno(ta);
                 break;
             }
@@ -664,12 +672,14 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_RenombrarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
             case Controlador_RenombrarAgregacion: {
-                TransferAgregacion tr = (TransferAgregacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferAgregacion tr = (TransferAgregacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 break;
             }
@@ -679,7 +689,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_EliminarRelacion: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.ModificaValorInterno(tr);
                 loadInfo();
                 break;
@@ -722,7 +733,8 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                 break;
             }
             case Controlador_EliminarRelacionNormal: {
-                TransferRelacion tr = (TransferRelacion) datos;
+            	Vector<Object> v = (Vector<Object>) datos;
+                TransferRelacion tr = (TransferRelacion) v.get(0);
                 panelDiseno.eliminaNodo(tr);
                 loadInfo();
                 break;
@@ -844,45 +856,10 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         this.listaConexiones = listaConexiones;
     }
 
-    public Vector getListaEntidades() {
-        return listaEntidades;
-    }
-
-    public void setListaEntidades(Vector<TransferEntidad> listaEntidades) {
-        this.listaEntidades = listaEntidades;
-    }
-
-    public void setListaAgregaciones(Vector<TransferAgregacion> listaAgregaciones) {
-        this.listaAgregaciones = listaAgregaciones;
-    }
-
-    public Vector getListaAtributos() {
-        return listaAtributos;
-    }
-
-    public void setListaAtributos(Vector<TransferAtributo> listaAtributos) {
-        this.listaAtributos = listaAtributos;
-    }
-
-    public Vector getListaRelaciones() {
-        return listaRelaciones;
-    }
-
-    public void setListaRelaciones(Vector<TransferRelacion> listaRelaciones) {
-        this.listaRelaciones = listaRelaciones;
-    }
-
-    public Vector getListaDominios() {
-        return listaDominios;
-    }
-
     public TransferConexion getConexionActual() {
         return conexionActual;
     }
 
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
 
     public void escribeEnModelo(String mensaje) {
         try {
@@ -917,9 +894,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
      * ARBOL DOMINIOS
      */
     public void actualizaArbolDominio(String expandir) {
-        c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeDominios, null);
+    	Vector<TransferDominio> lista_dominios = (Vector<TransferDominio>) c.mensaje(TC.ObtenerListaDominios, null);
         this.panelArbolDom.setVisible(true);
-        this.arbolDom = generaArbolDominio(this.listaDominios, expandir);
+        this.arbolDom = generaArbolDominio(lista_dominios, expandir);
         this.panelArbolDom.setViewportView(arbolDom);
         this.repaint();
     }
@@ -1004,6 +981,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
         private void muestraMenu(MouseEvent e, TreePath selPath) {
             popup.removeAll();
+            Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) c.mensaje(TC.ObtenerListaDominios, null);
             if (selPath.getPathCount() == 2) {//Nodo principal de un dominio
                 String nombre = selPath.getLastPathComponent().toString();
                 if (!esDominioDefecto(nombre)) {
@@ -1196,9 +1174,11 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
         private void muestraMenu(MouseEvent e, TreePath selPath) {
             popup.removeAll();
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeEntidades, null);
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeAtributos, null);
-            c.mensajeDesde_GUIPrincipal(TC.GUIPrincipal_ActualizameLaListaDeRelaciones, null);
+            
+            
+            Vector<TransferAtributo> listaAtributos = (Vector<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null);
+            Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
+            Vector<TransferRelacion> listaRelaciones = (Vector<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null);
 
             //if(selPath.getPathCount()==1){//Nodo The entity, the attribute, the relation...
             String nombre = selPath.getPathComponent(0).toString();
@@ -1214,7 +1194,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
                     if (listaEntidades.get(i).getNombre().equals(nombre)) {
                         index = i;
                     }
-
                 }
                 final TransferEntidad entidad = listaEntidades.get(index);
 
@@ -1702,7 +1681,7 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     };
 
     private TransferEntidad esAtributoDirecto(TransferAtributo ta) {
-        //Collection<TransferEntidad> listaEntidades = this.entidades.values();
+        Vector<TransferEntidad> listaEntidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
         for (Iterator<TransferEntidad> it = listaEntidades.iterator(); it.hasNext(); ) {
             TransferEntidad te = it.next();
             if (te.getListaAtributos().contains(String.valueOf(ta.getIdAtributo()))) return te;
@@ -1913,8 +1892,6 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-
     }
 	
 	/*private Runnable doFocus = new Runnable() {
@@ -1923,5 +1900,36 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
 		}
 	};*/
 
+    public void mostrarError(String mensaje_error, String titulo) {
+    	JOptionPane.showMessageDialog(null, mensaje_error, titulo, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void mensajeInformativo(String mensaje, String titulo) {
+    	JOptionPane.showMessageDialog(null, mensaje, titulo, JOptionPane.PLAIN_MESSAGE);
+    }
 
+    public File elegirArchivoGenerar(boolean sql) throws ExceptionAp{
+    	File resultado = null;
+    	
+    	MyFileChooser jfc = new MyFileChooser();
+        jfc.setDialogTitle(Lenguaje.text(Lenguaje.DBCASE));
+        jfc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/projects"));
+        jfc.setFileFilter(new FileNameExtensionFilter("Text", "txt"));
+        if(sql) jfc.setFileFilter(new FileNameExtensionFilter(Lenguaje.text(Lenguaje.SQL_FILES), "sql"));
+        int resul = jfc.showSaveDialog(null);
+        
+        if (resul == 0) {
+        	File ruta = jfc.getSelectedFile();
+            String filePath = ruta.getAbsolutePath();
+            
+            if (jfc.getFileFilter().getDescription().equals("Text") && !filePath.endsWith(".txt"))
+                ruta = new File(filePath + ".txt");
+            else if (jfc.getFileFilter().getDescription().equals("SQL Files") && !filePath.endsWith(".sql"))
+                ruta = new File(filePath + ".sql");
+            
+            resultado = ruta;
+        }
+        
+        return resultado;
+    }
 }

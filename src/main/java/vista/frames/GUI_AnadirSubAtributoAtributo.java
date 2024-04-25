@@ -22,8 +22,8 @@ import java.util.Vector;
 public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
 
     private TransferAtributo atributo;
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 45);
+    
+    private JTextField cajaNombre;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
     private JCheckBox opcionNotnull;
@@ -36,12 +36,13 @@ public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
     private JLabel explicacion;
     private Vector<TransferDominio> listaDominios;
 
-    public GUI_AnadirSubAtributoAtributo() {
-        this.initComponents();
+    public GUI_AnadirSubAtributoAtributo(Controlador controlador) {
+        super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_NEW_SUBATTRIBUTE));
+        cajaNombre = this.getCajaNombre(25, 45);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -114,7 +115,7 @@ public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
      * Oyentes de los botones
      */
     private void botonAnadirActionPerformed(java.awt.event.ActionEvent evt) {
-        TransferAtributo ta = new TransferAtributo(controlador);
+        TransferAtributo ta = new TransferAtributo();
         ta.setNombre(this.cajaNombre.getText());
         String tamano = "";
 
@@ -232,7 +233,7 @@ public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
         this.cajaNombre.setText("");
         this.cajaTamano.setText("");
 
-        controlador.mensajeDesde_GUI(TC.GUIAnadirSubAtributoAtributo_ActualizameLaListaDeDominios, null);
+        listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         Object[] nuevos = new Object[this.listaDominios.size()];
         this.generaItems(nuevos);
 
@@ -518,5 +519,16 @@ public class GUI_AnadirSubAtributoAtributo extends Parent_GUI {
     public void setListaDominios(Vector<TransferDominio> listaDominios) {
         this.listaDominios = listaDominios;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.atributo = (TransferAtributo) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 
 }

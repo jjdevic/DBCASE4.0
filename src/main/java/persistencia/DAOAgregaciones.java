@@ -1,95 +1,33 @@
 package persistencia;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import modelo.transfers.TransferAgregacion;
 import org.w3c.dom.*;
-import vista.Lenguaje;
 
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import excepciones.ExceptionAp;
+
 import java.awt.geom.Point2D;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Stack;
 import java.util.Vector;
 
-public class DAOAgregaciones {
+public class DAOAgregaciones extends DAO{
 
     // Atributos
     private Document doc;
-    private String path;
 
     // Constructora del DAO
-    public DAOAgregaciones(String path) {
-        this.path = path;
-        //this.path += "\\persistencia.xml";
-        this.path = this.path.replace(" ", "%20");
-        this.path = this.path.replace('\\', '/');
+    public DAOAgregaciones(String path) throws ExceptionAp {
+        super(path);
         this.doc = dameDoc();
-    }
-
-    // Metodos para el tratamiento del fichero xml
-    private Document dameDoc() {
-        Document doc = null;
-        DocumentBuilder parser = null;
-        try {
-
-            DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
-            parser = factoria.newDocumentBuilder();
-            doc = parser.parse(this.path);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    Lenguaje.text(Lenguaje.ERROR) + ":\n" +
-                            Lenguaje.text(Lenguaje.UNESPECTED_XML_ERROR) + " \"" + path + ".xml\"",
-                    Lenguaje.text(Lenguaje.DBCASE),
-                    JOptionPane.ERROR_MESSAGE);
-        }
-        return doc;
-    }
-
-    private void guardaDoc() {
-        OutputFormat formato = new OutputFormat(doc.toString(), "UTF-8", true);
-        StringWriter s = new StringWriter();
-        XMLSerializer ser = new XMLSerializer(s, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // El FileWriter necesita espacios en la ruta
-        this.path = this.path.replace("%20", " ");
-        FileWriter f = null;
-        /*debido a que la funcion FileWriter da un error de acceso
-         * de vez en cuando, forzamos su ejecucion hasta que funcione correctamente*/
-        boolean centinela = true;
-        while (centinela == true) {
-            try {
-                f = new FileWriter(this.path);
-                centinela = false;
-            } catch (IOException e) {
-                centinela = true;
-            }
-        }
-        this.path = this.path.replace(" ", "%20");
-        ser = new XMLSerializer(f, formato);
-        try {
-            ser.serialize(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void apilarDeshacer(Stack<Document> pilaDeshacer) {
         pilaDeshacer.push(doc);
     }
 
-
     // Metodos del DAOCllientes
-    public int anadirAgregacion(TransferAgregacion tc) {//tr.getTipo().equalsIgnoreCase("Normal")
+    public int anadirAgregacion(TransferAgregacion tc) throws ExceptionAp{//tr.getTipo().equalsIgnoreCase("Normal")
         // Resultado que se devolvera
         int resultado = 0;
         // Sacamos la <ListaAgregaciones>
@@ -137,7 +75,7 @@ public class DAOAgregaciones {
         // Actualizamos el resultado
         resultado = proximoID;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
         // Devolvemos el resultado de la operacion
         return resultado;
     }
@@ -154,7 +92,7 @@ public class DAOAgregaciones {
         return transfer;
     }
 
-    public boolean modificarAgregacion(TransferAgregacion tc) {
+    public boolean modificarAgregacion(TransferAgregacion tc) throws ExceptionAp{
         // Resultado que devolveremos
         boolean respuesta = true;
         // Obtenemos el Relacion
@@ -199,12 +137,12 @@ public class DAOAgregaciones {
 
         } else respuesta = false;
         // Guardamos los cambios en el fichero xml y controlamos la excepcion
-        this.guardaDoc();
+        this.guardaDoc(doc);
         return respuesta;
     }
 
 
-    public boolean borrarAgregacion(TransferAgregacion tc) {
+    public boolean borrarAgregacion(TransferAgregacion tc) throws ExceptionAp{
         Node nodo = dameNodoAgregacion(tc.getIdAgregacion());
         NodeList LC = doc.getElementsByTagName("AggregationList");
         // Sacamos el nodo
@@ -214,7 +152,7 @@ public class DAOAgregaciones {
             raiz.removeChild(nodo);
             borrado = true;
         }
-        this.guardaDoc();
+        this.guardaDoc(doc);
 
         return borrado;
     }

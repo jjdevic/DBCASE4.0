@@ -3,12 +3,20 @@ package vista.componentes;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Esta clase representa el conjunto de archivos que se han abierto más recientemente.
+ */
 public class ArchivosRecientes {
 
     private ArrayList<File> recientes = new ArrayList<File>();
-    //Establecemos un maximo de archivos mostrados en recientes para que sean realmente los recientes
+    /** Maximo de archivos recientes contemplados */
     private static final int max_size = 10;
 
+    /**
+     * Añade como más reciente un archivo al conjunto de archivos abiertos recientemente. Si se sobrepasa
+     * la capacidad máxima, se elimina el archivo menos reciente.
+     * @param f Archivo a añadir a la listas
+     */
     public void add(File f) {
         if (recientes.contains(f)) {
             recientes.remove(f);
@@ -23,7 +31,7 @@ public class ArchivosRecientes {
         return recientes;
     }
 
-    public void recibeRecientes(ArrayList<File> v) {
+    public void setRecientes(ArrayList<File> v) {
         recientes = v;
     }
 

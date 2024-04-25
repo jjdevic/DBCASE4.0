@@ -3,6 +3,7 @@ package vista.frames;
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.Transfer;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -20,18 +21,18 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_EstablecerEntidadPadre extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private JComboBox comboEntidades;
     private JLabel textoExplicacion;
     private JButton botonInsertar;
     private TransferRelacion relacion;
 
-    public GUI_EstablecerEntidadPadre() {
-        initComponents();
+    public GUI_EstablecerEntidadPadre(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         this.setTitle((Lenguaje.text(Lenguaje.SET_PARENT_ENTITY)));
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         getContentPane().setLayout(null);
@@ -58,7 +59,7 @@ public class GUI_EstablecerEntidadPadre extends Parent_GUI {
                     Lenguaje.text(Lenguaje.SET_PARENT_ENTITY),
                     JOptionPane.PLAIN_MESSAGE);
         else {
-            this.controlador.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ActualizameListaEntidades, null);
+        	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
             // Generamos los items
             String[] items = this.generaItems();
             if (items.length == 0)
@@ -236,5 +237,16 @@ public class GUI_EstablecerEntidadPadre extends Parent_GUI {
     public void setRelacion(TransferRelacion relacion) {
         this.relacion = relacion;
     }
+
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }
 

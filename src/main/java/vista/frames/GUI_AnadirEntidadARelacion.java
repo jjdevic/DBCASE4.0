@@ -2,6 +2,7 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
@@ -19,7 +20,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_AnadirEntidadARelacion extends Parent_GUI {
 
-    private Controlador controlador;
+    
     private Vector<TransferEntidad> listaEntidades;
     private JComboBox comboEntidadesyAgregaciones;
     private JLabel jLabel1;
@@ -42,12 +43,12 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
     private JSeparator separador1;
     private Vector<String> items;
 
-    public GUI_AnadirEntidadARelacion() {
-        initComponents();
+    public GUI_AnadirEntidadARelacion(Controlador controlador) {
+    	super(controlador);
 
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_NEW_ENTITY_TO_RELATION));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -84,8 +85,8 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
      */
 
     public void setActiva() {
-        // Le pedimos al controlador que nos actualice la lista de entidades
-        this.controlador.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ActualizameListaEntidades, null);
+        // Actualizar la lista de entidades
+    	listaEntidades = (Vector<TransferEntidad>) controlador.mensaje(TC.ObtenerListaEntidades, null);
         // Generamos los items del comboEntidades
         items = this.generaItems();
         //Los ordenamos alfabéticamente
@@ -370,7 +371,6 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
 	/*DocumentListener documentListener = new DocumentListener() {
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
-			// TODO Auto-generated method stub
 			// Código a ejecutar cuando el texto del JTextField cambia
 			if(cajaInicio.getText()=="0") {
 				totalParticipation.setSelected(false);
@@ -749,4 +749,14 @@ public class GUI_AnadirEntidadARelacion extends Parent_GUI {
         return partialParticipation;
     }
 
+	@Override
+	public void setDatos(Object datos) {
+		this.relacion = (TransferRelacion) datos;
+		
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
 }

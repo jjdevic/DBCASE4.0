@@ -18,8 +18,7 @@ import java.util.Vector;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class GUI_AnadirAtributo extends Parent_GUI {
 
-    private Controlador controlador;
-    private JTextField cajaNombre = this.getCajaNombre(25, 85);
+    private JTextField cajaNombre;
     private JCheckBox opcionClavePrimaria;
     private JCheckBox opcionMultivalorado;
     private JCheckBox opcionCompuesto;
@@ -33,19 +32,19 @@ public class GUI_AnadirAtributo extends Parent_GUI {
     private JLabel jTextPane2;
     private JLabel explicacion;
     private JLabel eligeTransfer;
-    private Vector<TransferDominio> listaDominios;
     private Vector<Transfer> listaTransfers;
 
-    public GUI_AnadirAtributo() {
-        this.initComponents();
+    public GUI_AnadirAtributo(Controlador controlador) {
+    	super(controlador);
     }
 
-    private void initComponents() {
+    protected void initComponents() {
         setTitle(Lenguaje.text(Lenguaje.INSERT_ATTRIBUTE));
         this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setModal(true);
+        cajaNombre = this.getCajaNombre(25, 85);
         cajaNombre.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 10) {
@@ -138,7 +137,7 @@ public class GUI_AnadirAtributo extends Parent_GUI {
      * Oyentes de los botones
      */
     private void botonAnadirActionPerformed(ActionEvent evt) {
-        TransferAtributo ta = new TransferAtributo(controlador);
+        TransferAtributo ta = new TransferAtributo();
         ta.setNombre(this.cajaNombre.getText());
         String tamano = "";
 
@@ -251,7 +250,8 @@ public class GUI_AnadirAtributo extends Parent_GUI {
      * Activar y desactivar el dialogo
      */
     public void setActiva() {
-        Object[] nuevos = new Object[this.listaDominios.size()];
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
+        Object[] nuevos = new Object[listaDominios.size()];
         this.centraEnPantalla();
         this.opcionClavePrimaria.setSelected(false);
         this.opcionCompuesto.setSelected(false);
@@ -262,10 +262,9 @@ public class GUI_AnadirAtributo extends Parent_GUI {
         this.comboTransfers.setEnabled(true);
         this.cajaTamano.setText("");
         this.cajaNombre.setText("");
-        controlador.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_ActualizameLaListaDeDominios, null);
-
+        
         //Genera Transfers
-        this.comboTransfers.setModel(new javax.swing.DefaultComboBoxModel(listaTransfers));
+        this.comboTransfers.setModel(new javax.swing.DefaultComboBoxModel(this.listaTransfers));
 
         //Genera Dominios
         this.generaItems(nuevos);
@@ -541,9 +540,10 @@ public class GUI_AnadirAtributo extends Parent_GUI {
     }
 
     private Object[] generaItems(Object[] items) {
+    	Vector<TransferDominio> listaDominios = (Vector<TransferDominio>) controlador.mensaje(TC.ObtenerListaDominios, null);
         int cont = 0;
-        while (cont < this.listaDominios.size()) {
-            TransferDominio td = this.listaDominios.get(cont);
+        while (cont < listaDominios.size()) {
+            TransferDominio td = listaDominios.get(cont);
             items[cont] = td.getNombre();
             cont++;
         }
@@ -572,22 +572,6 @@ public class GUI_AnadirAtributo extends Parent_GUI {
         }
     }
 
-    public Vector<TransferDominio> getListaDominios() {
-        return listaDominios;
-    }
-
-    public void setListaDominios(Vector<TransferDominio> listaDominios) {
-        this.listaDominios = listaDominios;
-    }
-
-    public Vector<Transfer> getListaTransfers() {
-        return listaTransfers;
-    }
-
-    public void setListaTransfers(Vector<Transfer> lista) {
-        this.listaTransfers = lista;
-    }
-
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case 27:
@@ -611,4 +595,16 @@ public class GUI_AnadirAtributo extends Parent_GUI {
         public void keyTyped(KeyEvent e) {
         }
     };
+
+	@Override
+	public void setDatos(Object datos) {
+		this.listaTransfers = (Vector<Transfer>) datos;
+	}
+
+	@Override
+	public int setActiva(int op) {
+		return 0;
+	}
+
+	
 }

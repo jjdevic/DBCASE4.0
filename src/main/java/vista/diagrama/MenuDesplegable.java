@@ -5,11 +5,13 @@ import controlador.Controlador;
 import controlador.TC;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
+import misc.UtilsFunc;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
+import vista.frames.Parent_GUI;
 import vista.tema.Theme;
 
 import javax.swing.*;
@@ -21,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+/** Menu que se abre al pulsar sobre un elemento en el panel de diseño */
 @SuppressWarnings("serial")
 public class MenuDesplegable extends JPopupMenu {
     public Transfer nodo; // Nodo sobre el que se ha pulsado
@@ -55,7 +58,7 @@ public class MenuDesplegable extends JPopupMenu {
                 public void actionPerformed(ActionEvent e) {
                     MenuDesplegable menu = (MenuDesplegable) ((JMenuItem) e.getSource()).getParent();
                     Point2D p = menu.punto;
-                    controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, p);
+                    controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_InsertarEntidad, UtilsFunc.crearVector(p, null, null));
                 }
             });
             this.add(j1);
@@ -131,6 +134,7 @@ public class MenuDesplegable extends JPopupMenu {
                         MenuDesplegable menu = (MenuDesplegable) ((JMenuItem) e.getSource()).getParent();
                         TransferEntidad entidad = (TransferEntidad) menu.nodo;
                         TransferEntidad clon_entidad = entidad.clonar();
+                        clon_entidad.getIdEntidad();
                         controlador.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_AnadirAtributoEntidad, clon_entidad);
                     }
                 });
@@ -799,13 +803,15 @@ public class MenuDesplegable extends JPopupMenu {
         PickedState<Transfer> p = vv.getPickedVertexState();
         int seleccionados = 0;
         for (@SuppressWarnings("unused") Transfer t : p.getPicked()) seleccionados++;
-        int respuesta = 1;
+        int respuesta = 0;
         Vector<TransferAtributo> vta = new Vector<TransferAtributo>();
         if (seleccionados > 1) {
 
-            respuesta = this.controlador.getPanelOpciones().setActiva(
-                    Lenguaje.text(Lenguaje.DELETE_ALL_NODES) + "\n" + Lenguaje.text(Lenguaje.WISH_CONTINUE),
-                    Lenguaje.text(Lenguaje.DBCASE_DELETE));
+        	Parent_GUI gui = controlador.getFactoriaGUI().getGUI(TC.GUI_Pregunta, null, false);
+            gui.setDatos(
+            		UtilsFunc.crearVector(Lenguaje.text(Lenguaje.DELETE_ALL_NODES) + "\n" + Lenguaje.text(Lenguaje.WISH_CONTINUE),
+                    Lenguaje.text(Lenguaje.DBCASE_DELETE), null));
+            respuesta = gui.setActiva(0);
         }
         if (respuesta == 0 || seleccionados == 1) {
             PickedState<Transfer> ps = vv.getPickedVertexState();
@@ -816,7 +822,7 @@ public class MenuDesplegable extends JPopupMenu {
             for (Transfer t : ps.getPicked()) {
                 Vector<Object> v = new Vector<Object>();
                 v.add(t);
-                v.add(respuesta == 1);
+                v.add(respuesta == 1); 
                 if (cont2 == 0) v.add(0);
                 else v.add(1);
                 if (t instanceof TransferEntidad) {

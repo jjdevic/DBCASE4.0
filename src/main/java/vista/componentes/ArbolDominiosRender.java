@@ -7,8 +7,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-/*
- * Clase para representar el arbol de dominios del panel de informacion
+/**
+ * Clase para representar el arbol de dominios del panel de informacion.
  * */
 @SuppressWarnings("serial")
 public class ArbolDominiosRender extends DefaultTreeCellRenderer {
