@@ -15,7 +15,7 @@ public class FactoriaMsj {
 	 */
 	public static String getMsj(TC tc) {
 		String resultado = null;
-		Integer msj;
+		Integer msj = null;
 		switch(tc) { 
 		//Atrib
 		case SA_EliminarAtributo_ERROR_DAOAtributos: msj= Lenguaje.ATTRIBUTES_FILE_ERROR; break;
@@ -100,17 +100,17 @@ public class FactoriaMsj {
         case SD_ModificarTipoBaseDominio_ERROR_TipoBaseDominioEsVacio: msj = Lenguaje.EMPTY_TYPE_NAME; break;
         case SD_ModificarElementosDominio_ERROR_DAODominios: msj = Lenguaje.REPEATED_DOM_NAME; break; 
         case SD_ModificarElementosDominio_ERROR_ElementosDominioEsVacio: msj = Lenguaje.EMPTY_VALUES; break;
-        case SD_InsertarDominio_ERROR_ValorNoValido_1: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5, 1.5E100, -1, -0.5";
-        case SD_InsertarDominio_ERROR_ValorNoValido_2: resultado = Lenguaje.text(Lenguaje.INCORRECT_BIT_VALUE);
-        case SD_InsertarDominio_ERROR_ValorNoValido_3: resultado = Lenguaje.text(Lenguaje.QUOTATION_MARKS);
-        case SD_InsertarDominio_ERROR_ValorNoValido_4: resultado = Lenguaje.text(Lenguaje.INCORRECT_DATE);
-        case SD_InsertarDominio_ERROR_ValorNoValido_5: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '00:00:00.999', '22', '22:05', '22:59:59'";
-        case SD_InsertarDominio_ERROR_ValorNoValido_6: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20201125','281125 12','281125 12:34:00','281125 12:34:00.200' ";
-        case SD_InsertarDominio_ERROR_ValorNoValido_7: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20231125','20231125 12','20201125 12:34:00','20191125 12:34:00.200' ";
-        case SD_InsertarDominio_ERROR_ValorNoValido_8: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20191125','20251125 12','20121125 12:34:00','20081125 12:34:00.200' ";
-        case SD_InsertarDominio_ERROR_ValorNoValido_9: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5";
-        case SD_InsertarDominio_ERROR_ValorNoValido_10: resultado = Lenguaje.text(Lenguaje.EMPTY_VALUE);
-        case SD_InsertarDominio_ERROR_ValorNoValido_11: resultado = Lenguaje.text(Lenguaje.INCORRECT_NUMBER);
+        case SD_InsertarDominio_ERROR_ValorNoValido_1: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5, 1.5E100, -1, -0.5"; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_2: resultado = Lenguaje.text(Lenguaje.INCORRECT_BIT_VALUE); break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_3: resultado = Lenguaje.text(Lenguaje.QUOTATION_MARKS); break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_4: resultado = Lenguaje.text(Lenguaje.INCORRECT_DATE); break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_5: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '00:00:00.999', '22', '22:05', '22:59:59'"; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_6: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20201125','281125 12','281125 12:34:00','281125 12:34:00.200' "; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_7: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20231125','20231125 12','20201125 12:34:00','20191125 12:34:00.200' "; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_8: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " '20191125','20251125 12','20121125 12:34:00','20081125 12:34:00.200' "; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_9: resultado = Lenguaje.text(Lenguaje.INCORRECT_VALUE_EX) + " 1, 0.5"; break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_10: resultado = Lenguaje.text(Lenguaje.EMPTY_VALUE); break;
+        case SD_InsertarDominio_ERROR_ValorNoValido_11: resultado = Lenguaje.text(Lenguaje.INCORRECT_NUMBER); break;
         
         //Entidad
         case SE_InsertarEntidad_ERROR_NombreDeEntidadEsVacio: msj = Lenguaje.EMPTY_ENT_NAME; break;

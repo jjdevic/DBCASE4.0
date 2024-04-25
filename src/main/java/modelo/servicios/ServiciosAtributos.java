@@ -642,7 +642,7 @@ public class ServiciosAtributos {
         String restriccion = (String) v.get(1);
 
         // Si nombre es vacio -> ERROR
-        if (restriccion.isEmpty()) return null; //TODO Aniadir mensaje
+        if (restriccion.isEmpty()) return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
 
         DAOAtributos daoAtributoes = new DAOAtributos();
         Vector<TransferAtributo> lista = daoAtributoes.ListaDeAtributos();
@@ -665,7 +665,7 @@ public class ServiciosAtributos {
         if (daoAtributoes.modificarAtributo(te) != false)
         	return new Contexto(true, TC.SA_QuitarRestriccionAAtributo_HECHO, v);
         
-        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
+        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
     }
 
     public Contexto setRestricciones(Vector v) throws ExceptionAp {
@@ -684,7 +684,7 @@ public class ServiciosAtributos {
         ta.setListaRestricciones(restricciones);
         if (daoAtributos.modificarAtributo(ta) != false)
         	return new Contexto(true, TC.SA_setRestriccionesAAtributo_HECHO, v);
-        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos); //TODO Aniadir mensaje error
+        return new Contexto(false, TC.SA_RenombrarAtributo_ERROR_DAOAtributos);
     }
 
     /*

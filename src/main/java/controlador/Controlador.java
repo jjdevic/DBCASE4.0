@@ -1558,8 +1558,8 @@ public class Controlador {
             ActualizaArbol(tr);
     	}
     }
-	
-	/*public void funcionDeshacer(TC mensaje, Object datos) {
+	/*
+	public void funcionDeshacer(TC mensaje, Object datos) {
 		switch (mensaje) {
 			case SE_InsertarEntidad_HECHO: {
 				Vector<Object> v = new Vector<Object>();
@@ -1590,15 +1590,17 @@ public class Controlador {
 				Vector atributos = this.auxTransferAtributos;
 				Vector<TransferRelacion> relaciones = (Vector<TransferRelacion>) v2.get(1);
 				this.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, v2.get(0));
+				Vector<TransferAtributo> listaAtributos = (Vector<TransferAtributo>) this.mensaje(TC.ObtenerListaAtributos, null);
+				
 				for (int i = 0; i < atributos.size(); ++i) {
 					
-					for (int j = 0; j < this.listaAtributos.size(); ++j) {
+					for (int j = 0; j < listaAtributos.size(); ++j) {
 						//System.out.println(atributos.get(i));
 						//System.out.println(this.listaAtributos.get(j).getIdAtributo());
-						if (String.valueOf(atributos.get(i)).equals(String.valueOf(this.listaAtributos.get(j).getIdAtributo()))) {
+						if (String.valueOf(atributos.get(i)).equals(String.valueOf(listaAtributos.get(j).getIdAtributo()))) {
 							Vector<Object> v = new Vector<Object>();
 							v.add(v2.get(0));
-							v.add(this.listaAtributos.get(j));
+							v.add(listaAtributos.get(j));
 							mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
 						}	
 					}
@@ -1663,9 +1665,9 @@ public class Controlador {
 						}
 						
 					}
-				}
+				}*/
 				
-				break;
+			/*	break;
 			}
 			case SE_setUniqueUnitarioAEntidad_HECHO:{//es el ultimo mensaje cuando se renombra un atributo
 				Vector<Object> v = new Vector<Object>();
@@ -1682,8 +1684,8 @@ public class Controlador {
 				/*else {
 					TransferAtributo ta = (TransferAtributo) v2.get(1);
 					mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarUniqueAtributo,ta);
-				}
-				
+				}*/
+			/*	
 			}
 			case SA_EditarUniqueAtributo_HECHO:{
 				TransferAtributo ta = (TransferAtributo) datos;
@@ -1707,7 +1709,7 @@ public class Controlador {
 				if (ta.getNotnull() != this.antiguoNotnullAtribuo){
 					mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarNotNullAtributo,ta);
 				}
-				/*if(ta.getUnique() != this.antiguoUniqueAtribuo){
+				if(ta.getUnique() != this.antiguoUniqueAtribuo){
 					mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarUniqueAtributo,ta);
 				}
 				break;
@@ -1860,7 +1862,7 @@ public class Controlador {
 				//obtenemos las hijas
 				Vector<TransferEntidad> vte = this.antiguasEntidadesRel;
 				Vector<TransferAtributo> vta = this.antiguosAtributosRel;
-				Vector<EntidadYAridad> veya = new Vector<EntidadYAridad>();
+				Vector<Object> veya = new Vector<Object>();
 				tr.setListaEntidadesYAridades(veya);
 			
 				this.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, tr);
@@ -1938,6 +1940,5 @@ public class Controlador {
 			}
 			default: break;
 		}
-	}
-	*/
+	}*/
 }

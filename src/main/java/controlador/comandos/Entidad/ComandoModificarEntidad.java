@@ -24,7 +24,7 @@ public class ComandoModificarEntidad extends Comando{
 
 	@Override
 	public Contexto ejecutar(Object datos) throws ExceptionAp {
-		Contexto resultado = null;
+		Contexto resultado = null, aux;
 		Vector<Object> v = (Vector<Object>) datos;
         TransferEntidad te = (TransferEntidad) v.get(0);
         boolean eraDebil = te.isDebil();
@@ -68,20 +68,23 @@ public class ComandoModificarEntidad extends Comando{
         	v_crearRelDebil.add(tEntidadFuerte);
         	
         	//Usar comando para crear relacion debil
-        	tratarContexto(ejecutarComando(TC.Controlador_InsertarRelacionDebil, v_crearRelDebil));
+        	aux = ejecutarComando(TC.Controlador_InsertarRelacionDebil, v_crearRelDebil);
+        	tratarContexto(aux);
         	
-        	//Debilitar la entidad
-        	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
-        } 
+        	//Debilitar la entidad si ha ido bien
+        	if(aux != null && aux.isExito()) {
+        		resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
+        	}
+        }  
         else if (eraDebil) {
-        	getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
+        	tratarContexto(getFactoriaServicios().getServicioEntidades().debilitarEntidad(te));
             Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) ctrl.mensaje(TC.ObtenerListaRelaciones, null);
             //getFactoriaServicios().getServicioRelaciones().restablecerDebilidadRelaciones();
             for (TransferRelacion tr : lista_relaciones) {
                 Vector<EntidadYAridad> eya = tr.getListaEntidadesYAridades();
                 for (EntidadYAridad entidadYAridad : eya) {
                     if (entidadYAridad.getEntidad() == te.getIdEntidad() && tr.getTipo().equals("Debil"))
-                        resultado = getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr);
+                        tratarContexto(getFactoriaServicios().getServicioRelaciones().debilitarRelacion(tr));
                 }
             }
         }

@@ -3,7 +3,7 @@ package controlador;
 public enum TC {
 
     //---------------------------------------------------------------------------------
-    // Mensajes desde la GUIPrincipal al controlador
+    // Mensajes desde la GUIPrincipal al controlador o viceversa.
     //---------------------------------------------------------------------------------
     // Obtención de DBMS
     GUIPrincipal_ObtenDBMSDisponibles,
@@ -57,24 +57,31 @@ public enum TC {
     GUI_Principal_Click_BotonEjecutarEnDBMS,
     //Menu conceptual
     GUI_Principal_Click_SubmenuAnadirEntidad,
+    
+    //Otros
+    GUI_Principal_NULLATTR,
+    GUI_Principal_ConfirmarEliminaciones,
+    GUI_Principal_Cuadricula,
+    GUI_Principal_ModoSoporte,
+    GUI_Principal_IniciaFrames,
+    GUI_Principal_EditarEntidad,
+    GUI_Principal_EditarRelacion,
+    GUI_Principal_EditarAtributo, 
 
     //---------------------------------------------------------------------------------
-    // Mensaje desde la GUI_WorkSpace al Controlador
+    // Mensaje desde la GUI_WorkSpace al Controlador o viceversa
     //---------------------------------------------------------------------------------
     GUI_WorkSpace_PrimeraSeleccion,
     GUI_WorkSpace_Nuevo,
     GUI_WorkSpace_Recent,
     GUI_WorkSpace_Click_Abrir,
     GUI_WorkSpace_Click_Guardar,
-
     GUI_WorkSpace_Click_Guardar_Backup,
-
     GUI_WorkSpace_Click_GuardarDeshacer,
-
     GUI_WorkSpace_ClickBotonCancelar,
     GUI_WorkSpace_ERROR_CreacionFicherosXML,
-
-
+    GUI_WorkSpace,
+    
     //---------------------------------------------------------------------------------
     // Mensajes desde las GUIs al controlador
     //---------------------------------------------------------------------------------
@@ -126,6 +133,9 @@ public enum TC {
     // Conexión a DBMS
     GUIConfigurarConexionDBMS_Click_BotonEjecutar,
     GUIConexionDBMS_PruebaConexion,
+    GUISeleccionarConexion_ClickNueva, 
+    GUISeleccionarConexion_ClickEditar, 
+    GUIConexion_ClickConectar,
 
     //Reporte de incidencias
     GUIReport_ReportarIncidencia,
@@ -136,7 +146,10 @@ public enum TC {
     GUIInsertarAgregacion,
     GUIAnadirAtributoAgregacion_Click_BotonAnadir,
     GUIRenombrarAgregacion_Click_BotonRenombrar,
-
+    
+    //Otros 
+    GUI_Recientes, 
+    GUI_Pregunta,
 
     //---------------------------------------------------------------------------------
     // Mensajes desde el Panel de Diseño
@@ -484,7 +497,7 @@ public enum TC {
 
 
     //---------------------------------------------------------------------------------
-    // Mensajes desde el Controlador a la GUIPrincipal
+    // Mensajes desde el Controlador a la GUIPrincipal u otros.
     //---------------------------------------------------------------------------------
     Controlador_InsertarEntidad,
     Controlador_RenombrarEntidad,
@@ -561,17 +574,41 @@ public enum TC {
     Controlador_TablaUniqueAEntidad,
     Controlador_TablaUniqueARelacion,
     Controlador_EditarAgregacion,
-    GUI_Principal_NULLATTR,
-    GUI_Principal_ConfirmarEliminaciones,
-    GUI_Principal_Cuadricula,
-    GUI_Principal_ModoSoporte,
-    GUI_Principal_IniciaFrames,
-    GUI_Principal_EditarEntidad,
-    GUI_Principal_EditarRelacion,
-    GUI_Principal_EditarAtributo, GUISeleccionarConexion_ClickNueva, Controlador_ConfigurarConexionDBMS, GUISeleccionarConexion_ClickEditar, GUIConexion_ClickConectar,
-    GUI_WorkSpace, GUI_Recientes, GetNombreAtributo, GUI_Pregunta, EliminarRelacionIsA, Reset, GuardarYSalir, Abrir, AbrirCasos, NuevoWorkSpace, 
-    Salir, EliminarAtributosRelacion, ModificarCardinalidadRelacion_1a1, EliminarSubatributosAtributo, ObtenerListaEntidades, ObtenerListaAtributos, 
-    ObtenerListaRelaciones, ObtenerListaDominios, ObtenerListaAgregaciones, Guardar, Controlador_EjecutarEnDBMS, Controlador_Conexion,
-    Controlador_ModificarEntidad, Controlador_ModificarAtributo, Controlador_ModificarRelacion, Controlador_InsertarRelacionDebil,
-    ERROR_, ERROR_PERSISTENCIA, FALLO_CREAR_ARCHIVO, SCRIPT_ERROR, MUST_GENERATE_SCRIPT, NO_DB_CONEXION, CANT_EXECUTE_SCRIPT, CANT_CLOSE_CONEXION, Controlador_Eliminar
+    Controlador_ConfigurarConexionDBMS, 
+    Controlador_EjecutarEnDBMS, 
+    Controlador_Conexion,
+    Controlador_ModificarEntidad, 
+    Controlador_ModificarAtributo, 
+    Controlador_ModificarRelacion, 
+    Controlador_InsertarRelacionDebil,
+    Controlador_Eliminar,
+    
+    //---------------------------------------------------------------------------------
+    // Otros mensajes que recibe el controlador
+    //---------------------------------------------------------------------------------
+    GetNombreAtributo, 
+    EliminarRelacionIsA, 
+    Reset, 
+    GuardarYSalir, 
+    Abrir, 
+    AbrirCasos, 
+    NuevoWorkSpace, 
+    Salir, 
+    EliminarAtributosRelacion, 
+    ModificarCardinalidadRelacion_1a1, 
+    EliminarSubatributosAtributo, 
+    ObtenerListaEntidades, 
+    ObtenerListaAtributos, 
+    ObtenerListaRelaciones, 
+    ObtenerListaDominios, 
+    ObtenerListaAgregaciones, 
+    Guardar, 
+    ERROR_, 
+    ERROR_PERSISTENCIA, 
+    FALLO_CREAR_ARCHIVO, 
+    SCRIPT_ERROR, 
+    MUST_GENERATE_SCRIPT, 
+    NO_DB_CONEXION, 
+    CANT_EXECUTE_SCRIPT, 
+    CANT_CLOSE_CONEXION
 }

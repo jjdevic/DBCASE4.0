@@ -148,7 +148,6 @@ public class GUI_InsertarDominio extends Parent_GUI {
         String name = this.cajaNombre.getText().replace("(", "");
         td.setNombre(name.replace(")", ""));
         td.setTipoBase((TipoDominio) this.comboTipo.getSelectedItem());
-        Vector<String> lista_valores = listaValores();
     	td.setListaValores(listaValores());
     	
     	// Mandamos mensaje + datos al controlador
@@ -214,7 +213,7 @@ public class GUI_InsertarDominio extends Parent_GUI {
     /*
      * Utilidades
      */
-    //TODO comprobar valores vacios / repetidos y otros casos raros
+    //TODO Comprobar repeticiones
     private Vector listaValores() {
         Vector v = new Vector();
         String s = this.cajaValores.getText();

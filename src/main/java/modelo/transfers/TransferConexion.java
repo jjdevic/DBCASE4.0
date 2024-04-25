@@ -117,31 +117,24 @@ public class TransferConexion extends Transfer {
 
     @Override
     public String getNombre() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public int getVolumen() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public int getFrecuencia() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public void setVolumen(int v) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setFrecuencia(int f) {
-        // TODO Auto-generated method stub
-
     }
 }
