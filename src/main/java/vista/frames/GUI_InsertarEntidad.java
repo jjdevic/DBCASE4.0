@@ -2,7 +2,6 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
-import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
@@ -10,7 +9,6 @@ import vista.componentes.MyComboBoxRenderer;
 import vista.utils.ImagesPath;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.Vector;

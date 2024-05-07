@@ -1,21 +1,16 @@
 package controlador;
 
-import static vista.utils.Otros.DIRECTORY;
-import static vista.utils.Otros.INCIDENCES;
-import static vista.utils.Otros.PROJECTS;
+import misc.UtilsFunc;
+import vista.Lenguaje;
+import vista.tema.Theme;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import misc.UtilsFunc;
-import vista.Lenguaje;
-import vista.tema.Theme;
+import static vista.utils.Otros.*;
 
 public class Main {
 

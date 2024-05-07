@@ -1,32 +1,33 @@
 package controlador;
 
-import modelo.servicios.*;
-import modelo.transfers.*;
-import org.w3c.dom.Document;
-
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
 import excepciones.ExceptionAp;
-import misc.*;
+import misc.Config;
+import misc.UtilsFunc;
+import modelo.servicios.FactoriaServicios;
+import modelo.transfers.*;
+import org.w3c.dom.Document;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
-import vista.componentes.MyFileChooser;
-import vista.frames.*;
+import vista.frames.FactoriaGUI;
+import vista.frames.Parent_GUI;
 import vista.tema.Theme;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.Vector;
 
-import static vista.utils.Otros.*;
+import static vista.utils.Otros.DIRECTORY;
+import static vista.utils.Otros.PROJECTS;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {
@@ -710,9 +711,13 @@ public class Controlador {
             }
             case GUI_Principal_Click_BotonGenerarArchivoScriptSQL: {
             	File ruta = factoriaGUI.getGUIPrincipal().elegirArchivoGenerar(true);
-            	if(ruta != null) {
-	            	String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true, ruta);
-	                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo((String) info);
+                boolean xml = false;
+                if(ruta != null) {
+                    if(ruta.getName().contains(".xml")) {
+                        xml = true;
+                    }
+	            	String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getCodigoText().getText(), true, xml, ruta);
+	                this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
 	                
 	                this.factoriaGUI.getGUIPrincipal().mensajeInformativo(
 	                		Lenguaje.text(Lenguaje.INFO) + "\n" +
@@ -724,9 +729,19 @@ public class Controlador {
             }
             case GUI_Principal_Click_BotonGenerarArchivoModelo: {
             	File ruta = factoriaGUI.getGUIPrincipal().elegirArchivoGenerar(false);
+                boolean xml = false;
             	if(ruta != null) {
-            		String info = factoriaServicios.getServicioSistema()
-            				.exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false, ruta);
+                    if(ruta.getName().contains(".xml")) {
+                       xml = true;
+                    }
+                    String info = factoriaServicios.getServicioSistema().exportarCodigo(factoriaGUI.getGUIPrincipal().getModeloText().getText(), false, xml, ruta);
+                    this.factoriaGUI.getGUIPrincipal().escribeEnCodigo(info);
+
+                    this.factoriaGUI.getGUIPrincipal().mensajeInformativo(
+                            Lenguaje.text(Lenguaje.INFO) + "\n" +
+                                    Lenguaje.text(Lenguaje.OK_FILE) + "\n" +
+                                    Lenguaje.text(Lenguaje.FILE) + ": " + ruta,
+                            Lenguaje.text(Lenguaje.DBCASE));
             	}
                 break;
             }
@@ -754,7 +769,6 @@ public class Controlador {
         	if(contexto != null) tratarContexto(contexto);
     	} 
     	catch (ExceptionAp e) { mostrarError(e.getM(), e.getCad()); }
-        
     }
 
     // Mensajes que le mandan las GUIs al controlador

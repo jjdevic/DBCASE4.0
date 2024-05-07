@@ -1,7 +1,5 @@
 package controlador.comandos.Entidad;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
@@ -14,6 +12,8 @@ import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
+
+import java.util.Vector;
 
 public class ComandoEliminarEntidad extends Comando {
 

@@ -1,17 +1,16 @@
 package controlador.comandos.Vistas;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
-import controlador.TC;
 import controlador.Factorias.FactoriaTCCtrl;
+import controlador.TC;
 import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.frames.Parent_GUI;
+
+import java.util.Vector;
 
 public class ComandoEditarElemento extends Comando{
 

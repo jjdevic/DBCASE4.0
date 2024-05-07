@@ -1,19 +1,18 @@
 package controlador.comandos.Relacion;
 
-import java.awt.geom.Point2D;
-import java.util.Vector;
-
-import javax.swing.JOptionPane;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
-import controlador.TC;
 import controlador.Factorias.FactoriaMsj;
+import controlador.TC;
 import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
+
+import javax.swing.*;
+import java.awt.geom.Point2D;
+import java.util.Vector;
 
 public class ComandoCrearRelacionDebil extends Comando{
 

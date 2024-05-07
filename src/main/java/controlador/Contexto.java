@@ -1,6 +1,5 @@
 package controlador;
 
-import java.util.List;
 import java.util.Vector;
 
 public class Contexto {

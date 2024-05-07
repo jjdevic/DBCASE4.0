@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
+import java.util.Objects;
 
 
 @SuppressWarnings("serial")
@@ -41,7 +41,7 @@ public class GUI_SaveAs extends Parent_GUI {
         this.setModal(true);
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO)).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource(ImagesPath.DBCASE_LOGO))).getImage());
         panelPrincipal = new JPanel();
         panelPrincipal.setLayout(null);
         getContentPane().add(panelPrincipal, BorderLayout.CENTER);
@@ -195,7 +195,7 @@ public class GUI_SaveAs extends Parent_GUI {
 
     }
 
-    private void guardarComo() {
+    public void guardarComo() {
         File f = this.jfc.getSelectedFile();
 
         String ruta = f.getPath();

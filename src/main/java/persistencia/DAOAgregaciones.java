@@ -2,10 +2,10 @@ package persistencia;
 
 //import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import modelo.transfers.TransferAgregacion;
-import org.w3c.dom.*;
 
 import excepciones.ExceptionAp;
+import modelo.transfers.TransferAgregacion;
+import org.w3c.dom.*;
 
 import java.awt.geom.Point2D;
 import java.util.Stack;

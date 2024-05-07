@@ -1,5 +1,6 @@
 package modelo.conectorDBMS;
 
+import excepciones.ExceptionAp;
 import modelo.servicios.Enumerado;
 import modelo.servicios.Tabla;
 import modelo.transfers.TipoDominio;
@@ -10,8 +11,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
-
-import excepciones.ExceptionAp;
 
 /**
  * Conecta la aplicación a una base de datos de Microsoft Access

@@ -1,12 +1,12 @@
 package controlador.comandos.Atributo;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import excepciones.ExceptionAp;
 import modelo.transfers.TransferAtributo;
+
+import java.util.Vector;
 
 public class ComandoEliminarSubatributos extends Comando{
 

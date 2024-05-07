@@ -3,10 +3,13 @@ package controlador.comandos;
 import controlador.Comando;
 import controlador.Controlador;
 import controlador.TC;
-import controlador.comandos.Agregacion.*;
+import controlador.comandos.Agregacion.ComandoInsertarAgregacion;
 import controlador.comandos.Atributo.*;
-import controlador.comandos.Dominio.*;
-import controlador.comandos.Entidad.*;
+import controlador.comandos.Dominio.ComandoEliminarDominio;
+import controlador.comandos.Entidad.ComandoAnadirUniquesEntidad;
+import controlador.comandos.Entidad.ComandoEliminarEntidad;
+import controlador.comandos.Entidad.ComandoInsertarEntidadDebil;
+import controlador.comandos.Entidad.ComandoModificarEntidad;
 import controlador.comandos.Relacion.*;
 import controlador.comandos.Vistas.*;
 

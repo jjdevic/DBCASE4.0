@@ -1,7 +1,5 @@
 package controlador.comandos.Atributo;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
@@ -10,6 +8,8 @@ import excepciones.ExceptionAp;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
+
+import java.util.Vector;
 
 public class ComandoModificarUniqueAtrib extends Comando{
 

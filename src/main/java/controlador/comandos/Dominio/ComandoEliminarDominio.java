@@ -1,7 +1,5 @@
 package controlador.comandos.Dominio;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
@@ -12,6 +10,8 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferDominio;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
+
+import java.util.Vector;
 
 public class ComandoEliminarDominio extends Comando{
 

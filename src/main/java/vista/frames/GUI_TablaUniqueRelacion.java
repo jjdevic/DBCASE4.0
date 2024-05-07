@@ -2,7 +2,6 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
-import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
 import vista.componentes.CustomCellEditor;
