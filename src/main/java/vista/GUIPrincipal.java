@@ -1904,24 +1904,28 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
     	JOptionPane.showMessageDialog(null, mensaje, titulo, JOptionPane.PLAIN_MESSAGE);
     }
 
-    public File elegirArchivoGenerar(boolean sql) throws ExceptionAp{
+    public File elegirArchivoGenerar(boolean sql) throws ExceptionAp {
     	File resultado = null;
     	
     	MyFileChooser jfc = new MyFileChooser();
         jfc.setDialogTitle(Lenguaje.text(Lenguaje.DBCASE));
         jfc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/projects"));
         jfc.setFileFilter(new FileNameExtensionFilter("Text", "txt"));
+        jfc.setFileFilter(new FileNameExtensionFilter("XML", "xml"));
         if(sql) jfc.setFileFilter(new FileNameExtensionFilter(Lenguaje.text(Lenguaje.SQL_FILES), "sql"));
         int resul = jfc.showSaveDialog(null);
         
         if (resul == 0) {
         	File ruta = jfc.getSelectedFile();
             String filePath = ruta.getAbsolutePath();
-            
+            String aux = jfc.getFileFilter().getDescription();
             if (jfc.getFileFilter().getDescription().equals("Text") && !filePath.endsWith(".txt"))
                 ruta = new File(filePath + ".txt");
-            else if (jfc.getFileFilter().getDescription().equals("SQL Files") && !filePath.endsWith(".sql"))
+            else if (jfc.getFileFilter().getDescription().equals(Lenguaje.text(Lenguaje.SQL_FILES)) && !filePath.endsWith(".sql"))
                 ruta = new File(filePath + ".sql");
+            else if (jfc.getFileFilter().getDescription().equals("XML") && !filePath.endsWith(".xml")) {
+                ruta = new File(filePath + ".xml");
+            }
             
             resultado = ruta;
         }

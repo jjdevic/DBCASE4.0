@@ -7,9 +7,17 @@ import misc.Config;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import persistencia.*;
 import vista.Lenguaje;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -425,31 +433,67 @@ public class GeneradorEsquema {
         return new Contexto(true, TC.SS_GeneracionScriptSQL, sqlHTML);
     }
 
-    public String exportarCodigo(String text, boolean sql, File ruta) throws ExceptionAp {
-    	Contexto aux = validadorBD.validaBaseDeDatos(false, new StringBuilder());
-    	
+
+    public String exportarCodigo(String text, boolean sql, boolean xml, File ruta) throws ExceptionAp {
+        Contexto aux = validadorBD.validaBaseDeDatos(false, new StringBuilder());
+
         if (!aux.isExito()) {
-        	throw new ExceptionAp(TC.SCRIPT_ERROR);
+            throw new ExceptionAp(TC.SCRIPT_ERROR);
         }
         if (text.isEmpty()) {
-        	throw new ExceptionAp(TC.MUST_GENERATE_SCRIPT);
+            throw new ExceptionAp(TC.MUST_GENERATE_SCRIPT);
         }
-        
-        text = "# " + Lenguaje.text(Lenguaje.SCRIPT_GENERATED) + "\n" +
-                (sql ? "# " + Lenguaje.text(Lenguaje.SYNTAX) + ": " + conexionScriptGenerado.getRuta() + "\n\n" : "") + text;
-        
-        try {
-            FileWriter file = new FileWriter(ruta);
-            file.write(text);
-            file.close();
 
-        } catch (IOException e) {
-        	throw new ExceptionAp(TC.SCRIPT_ERROR);
+        if (xml) {
+            try {
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.newDocument();
+
+                Element rootElement = doc.createElement("Inf_dbcase");
+                doc.appendChild(rootElement);
+
+                String[] lines = text.split("\\r?\\n");
+
+                Element currentSection = null;
+                for (String line : lines) {
+                    if (line.startsWith("# ")) {
+                        currentSection = doc.createElement("Section");
+                        rootElement.appendChild(currentSection);
+
+                        Element sectionTitle = doc.createElement("Title");
+                        sectionTitle.appendChild(doc.createTextNode(line.substring(2))); // Remove "# "
+                        currentSection.appendChild(sectionTitle);
+                    } else {
+                        Element lineElement = doc.createElement("Relation");
+                        lineElement.appendChild(doc.createTextNode(line));
+                        currentSection.appendChild(lineElement);
+                    }
+                }
+
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                DOMSource source = new DOMSource(doc);
+                StreamResult result = new StreamResult(ruta);
+                transformer.transform(source, result);
+            } catch (Exception e) {
+                throw new ExceptionAp(TC.SCRIPT_ERROR);
+            }
+        } else {
+            text = "# " + Lenguaje.text(Lenguaje.SCRIPT_GENERATED) + "\n" +
+                    (sql ? "# " + Lenguaje.text(Lenguaje.SYNTAX) + ": " + conexionScriptGenerado.getRuta() + "\n\n" : "") + text;
+
+            try {
+                FileWriter file = new FileWriter(ruta);
+                file.write(text);
+                file.close();
+            } catch (IOException e) {
+                throw new ExceptionAp(TC.SCRIPT_ERROR);
+            }
         }
-        
+
         return (String) aux.getDatos();
     }
-
     public Vector<TransferConexion> obtenerTiposDeConexion() {
         Vector<String> nombres = FactoriaConectores.obtenerTodosLosConectores();
         Vector<TransferConexion> conexiones;

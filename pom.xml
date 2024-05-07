@@ -191,14 +191,7 @@
            </plugin>
 	        
 	       <!-- Plugin : INSTALL -->
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>3.0.0-M1</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-           <plugin>
+             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-assembly-plugin</artifactId>
                <version>3.3.0</version>
@@ -239,8 +232,6 @@
        </resources>
     </build>
 
-
-
    <pluginRepositories>
        <pluginRepository>
            <id>mavencentral</id>
@@ -251,6 +242,5 @@
            <url>https://repo.spring.io/libs-release</url>
        </pluginRepository>
    </pluginRepositories>
-
 
 </project>
