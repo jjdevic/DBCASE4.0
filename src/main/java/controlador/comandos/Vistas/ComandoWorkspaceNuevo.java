@@ -1,23 +1,16 @@
 package controlador.comandos.Vistas;
 
-import static vista.utils.Otros.DIRECTORY;
+import controlador.Comando;
+import controlador.Contexto;
+import controlador.Controlador;
+import vista.Lenguaje;
 
-import static vista.utils.Otros.INCIDENCES;
-import static vista.utils.Otros.PROJECTS;
-
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import controlador.Comando;
-import controlador.Controlador;
-import controlador.Contexto;
-import controlador.TC;
-import misc.UtilsFunc;
-import vista.Lenguaje;
+import static vista.utils.Otros.*;
 
 public class ComandoWorkspaceNuevo extends Comando {
 	

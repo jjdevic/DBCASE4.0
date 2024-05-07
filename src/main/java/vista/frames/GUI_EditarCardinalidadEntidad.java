@@ -3,7 +3,6 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
-import modelo.transfers.TransferDominio;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import persistencia.EntidadYAridad;

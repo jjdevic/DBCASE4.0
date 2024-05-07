@@ -1,7 +1,5 @@
 package controlador.comandos.Atributo;
 
-import java.util.Vector;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
@@ -11,6 +9,8 @@ import misc.UtilsFunc;
 import modelo.transfers.TransferAtributo;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
+
+import java.util.Vector;
 
 public class ComandoEliminarAtributo extends Comando{
 

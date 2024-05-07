@@ -174,13 +174,11 @@
            <artifactId>je</artifactId>
            <version>18.3.12</version>
        </dependency>
-
-
    </dependencies>
 
    <build>
        <plugins>
-                <plugin>
+           <plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.1</version>
 				<configuration>
@@ -190,7 +188,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
+           </plugin>
 	        
 	       <!-- Plugin : INSTALL -->
 			<plugin>
@@ -200,8 +198,6 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-						
-		</plugins>
            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-assembly-plugin</artifactId>
@@ -235,13 +231,15 @@
                    <threadCount>10</threadCount>
                </configuration>
            </plugin>
-       </plugins>
+        </plugins>
        <resources>
            <resource>
                <directory>src/main/resources</directory>
            </resource>
        </resources>
-   </build>
+    </build>
+
+
 
    <pluginRepositories>
        <pluginRepository>
@@ -253,5 +251,6 @@
            <url>https://repo.spring.io/libs-release</url>
        </pluginRepository>
    </pluginRepositories>
+
 
 </project>

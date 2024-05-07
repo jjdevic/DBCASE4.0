@@ -1,17 +1,10 @@
 package persistencia;
 
+import excepciones.ExceptionAp;
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.*;
 
-import excepciones.ExceptionAp;
-import vista.Lenguaje;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Vector;
 
 @SuppressWarnings("rawtypes")

@@ -1,14 +1,11 @@
 package controlador;
 
-import java.util.Stack;
-import java.util.Vector;
-
-import org.w3c.dom.Document;
-
 import excepciones.ExceptionAp;
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.Transfer;
-import modelo.transfers.TransferEntidad;
+import org.w3c.dom.Document;
+
+import java.util.Stack;
 
 
 public abstract class Comando {

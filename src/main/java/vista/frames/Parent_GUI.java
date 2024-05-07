@@ -1,12 +1,10 @@
 package vista.frames;
 
+import controlador.Controlador;
 import vista.Lenguaje;
 import vista.tema.Theme;
 
 import javax.swing.*;
-
-import controlador.Controlador;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;

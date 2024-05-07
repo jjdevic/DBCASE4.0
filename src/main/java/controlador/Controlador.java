@@ -1,32 +1,32 @@
 package controlador;
 
-import modelo.servicios.*;
-import modelo.transfers.*;
-import org.w3c.dom.Document;
-
 import controlador.Factorias.FactoriaMsj;
 import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
 import excepciones.ExceptionAp;
-import misc.*;
+import misc.Config;
+import misc.UtilsFunc;
+import modelo.servicios.FactoriaServicios;
+import modelo.transfers.*;
+import org.w3c.dom.Document;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
-import vista.componentes.MyFileChooser;
-import vista.frames.*;
+import vista.frames.FactoriaGUI;
+import vista.frames.Parent_GUI;
 import vista.tema.Theme;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.Vector;
 
-import static vista.utils.Otros.*;
+import static vista.utils.Otros.DIRECTORY;
+import static vista.utils.Otros.PROJECTS;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Controlador {

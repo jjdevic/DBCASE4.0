@@ -1,9 +1,5 @@
 package controlador.comandos.Agregacion;
 
-import java.util.Vector;
-
-import javax.swing.JOptionPane;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
@@ -12,6 +8,9 @@ import excepciones.ExceptionAp;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferRelacion;
 import vista.Lenguaje;
+
+import javax.swing.*;
+import java.util.Vector;
 
 public class ComandoInsertarAgregacion extends Comando {
 

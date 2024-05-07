@@ -2,7 +2,7 @@ package modelo.servicios;
 
 import vista.Lenguaje;
 
-public class restriccionPerdida {
+public class RestriccionPerdida {
 
     private String relacion;
     private String clave;
@@ -15,7 +15,7 @@ public class restriccionPerdida {
     public static final int TABLA = 3;
 
     //Para tipo candidata y tabla
-    public restriccionPerdida(String par1, String par2, int tipo) {
+    public RestriccionPerdida(String par1, String par2, int tipo) {
         this.card = new int[2];
         switch (tipo) {
             case CANDIDATA:
@@ -31,7 +31,7 @@ public class restriccionPerdida {
     }
 
     //Para tipo total
-    public restriccionPerdida(String relacion, String entidad, int from, int to, int tipo) {
+    public RestriccionPerdida(String relacion, String entidad, int from, int to, int tipo) {
         this.card = new int[2];
         this.relacion = relacion;
         this.entidad = entidad;

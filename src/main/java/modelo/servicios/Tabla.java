@@ -1,5 +1,6 @@
 package modelo.servicios;
 
+import misc.Config;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.TipoDominio;
@@ -9,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-
-import misc.Config;
 
 //la clase tabla, almacenara las tablas a traducir del disenio al script.
 @SuppressWarnings({"rawtypes", "unchecked"})

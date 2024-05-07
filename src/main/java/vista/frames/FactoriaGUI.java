@@ -1,16 +1,13 @@
 package vista.frames;
 
+import controlador.Controlador;
+import controlador.TC;
+import vista.GUIPrincipal;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JFrame;
-
-import controlador.Controlador;
-import controlador.TC;
-import oracle.net.nt.TcpNTAdapter;
-import vista.GUIPrincipal;
 
 /* Esta factoría se encarga de devolver la GUI correspondiente al mensaje recibido. */
 public class FactoriaGUI {

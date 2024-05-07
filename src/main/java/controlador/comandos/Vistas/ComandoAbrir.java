@@ -1,17 +1,16 @@
 package controlador.comandos.Vistas;
 
-import static vista.utils.Otros.DIRECTORY;
-import static vista.utils.Otros.INCIDENCES;
-
-import java.io.File;
-import java.util.Objects;
-
-import javax.swing.SwingUtilities;
-
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import misc.UtilsFunc;
+
+import javax.swing.*;
+import java.io.File;
+import java.util.Objects;
+
+import static vista.utils.Otros.DIRECTORY;
+import static vista.utils.Otros.INCIDENCES;
 
 public class ComandoAbrir extends Comando {
 

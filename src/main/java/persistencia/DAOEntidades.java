@@ -2,19 +2,12 @@ package persistencia;
 
 //import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import com.sun.org.apache.xml.internal.serialize.*;
 
 import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import org.w3c.dom.*;
-import vista.Lenguaje;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.geom.Point2D;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Stack;
 import java.util.Vector;
 
