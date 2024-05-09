@@ -3,7 +3,6 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
 import modelo.transfers.*;
 import persistencia.DAOAgregaciones;
 import persistencia.DAOAtributos;
@@ -13,6 +12,8 @@ import persistencia.DAORelaciones;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosAtributos {

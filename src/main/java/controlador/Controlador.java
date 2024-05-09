@@ -1,14 +1,13 @@
 package controlador;
 
-import controlador.Factorias.FactoriaMsj;
-import controlador.Factorias.FactoriaTCCtrl;
 import controlador.comandos.FactoriaComandos;
 import excepciones.ExceptionAp;
-import misc.Config;
 import misc.UtilsFunc;
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
+
+import config.Config;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
 import vista.frames.FactoriaGUI;

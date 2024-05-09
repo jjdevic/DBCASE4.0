@@ -8,9 +8,9 @@ import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import edu.uci.ics.jung.visualization.transform.shape.GraphicsDecorator;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 import vista.tema.Theme;
 
 import java.awt.*;
@@ -188,7 +188,8 @@ public class CreaLineas<V, E> implements Renderer.Edge<V, E> {
         }
         //Si es linea de relacion a entidad
         else if (endpoints.getFirst() instanceof TransferRelacion && endpoints.getSecond() instanceof TransferEntidad) {
-            EntidadYAridad ent = (EntidadYAridad) ((TransferRelacion) endpoints.getFirst()).getEntidadYAridad(((TransferEntidad) endpoints.getSecond()).getIdEntidad());
+        	EntidadYAridad ent = (EntidadYAridad) ((TransferRelacion) endpoints.getFirst())
+        			.getEntidadYAridad(((TransferEntidad) endpoints.getSecond()).getIdEntidad(), vuelta - 1);
             TransferRelacion tr = (TransferRelacion) endpoints.getFirst();
             //cardinalidad N
             if (ent.getPrincipioRango() > 0 && ent.getPrincipioRango() != Integer.MAX_VALUE) {

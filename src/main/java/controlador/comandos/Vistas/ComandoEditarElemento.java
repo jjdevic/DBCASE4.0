@@ -3,7 +3,7 @@ package controlador.comandos.Vistas;
 import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
-import controlador.Factorias.FactoriaTCCtrl;
+import controlador.FactoriaTCCtrl;
 import controlador.TC;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;

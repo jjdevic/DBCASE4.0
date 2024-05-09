@@ -1,9 +1,9 @@
 package vista.componentes;
 
+import modelo.transfers.NodoEntidad;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.NodoEntidad;
 import vista.iconos.*;
 import vista.tema.Theme;
 

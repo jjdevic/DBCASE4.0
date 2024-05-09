@@ -2,10 +2,10 @@ package vista.frames;
 
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.componentes.MyComboBoxRenderer;
 import vista.utils.ImagesPath;

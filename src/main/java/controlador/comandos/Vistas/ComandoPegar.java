@@ -4,10 +4,10 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;

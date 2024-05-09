@@ -1,6 +1,7 @@
 package persistencia;
 
 import excepciones.ExceptionAp;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.*;
 
