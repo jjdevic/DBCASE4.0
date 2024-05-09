@@ -4,8 +4,8 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import excepciones.ExceptionAp;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;

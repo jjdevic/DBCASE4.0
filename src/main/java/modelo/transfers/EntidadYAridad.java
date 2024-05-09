@@ -1,4 +1,4 @@
-package persistencia;
+package modelo.transfers;
 
 import vista.Lenguaje;
 

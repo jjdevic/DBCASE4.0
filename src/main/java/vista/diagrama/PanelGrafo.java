@@ -15,8 +15,7 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import modelo.transfers.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
-import persistencia.EntidadYAridad;
-import persistencia.NodoEntidad;
+
 import vista.Lenguaje;
 import vista.componentes.MyTableModel;
 import vista.diagrama.lineas.CreaLineas;

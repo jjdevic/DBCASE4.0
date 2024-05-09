@@ -1,6 +1,4 @@
-package controlador.Factorias;
-
-import controlador.TC;
+package controlador;
 
 /** Esta factoría se encarga de devolver el TC "Controlador_" que corresponde a un mensaje que proviene de los servicios 
  * o de las vistas. 

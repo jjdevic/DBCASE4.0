@@ -4,7 +4,6 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
 import modelo.transfers.TipoDominio;
 import modelo.transfers.TransferDominio;
 import persistencia.DAODominios;
@@ -15,6 +14,8 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosDominios {

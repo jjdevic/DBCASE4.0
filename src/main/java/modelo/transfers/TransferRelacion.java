@@ -1,7 +1,5 @@
 package modelo.transfers;
 
-import persistencia.EntidadYAridad;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
@@ -309,6 +307,27 @@ public class TransferRelacion extends Transfer {
         return null;
     }
 
+	/**
+     * Se encarga de devolver la aparicion numAparicion de la entidad de id idEntidad.
+     * @param idEntidad
+     * @param numAparicion Numero de aparicion, empezando en 0.
+     * @return Aparicion correspondiente si existe, null en caso contrario.
+     */
+    public EntidadYAridad getEntidadYAridad(int idEntidad, int numAparicion) {
+       if(numAparicion >= listaEntidadesYAridades.size()) return null;
+       EntidadYAridad resultado = null;
+
+       int aparicion_actual = -1;
+       for (int i = 0; i < listaEntidadesYAridades.size(); i++) {
+            if (((EntidadYAridad) listaEntidadesYAridades.get(i)).getEntidad() == idEntidad) {
+                aparicion_actual++;
+                if(aparicion_actual == numAparicion) resultado = (EntidadYAridad) listaEntidadesYAridades.get(i);
+               }
+       }
+
+       return resultado;
+    }
+    
     public boolean getRelacionConCardinalidad() {
         return relacionConCardinalidad;
     }

@@ -1,4 +1,4 @@
-package persistencia;
+package modelo.transfers;
 
 public class NodoEntidad {
     private String nombre;

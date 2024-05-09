@@ -3,12 +3,14 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.Document;
+
+import config.Config;
 import persistencia.*;
 
 import java.util.Iterator;
