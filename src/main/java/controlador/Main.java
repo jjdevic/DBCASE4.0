@@ -73,7 +73,7 @@ public class Main {
             public void run() {
                 try {
                     controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-                    System.out.println("Ruta temp: " + controlador.getFiletemp().getAbsolutePath());
+                    
                     controlador.crearAlmacenPers(controlador.getFiletemp().getPath());
                     
                 } catch (IOException e) {

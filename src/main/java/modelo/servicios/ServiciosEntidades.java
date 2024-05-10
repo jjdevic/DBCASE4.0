@@ -231,7 +231,7 @@ public class ServiciosEntidades {
             return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_DAOAtributos, v);
         }
         for (int i = 0; i < te.getListaAtributos().size(); i++) {
-        	System.out.println(daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))));
+        	
             if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))).toLowerCase().equals(ta.getNombre().toLowerCase())) {
             	v.add("0");
             	return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste, v);
