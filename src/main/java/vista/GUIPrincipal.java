@@ -157,9 +157,9 @@ public class GUIPrincipal extends JFrame implements WindowListener, KeyListener 
         Vector<TransferAtributo> lista_atrib = (Vector<TransferAtributo>) c.mensaje(TC.ObtenerListaAtributos, null);
         Vector<TransferEntidad> lista_entidades = (Vector<TransferEntidad>) c.mensaje(TC.ObtenerListaEntidades, null);
         Vector<TransferRelacion> lista_relaciones = (Vector<TransferRelacion>) c.mensaje(TC.ObtenerListaRelaciones, null);
-        
+        Vector<TransferAgregacion> lista_agregaciones = (Vector<TransferAgregacion>) c.mensaje(TC.ObtenerListaAgregaciones, null);   
         //Creacion del grafo
-        panelDiseno = new PanelGrafo(lista_entidades, lista_atrib, lista_relaciones, null/*c.getListaAgregaciones*/);
+        panelDiseno = new PanelGrafo(lista_entidades, lista_atrib, lista_relaciones, lista_agregaciones);
         panelDiseno.setControlador(this.getControlador());
 
         panelInfo = new JPanel();
