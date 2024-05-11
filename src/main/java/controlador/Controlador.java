@@ -1522,9 +1522,6 @@ public class Controlador {
     		mostrarError(contexto.getMensaje(), "");
     	}
     	else {
-    		
-    		System.out.println("Tratando contexto...");
-    		if(contexto.getMensaje() != null) System.out.println(contexto.getMensaje().toString());
     		//Funcionalidad deshacer/rehacer
     		
     		setCambios(true);
@@ -1556,8 +1553,7 @@ public class Controlador {
             if(contexto.getMensaje() != null) {
             	//Actualizar la GUI Principal
             	TC mc = FactoriaTCCtrl.getTCCtrl(contexto.getMensaje());
-            	String m = mc == null ? "NULO" : mc.toString();
-            	System.out.println("Mensaje obtenido de FactoriaTCCtrl: " + m);
+            	
             	if(mc != null) {
             		this.factoriaGUI.getGUIPrincipal().mensajesDesde_Controlador(mc, ob);
             		
