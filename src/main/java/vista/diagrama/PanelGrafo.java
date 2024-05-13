@@ -15,8 +15,7 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import modelo.transfers.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
-import persistencia.EntidadYAridad;
-import persistencia.NodoEntidad;
+
 import vista.Lenguaje;
 import vista.componentes.MyTableModel;
 import vista.diagrama.lineas.CreaLineas;
@@ -488,10 +487,10 @@ public class PanelGrafo extends JPanel implements Printable, KeyListener {
         }
 
         // Inserta las agregaciones con su id como clave
-        /*for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
+        for (Iterator<TransferAgregacion> it = agregaciones.iterator(); it.hasNext(); ) {
             TransferAgregacion agregacion = it.next();
             this.agregaciones.put(agregacion.getIdAgregacion(), agregacion);
-        }*/
+        }
 
         creaArrayTablas();
     }

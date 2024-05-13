@@ -4,9 +4,9 @@ import controlador.Comando;
 import controlador.Contexto;
 import controlador.Controlador;
 import excepciones.ExceptionAp;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 
 import javax.swing.*;

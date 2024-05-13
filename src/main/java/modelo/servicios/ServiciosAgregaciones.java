@@ -3,7 +3,6 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
@@ -15,6 +14,8 @@ import persistencia.DAORelaciones;
 
 import java.util.Iterator;
 import java.util.Vector;
+
+import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosAgregaciones {

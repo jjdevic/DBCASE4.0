@@ -3,12 +3,13 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
 import modelo.conectorDBMS.ConectorDBMS;
 import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import config.Config;
 import persistencia.*;
 import vista.Lenguaje;
 

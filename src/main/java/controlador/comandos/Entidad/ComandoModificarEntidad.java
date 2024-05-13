@@ -5,9 +5,9 @@ import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import excepciones.ExceptionAp;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 
 import javax.swing.*;
@@ -69,10 +69,8 @@ public class ComandoModificarEntidad extends Comando{
         	aux = ejecutarComando(TC.Controlador_InsertarRelacionDebil, v_crearRelDebil);
         	tratarContexto(aux);
         	
-        	//Debilitar la entidad si ha ido bien
-        	if(aux != null && aux.isExito()) {
-        		resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
-        	}
+        	//Debilitar la entidad
+        	resultado = getFactoriaServicios().getServicioEntidades().debilitarEntidad(te);
         }  
         else if (eraDebil) {
         	tratarContexto(getFactoriaServicios().getServicioEntidades().debilitarEntidad(te));

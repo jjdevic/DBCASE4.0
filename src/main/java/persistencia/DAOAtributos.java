@@ -1,9 +1,10 @@
 package persistencia;
 
 import excepciones.ExceptionAp;
-import misc.Config;
 import modelo.transfers.TransferAtributo;
 import org.w3c.dom.*;
+
+import config.Config;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;

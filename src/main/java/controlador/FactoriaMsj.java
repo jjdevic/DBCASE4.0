@@ -1,6 +1,5 @@
-package controlador.Factorias;
+package controlador;
 
-import controlador.TC;
 import vista.Lenguaje;
 
 /**

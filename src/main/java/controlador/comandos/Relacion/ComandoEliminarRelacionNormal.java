@@ -6,10 +6,10 @@ import controlador.Controlador;
 import controlador.TC;
 import excepciones.ExceptionAp;
 import misc.UtilsFunc;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 import vista.Lenguaje;
 import vista.frames.Parent_GUI;
 

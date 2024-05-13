@@ -5,9 +5,9 @@ import controlador.Contexto;
 import controlador.Controlador;
 import controlador.TC;
 import excepciones.ExceptionAp;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
-import persistencia.EntidadYAridad;
 
 import java.util.Vector;
 

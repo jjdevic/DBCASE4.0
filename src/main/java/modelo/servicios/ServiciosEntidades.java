@@ -3,12 +3,14 @@ package modelo.servicios;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import misc.Config;
+import modelo.transfers.EntidadYAridad;
 import modelo.transfers.TransferAgregacion;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.Document;
+
+import config.Config;
 import persistencia.*;
 
 import java.util.Iterator;
@@ -229,7 +231,7 @@ public class ServiciosEntidades {
             return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_DAOAtributos, v);
         }
         for (int i = 0; i < te.getListaAtributos().size(); i++) {
-        	System.out.println(daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))));
+        	
             if (daoAtributos.nombreDeAtributo((Integer.parseInt((String) te.getListaAtributos().get(i)))).toLowerCase().equals(ta.getNombre().toLowerCase())) {
             	v.add("0");
             	return new Contexto(false, TC.SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste, v);
