@@ -56,6 +56,10 @@ public class GUI_About extends JFrame {
                         "<p><strong>" + Lenguaje.text(Lenguaje.AUTHORS) + "</strong> " +
                         Lenguaje.text(Lenguaje.AUTHOR1) + "</p><br>" +
                         "<h3>" + Lenguaje.text(Lenguaje.BASED) + "</h3>" +
+                        "<p><strong>" + Lenguaje.text(Lenguaje.BASED6) + "</strong></p>" +
+                        "<p>" + Lenguaje.text(Lenguaje.AUTHORS) + "</p>" +
+                        "<ul><li><p>" + Lenguaje.text(Lenguaje.BASED6A1) + "</p></li>" +
+                        "<li><p>" + Lenguaje.text(Lenguaje.BASED6A2) + "</p></li></ul><br>" +
                         "<p><strong>" + Lenguaje.text(Lenguaje.BASED5) + "</strong></p>" +
                         "<p>" + Lenguaje.text(Lenguaje.AUTHOR) + "</p>" +
                         "<ul><li><p>" + Lenguaje.text(Lenguaje.BASED5A1) + "</p></li></ul><br>" +
