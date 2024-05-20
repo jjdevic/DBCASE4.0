@@ -247,6 +247,7 @@ public class EtiquetaSobreLinea<V, E> extends edu.uci.ics.jung.visualization.ren
                     incrementoX = (ancho * 2) / (numApariciones + 1);
                     offset = (int) (rc.getParallelEdgeIndexFunction().getIndex(graph, e) * (incrementoX)) + 5;
                 }
+                
             }
             //Diagonal superior izquierda
             else if (((yNoCentro + altoNoCentro) < (yCentro - epsilon)) && (xNoCentro - anchoNoCentro) <= (xCentro + epsilon)) {
@@ -299,18 +300,28 @@ public class EtiquetaSobreLinea<V, E> extends edu.uci.ics.jung.visualization.ren
         }
         parallelOffset *= d.height;
         parallelOffset = offset;//Es el valor que he calculado para las etiquetas!!!!!!!!!
+        
+        double dx = x2 - x1;
+        double dy = y2 - y1;
 
+        if(dx < 0) {
+        	parallelOffset = -parallelOffset;
+        }
+        
+        if(x2 * y2 < x1 * y1) {
+        	parallelOffset = -parallelOffset;
+        }
+        
         AffineTransform old = g.getTransform();
         AffineTransform xform2 = new AffineTransform(old);
         xform2.translate(posX + xDisplacement, posY + yDisplacement);
-        double dx = x2 - x1;
-        double dy = y2 - y1;
+        
         if (rc.getEdgeLabelRenderer().isRotateEdgeLabels()) {
             double theta = Math.atan2(dy, dx);
             if (dx < 0) theta += Math.PI;
             xform2.rotate(theta);
         }
-        if (dx < 0) parallelOffset = -parallelOffset;
+        
         xform2.translate(-d.width / 2, -(d.height / 2 - parallelOffset));
         g.setTransform(xform2);
         g.draw(component, rc.getRendererPane(), 0, 0, d.width, d.height, true);

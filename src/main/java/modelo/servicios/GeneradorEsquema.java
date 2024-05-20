@@ -23,9 +23,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -186,16 +188,109 @@ public class GeneradorEsquema {
 
     private void generaTablasRelaciones() throws ExceptionAp {
         DAORelaciones daoRelaciones = new DAORelaciones(Config.getPath());
+        DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
         Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
-        // recorremos las relaciones creando sus tablas, en funcion de su tipo.
+        List<Integer> list_normales = new ArrayList<Integer>();
+        List<Integer> list_isA = new ArrayList<Integer>();
+        List<Integer> list_debil = new ArrayList<Integer>();
+        
         for (int i = 0; i < relaciones.size(); i++) {
+        	TransferRelacion tr = relaciones.elementAt(i);
+        	if(tr.getTipo().equalsIgnoreCase("Normal")) list_normales.add(i);
+        	else if (tr.isIsA()) list_isA.add(i);
+        	else list_debil.add(i);
+        }
+        
+        // si es del tipo IsA, actualizamos aniadiendo la clave del padre a
+        // las tablas hijas.
+        for(Integer i: list_isA) {
+        	TransferRelacion tr = relaciones.elementAt(i);
+            Vector<TransferAtributo> multivalorados = new Vector<TransferAtributo>();
+            Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
+            for (String rest : (Vector<String>) tr.getListaRestricciones())
+                restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
+            
+            /*
+             * recorremos todas las entidades asociadas a la relacion.
+             * sabemos ademas, por criterios del disenio, que la primera
+             * entidad es siempre padre.
+             */
+            EntidadYAridad padre = veya.firstElement();
+            for (int e = 1; e < veya.size(); e++) {
+                EntidadYAridad hija = veya.elementAt(e);
+                // aniadimos la informacion de clave a las tablas hijas,
+                // buscandolas en el sistema.
+                tablasEntidades.get(hija.getEntidad()).aniadeListaAtributos(tablasEntidades.get(padre.getEntidad())
+                        .getPrimaries(), tr.getListaRestricciones(), tiposEnumerados);
+
+                tablasEntidades.get(hija.getEntidad()).aniadeListaClavesPrimarias(
+                        tablasEntidades.get(padre.getEntidad()).getPrimaries());
+
+                Vector<String[]> clavesPadre = tablasEntidades.get(padre.getEntidad()).getPrimaries();
+                String[] referenciadas = new String[clavesPadre.size()];
+                for (int q = 0; q < clavesPadre.size(); q++) {
+                    referenciadas[q] = clavesPadre.get(q)[0];
+                }
+
+                tablasEntidades.get(hija.getEntidad())
+                        .aniadeListaClavesForaneas(
+                                tablasEntidades.get(padre.getEntidad()).getPrimaries(),
+                                tablasEntidades.get(padre.getEntidad()).getNombreTabla(), referenciadas);
+            }
+        }
+        
+        for(Integer i: list_debil) {
+        	TransferRelacion tr = relaciones.elementAt(i);
+            Vector<TransferAtributo> multivalorados = new Vector<TransferAtributo>();
+            Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
+            for (String rest : (Vector<String>) tr.getListaRestricciones())
+                restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
+            
+        	/*
+             * buscamos la entidad debil, que ya tiene tabla y le aniadimos
+             * los atributos de las entidades fuertes de las que dependa.
+             * Ademas los pondremos como claves foraneas. Contaremos, las
+             * entidades fuertes y las debiles que aparezcan, pues este sera
+             * el criterio a seguir a la hora de reasignar las claves.
+             */
+            Vector<TransferEntidad> fuertes = new Vector<TransferEntidad>();
+            Vector<TransferEntidad> debiles = new Vector<TransferEntidad>();
+            for (int s = 0; s < veya.size(); s++) {
+                TransferEntidad aux = new TransferEntidad();
+                EntidadYAridad eya = veya.elementAt(s);
+                aux.setIdEntidad(eya.getEntidad());
+                aux = daoEntidades.consultarEntidad(aux);
+                if (aux.isDebil()) debiles.add(aux);
+                else fuertes.add(aux);
+            }
+            // ahora recorremos las fuertes, sacando sus claves y
+            // metiendolas en las debiles.
+            for (int f = 0; f < fuertes.size(); f++) {
+                TransferEntidad fuerte = fuertes.elementAt(f);
+                Tabla tFuerte = tablasEntidades.get(fuerte.getIdEntidad());
+                for (int d = 0; d < debiles.size(); d++) {
+                    TransferEntidad debil = debiles.elementAt(d);
+                    Tabla tDebil = tablasEntidades.get(debil.getIdEntidad());
+                    tDebil.aniadeListaAtributos(tFuerte.getPrimaries(), fuerte.getListaRestricciones(), tiposEnumerados);
+                    Vector<String[]> clavesFuerte = tFuerte.getPrimaries();
+                    String[] referenciadas = new String[clavesFuerte.size()];
+                    for (int q = 0; q < clavesFuerte.size(); q++) referenciadas[q] = clavesFuerte.get(q)[0];
+                    tDebil.aniadeListaClavesForaneas(tFuerte.getPrimaries(), tFuerte.getNombreTabla(), referenciadas);
+                    tDebil.aniadeListaClavesPrimarias(tFuerte.getPrimaries());
+                }
+            }
+        }
+        
+        // recorremos las relaciones creando sus tablas, en funcion de su tipo.
+        for (Integer i: list_normales) {
             TransferRelacion tr = relaciones.elementAt(i);
             Vector<TransferAtributo> multivalorados = new Vector<TransferAtributo>();
-			/* si es una relacion normal, aniadiremos los atributos propios y las
+			/* Aniadiremos los atributos propios y las
 			 	claves de las entidades implicadas.*/
             Vector<EntidadYAridad> veya = tr.getListaEntidadesYAridades();
             for (String rest : (Vector<String>) tr.getListaRestricciones())
                 restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
+            
             if (tr.getTipo().equalsIgnoreCase("Normal")) {
                 // creamos la tabla
                 Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones());
@@ -230,11 +325,17 @@ public class GeneradorEsquema {
                 for (int m = 0; m < veya.size(); m++) {
                     // Aniadir su clave primaria a la relacion (es clave foranea)
                     EntidadYAridad eya = veya.elementAt(m);
+                    int idEntidad = eya.getEntidad();
+                    TransferEntidad aux_e = new TransferEntidad();
+                    aux_e.setIdEntidad(idEntidad);
+                    TransferEntidad entidad = daoEntidades.consultarEntidad(aux_e);
+                    
                     Tabla ent = tablasEntidades.get(eya.getEntidad());
                     Vector<String[]> previasPrimarias;
+                    
                     if (ent.getPrimaries().isEmpty()) previasPrimarias = ent.getAtributos();
                     else previasPrimarias = ent.getPrimaries();
-
+                    
                     //...pero antes renombrarla con el rol
                     Vector<String[]> primarias = new Vector<String[]>();
                     String[] referenciadas = new String[previasPrimarias.size()];
@@ -305,79 +406,6 @@ public class GeneradorEsquema {
                     this.atributoMultivalorado(multi, tr.getIdRelacion());
                 }
             }
-
-            // si no es normal
-            else
-                // si es del tipo IsA, actualizamos aniadiendo la clave del padre a
-                // las tablas hijas.
-                if (tr.isIsA()) {
-
-                    /*
-                     * recorremos todas las entidades asociadas a la relacion.
-                     * sabemos ademas, por criterios del disenio, que la primera
-                     * entidad es siempre padre.
-                     */
-                    EntidadYAridad padre = veya.firstElement();
-                    for (int e = 1; e < veya.size(); e++) {
-                        EntidadYAridad hija = veya.elementAt(e);
-                        // aniadimos la informacion de clave a las tablas hijas,
-                        // buscandolas en el sistema.
-                        tablasEntidades.get(hija.getEntidad()).aniadeListaAtributos(tablasEntidades.get(padre.getEntidad())
-                                .getPrimaries(), tr.getListaRestricciones(), tiposEnumerados);
-
-                        tablasEntidades.get(hija.getEntidad()).aniadeListaClavesPrimarias(
-                                tablasEntidades.get(padre.getEntidad()).getPrimaries());
-
-                        Vector<String[]> clavesPadre = tablasEntidades.get(padre.getEntidad()).getPrimaries();
-                        String[] referenciadas = new String[clavesPadre.size()];
-                        for (int q = 0; q < clavesPadre.size(); q++) {
-                            referenciadas[q] = clavesPadre.get(q)[0];
-                        }
-
-                        tablasEntidades.get(hija.getEntidad())
-                                .aniadeListaClavesForaneas(
-                                        tablasEntidades.get(padre.getEntidad()).getPrimaries(),
-                                        tablasEntidades.get(padre.getEntidad()).getNombreTabla(), referenciadas);
-                    }
-
-                }
-                // si es de tipo debil
-                else {
-                    /*
-                     * buscamos la entidad debil, que ya tiene tabla y le aniadimos
-                     * los atributos de las entidades fuertes de las que dependa.
-                     * Ademas los pondremos como claves foraneas. Contaremos, las
-                     * entidades fuertes y las debiles que aparezcan, pues este sera
-                     * el criterio a seguir a la hora de reasignar las claves.
-                     */
-                    DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
-                    Vector<TransferEntidad> fuertes = new Vector<TransferEntidad>();
-                    Vector<TransferEntidad> debiles = new Vector<TransferEntidad>();
-                    for (int s = 0; s < veya.size(); s++) {
-                        TransferEntidad aux = new TransferEntidad();
-                        EntidadYAridad eya = veya.elementAt(s);
-                        aux.setIdEntidad(eya.getEntidad());
-                        aux = daoEntidades.consultarEntidad(aux);
-                        if (aux.isDebil()) debiles.add(aux);
-                        else fuertes.add(aux);
-                    }
-                    // ahora recorremos las fuertes, sacando sus claves y
-                    // metiendolas en las debiles.
-                    for (int f = 0; f < fuertes.size(); f++) {
-                        TransferEntidad fuerte = fuertes.elementAt(f);
-                        Tabla tFuerte = tablasEntidades.get(fuerte.getIdEntidad());
-                        for (int d = 0; d < debiles.size(); d++) {
-                            TransferEntidad debil = debiles.elementAt(d);
-                            Tabla tDebil = tablasEntidades.get(debil.getIdEntidad());
-                            tDebil.aniadeListaAtributos(tFuerte.getPrimaries(), fuerte.getListaRestricciones(), tiposEnumerados);
-                            Vector<String[]> clavesFuerte = tFuerte.getPrimaries();
-                            String[] referenciadas = new String[clavesFuerte.size()];
-                            for (int q = 0; q < clavesFuerte.size(); q++) referenciadas[q] = clavesFuerte.get(q)[0];
-                            tDebil.aniadeListaClavesForaneas(tFuerte.getPrimaries(), tFuerte.getNombreTabla(), referenciadas);
-                            tDebil.aniadeListaClavesPrimarias(tFuerte.getPrimaries());
-                        }
-                    }
-                }
         }
     }
 

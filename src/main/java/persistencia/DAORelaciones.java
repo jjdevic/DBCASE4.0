@@ -2,8 +2,11 @@ package persistencia;
 
 import excepciones.ExceptionAp;
 import modelo.transfers.EntidadYAridad;
+import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 import org.w3c.dom.*;
+
+import config.Config;
 
 import java.awt.geom.Point2D;
 import java.util.Vector;
@@ -296,6 +299,54 @@ public class DAORelaciones extends DAO {
         }
         // Devolvemos la lista
         return lista;
+    }
+    
+    public Vector<Integer> getPadres(int idEntidad) {
+    	Vector<Integer> padres = new Vector<Integer>();
+    	Vector<TransferRelacion> relaciones = ListaDeRelaciones();
+    	
+    	for(TransferRelacion relacion: relaciones) {
+    		if(relacion.isIsA()) {
+    			Vector<EntidadYAridad> veya = relacion.getListaEntidadesYAridades();
+    			
+    			if(veya != null && !veya.isEmpty() && veya.size() > 1) {
+    				EntidadYAridad eyaPadre = veya.firstElement();
+    				
+    				//Si no es el padre de la relacion
+    				if(eyaPadre.getEntidad() != idEntidad) {
+    					//Sabemos que una entidad hija solo puede aparecer una vez en la relacion IsA, luego podemos usar este metodo.
+        				EntidadYAridad eyaHijo = relacion.getEntidadYAridad(idEntidad);
+        				
+        				if(eyaHijo != null) {
+        					padres.add(eyaPadre.getEntidad());
+        				}
+    				}
+    			}
+    		}
+    	}
+    	
+    	return padres;
+    }
+    
+    public int getFuerte(int idDebil) throws ExceptionAp{
+    	DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
+    	Vector<TransferRelacion> relaciones = ListaDeRelaciones();
+    	int resultado = -1;
+    	
+    	for(TransferRelacion relacion: relaciones) {
+    		if(relacion.getTipo().equals("Debil")) {
+				EntidadYAridad eyaDebil = relacion.getEntidadYAridad(idDebil);
+				Vector<EntidadYAridad> veya = relacion.getListaEntidadesYAridades();
+				
+				if(eyaDebil != null) {
+					//Buscar la entidad fuerte
+					for(EntidadYAridad eya: veya) {
+						if(eya.getEntidad() != eyaDebil.getEntidad()) resultado = eya.getEntidad();
+					}
+				}
+    		}
+    	}
+    	return resultado;
     }
 
     private String dameValorDelElemento(Node elemento) {
