@@ -291,120 +291,118 @@ public class GeneradorEsquema {
             for (String rest : (Vector<String>) tr.getListaRestricciones())
                 restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
             
-            if (tr.getTipo().equalsIgnoreCase("Normal")) {
-                // creamos la tabla
-                Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones());
-                // aniadimos los atributos propios.
-                Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
-                for (int a = 0; a < ats.size(); a++) {
-                    TransferAtributo ta = ats.elementAt(a);
-                    if (ta.getUnique())
-                        restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), ta + " " + Lenguaje.text(Lenguaje.IS_UNIQUE), RestriccionPerdida.TABLA));
-                    if (ta.getCompuesto())
-                        tabla.aniadeListaAtributos(this.atributoCompuesto(ta, tr.getNombre(), ""), ta.getListaRestricciones(), tiposEnumerados);
-                    else if (ta.isMultivalorado()) multivalorados.add(ta);
-                    else {
-                        tabla.aniadeAtributo(ta.getNombre(), ta.getDominio(), tr.getNombre(), tiposEnumerados, ta.getListaRestricciones(), ta.getUnique(), ta.getNotnull());
-                        for (String rest : (Vector<String>) ta.getListaRestricciones())
-                            restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
-                    }
+            // creamos la tabla
+            Tabla tabla = new Tabla(tr.getNombre(), tr.getListaRestricciones());
+            // aniadimos los atributos propios.
+            Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
+            for (int a = 0; a < ats.size(); a++) {
+                TransferAtributo ta = ats.elementAt(a);
+                if (ta.getUnique())
+                    restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), ta + " " + Lenguaje.text(Lenguaje.IS_UNIQUE), RestriccionPerdida.TABLA));
+                if (ta.getCompuesto())
+                    tabla.aniadeListaAtributos(this.atributoCompuesto(ta, tr.getNombre(), ""), ta.getListaRestricciones(), tiposEnumerados);
+                else if (ta.isMultivalorado()) multivalorados.add(ta);
+                else {
+                    tabla.aniadeAtributo(ta.getNombre(), ta.getDominio(), tr.getNombre(), tiposEnumerados, ta.getListaRestricciones(), ta.getUnique(), ta.getNotnull());
+                    for (String rest : (Vector<String>) ta.getListaRestricciones())
+                        restriccionesPerdidas.add(new RestriccionPerdida(tr.getNombre(), rest, RestriccionPerdida.TABLA));
+                }
+            }
+
+            // TRATAMIENTO DE ENTIDADES
+            // Comprobar si todas las entidades estan con relacion 0..1 o 1..1
+            boolean soloHayUnos = true;
+            int k = 0;
+            while (soloHayUnos && k < veya.size()) {
+                EntidadYAridad eya = veya.get(k);
+                if (eya.getFinalRango() <= 1) k++;
+                else soloHayUnos = false;
+            }
+
+            //Para cada entidad...
+            boolean esLaPrimeraDel1a1 = true;
+            for (int m = 0; m < veya.size(); m++) {
+                // Aniadir su clave primaria a la relacion (es clave foranea)
+                EntidadYAridad eya = veya.elementAt(m);
+                int idEntidad = eya.getEntidad();
+                TransferEntidad aux_e = new TransferEntidad();
+                aux_e.setIdEntidad(idEntidad);
+                TransferEntidad entidad = daoEntidades.consultarEntidad(aux_e);
+                
+                Tabla ent = tablasEntidades.get(eya.getEntidad());
+                Vector<String[]> previasPrimarias;
+                
+                if (ent.getPrimaries().isEmpty()) previasPrimarias = ent.getAtributos();
+                else previasPrimarias = ent.getPrimaries();
+                
+                //...pero antes renombrarla con el rol
+                Vector<String[]> primarias = new Vector<String[]>();
+                String[] referenciadas = new String[previasPrimarias.size()];
+
+                for (int q = 0; q < previasPrimarias.size(); q++) {
+                    String[] clave = new String[5];
+                    clave[3] = "0";
+                    clave[4] = eya.getPrincipioRango() == 0 ? "0" : "1";
+                    if (!eya.getRol().equals("")) {
+                        clave[0] = eya.getRol() + "_" + previasPrimarias.get(q)[0];
+                    } else clave[0] = previasPrimarias.get(q)[0];
+                    clave[1] = previasPrimarias.get(q)[1];
+                    clave[2] = previasPrimarias.get(q)[2];
+                    primarias.add(clave);
+                    referenciadas[q] = previasPrimarias.get(q)[0];
                 }
 
-                // TRATAMIENTO DE ENTIDADES
-                // Comprobar si todas las entidades estan con relacion 0..1 o 1..1
-                boolean soloHayUnos = true;
-                int k = 0;
-                while (soloHayUnos && k < veya.size()) {
-                    EntidadYAridad eya = veya.get(k);
-                    if (eya.getFinalRango() <= 1) k++;
-                    else soloHayUnos = false;
+                tabla.aniadeListaAtributos(primarias, tr.getListaRestricciones(), tiposEnumerados);
+                tabla.aniadeListaClavesForaneas(primarias, ent.getNombreTabla(), referenciadas);
+
+                // Si es 0..1 o 1..1 poner como clave
+                if (eya.getFinalRango() > 1) tabla.aniadeListaClavesPrimarias(primarias);
+                else {
+                    if (soloHayUnos && esLaPrimeraDel1a1) {
+                        tabla.aniadeListaClavesPrimarias(primarias);
+                        esLaPrimeraDel1a1 = false;
+                    } else if (soloHayUnos) {
+                        for (String[] clave : (Vector<String[]>) ent.getPrimaries())
+                            restriccionesPerdidas.add(
+                                    new RestriccionPerdida(ent.getNombreTabla() + "_" + clave[0], tr.getNombre(), RestriccionPerdida.CANDIDATA));
+                        String uniques = "";
+                        for (int q = 0; q < primarias.size(); q++) {
+                            if (q == 0) uniques += primarias.get(q)[0];
+                            else uniques += ", " + primarias.get(q)[0];
+                        }
+                        uniques += "#" + ent.getNombreTabla();
+                        tabla.getUniques().add(uniques);
+                    } else if (eya.getPrincipioRango() == 1 && eya.getFinalRango() == Integer.MAX_VALUE)
+                        for (String[] clave : (Vector<String[]>) ent.getPrimaries())
+                            restriccionesPerdidas.add(
+                                    new RestriccionPerdida(ent.getNombreTabla() + "_" + clave[0], tr.getNombre(), RestriccionPerdida.CANDIDATA));
                 }
 
-                //Para cada entidad...
-                boolean esLaPrimeraDel1a1 = true;
-                for (int m = 0; m < veya.size(); m++) {
-                    // Aniadir su clave primaria a la relacion (es clave foranea)
-                    EntidadYAridad eya = veya.elementAt(m);
-                    int idEntidad = eya.getEntidad();
-                    TransferEntidad aux_e = new TransferEntidad();
-                    aux_e.setIdEntidad(idEntidad);
-                    TransferEntidad entidad = daoEntidades.consultarEntidad(aux_e);
-                    
-                    Tabla ent = tablasEntidades.get(eya.getEntidad());
-                    Vector<String[]> previasPrimarias;
-                    
-                    if (ent.getPrimaries().isEmpty()) previasPrimarias = ent.getAtributos();
-                    else previasPrimarias = ent.getPrimaries();
-                    
-                    //...pero antes renombrarla con el rol
-                    Vector<String[]> primarias = new Vector<String[]>();
-                    String[] referenciadas = new String[previasPrimarias.size()];
-
-                    for (int q = 0; q < previasPrimarias.size(); q++) {
-                        String[] clave = new String[5];
-                        clave[3] = "0";
-                        clave[4] = eya.getPrincipioRango() == 0 ? "0" : "1";
-                        if (!eya.getRol().equals("")) {
-                            clave[0] = eya.getRol() + "_" + previasPrimarias.get(q)[0];
-                        } else clave[0] = previasPrimarias.get(q)[0];
-                        clave[1] = previasPrimarias.get(q)[1];
-                        clave[2] = previasPrimarias.get(q)[2];
-                        primarias.add(clave);
-                        referenciadas[q] = previasPrimarias.get(q)[0];
-                    }
-
-                    tabla.aniadeListaAtributos(primarias, tr.getListaRestricciones(), tiposEnumerados);
-                    tabla.aniadeListaClavesForaneas(primarias, ent.getNombreTabla(), referenciadas);
-
-                    // Si es 0..1 o 1..1 poner como clave
-                    if (eya.getFinalRango() > 1) tabla.aniadeListaClavesPrimarias(primarias);
-                    else {
-                        if (soloHayUnos && esLaPrimeraDel1a1) {
-                            tabla.aniadeListaClavesPrimarias(primarias);
-                            esLaPrimeraDel1a1 = false;
-                        } else if (soloHayUnos) {
-                            for (String[] clave : (Vector<String[]>) ent.getPrimaries())
-                                restriccionesPerdidas.add(
-                                        new RestriccionPerdida(ent.getNombreTabla() + "_" + clave[0], tr.getNombre(), RestriccionPerdida.CANDIDATA));
-                            String uniques = "";
-                            for (int q = 0; q < primarias.size(); q++) {
-                                if (q == 0) uniques += primarias.get(q)[0];
-                                else uniques += ", " + primarias.get(q)[0];
-                            }
-                            uniques += "#" + ent.getNombreTabla();
-                            tabla.getUniques().add(uniques);
-                        } else if (eya.getPrincipioRango() == 1 && eya.getFinalRango() == Integer.MAX_VALUE)
-                            for (String[] clave : (Vector<String[]>) ent.getPrimaries())
-                                restriccionesPerdidas.add(
-                                        new RestriccionPerdida(ent.getNombreTabla() + "_" + clave[0], tr.getNombre(), RestriccionPerdida.CANDIDATA));
-                    }
-
-                    //crea las restricciones perdidas (cuando rangoIni > 1 o rangoFin < N) || rangoIni == 1
-                    if ((eya.getPrincipioRango() > 0 || eya.getFinalRango() < Integer.MAX_VALUE && eya.getFinalRango() > 1) || eya.getPrincipioRango() == 1) {
-                        Tabla aux = tabla.creaClonSinAmbiguedadNiEspacios();
-                        boolean recurs = false;
-                        Vector<String[]> a = tabla.getPrimaries();
-                        for (int j = 0; j < a.size(); j++) {
-                            if (j + 1 == a.size() && j > 0) {
-                                if (a.get(j)[2].equals(a.get(j - 1)[2])) {
-                                    if (a.get(j)[0].split("_").length > 1 && a.get(j)[0].split("_")[1].equals(a.get(j - 1)[0].split("_")[1])) {
-                                        Vector<String[]> b = new Vector<String[]>();
-                                        b.add(a.get(j));
-                                        aux.setPrimaries(b);
-                                        recurs = true;
-                                    }
+                //crea las restricciones perdidas (cuando rangoIni > 1 o rangoFin < N) || rangoIni == 1
+                if ((eya.getPrincipioRango() > 0 || eya.getFinalRango() < Integer.MAX_VALUE && eya.getFinalRango() > 1) || eya.getPrincipioRango() == 1) {
+                    Tabla aux = tabla.creaClonSinAmbiguedadNiEspacios();
+                    boolean recurs = false;
+                    Vector<String[]> a = tabla.getPrimaries();
+                    for (int j = 0; j < a.size(); j++) {
+                        if (j + 1 == a.size() && j > 0) {
+                            if (a.get(j)[2].equals(a.get(j - 1)[2])) {
+                                if (a.get(j)[0].split("_").length > 1 && a.get(j)[0].split("_")[1].equals(a.get(j - 1)[0].split("_")[1])) {
+                                    Vector<String[]> b = new Vector<String[]>();
+                                    b.add(a.get(j));
+                                    aux.setPrimaries(b);
+                                    recurs = true;
                                 }
                             }
                         }
-                        restriccionesPerdidas.add(new RestriccionPerdida(recurs ? aux.restriccionIR(true, ent.getNombreTabla()) : tabla.restriccionIR(true, ent.getNombreTabla()), ent.restriccionIR(false, ""),
-                                eya.getPrincipioRango(), eya.getFinalRango(), RestriccionPerdida.TOTAL));
                     }
+                    restriccionesPerdidas.add(new RestriccionPerdida(recurs ? aux.restriccionIR(true, ent.getNombreTabla()) : tabla.restriccionIR(true, ent.getNombreTabla()), ent.restriccionIR(false, ""),
+                            eya.getPrincipioRango(), eya.getFinalRango(), RestriccionPerdida.TOTAL));
                 }
-                tablasRelaciones.put(tr.getIdRelacion(), tabla);
-                for (int mul = 0; mul < multivalorados.size(); mul++) {
-                    TransferAtributo multi = multivalorados.elementAt(mul);
-                    this.atributoMultivalorado(multi, tr.getIdRelacion());
-                }
+            }
+            tablasRelaciones.put(tr.getIdRelacion(), tabla);
+            for (int mul = 0; mul < multivalorados.size(); mul++) {
+                TransferAtributo multi = multivalorados.elementAt(mul);
+                this.atributoMultivalorado(multi, tr.getIdRelacion());
             }
         }
     }

@@ -319,7 +319,7 @@ public class EtiquetaSobreLinea<V, E> extends edu.uci.ics.jung.visualization.ren
         if (rc.getEdgeLabelRenderer().isRotateEdgeLabels()) {
             double theta = Math.atan2(dy, dx);
             if (dx < 0) theta += Math.PI;
-            xform2.rotate(theta);
+            xform2.rotate(-theta);
         }
         
         xform2.translate(-d.width / 2, -(d.height / 2 - parallelOffset));

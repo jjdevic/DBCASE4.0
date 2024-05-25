@@ -301,6 +301,11 @@ public class DAORelaciones extends DAO {
         return lista;
     }
     
+    /**
+     * 
+     * @param idEntidad
+     * @return Vector con los identificadores de los padres de la entidad, vector vacío si no los tiene.
+     */
     public Vector<Integer> getPadres(int idEntidad) {
     	Vector<Integer> padres = new Vector<Integer>();
     	Vector<TransferRelacion> relaciones = ListaDeRelaciones();
@@ -326,27 +331,6 @@ public class DAORelaciones extends DAO {
     	}
     	
     	return padres;
-    }
-    
-    public int getFuerte(int idDebil) throws ExceptionAp{
-    	DAOEntidades daoEntidades = new DAOEntidades(Config.getPath());
-    	Vector<TransferRelacion> relaciones = ListaDeRelaciones();
-    	int resultado = -1;
-    	
-    	for(TransferRelacion relacion: relaciones) {
-    		if(relacion.getTipo().equals("Debil")) {
-				EntidadYAridad eyaDebil = relacion.getEntidadYAridad(idDebil);
-				Vector<EntidadYAridad> veya = relacion.getListaEntidadesYAridades();
-				
-				if(eyaDebil != null) {
-					//Buscar la entidad fuerte
-					for(EntidadYAridad eya: veya) {
-						if(eya.getEntidad() != eyaDebil.getEntidad()) resultado = eya.getEntidad();
-					}
-				}
-    		}
-    	}
-    	return resultado;
     }
 
     private String dameValorDelElemento(Node elemento) {
