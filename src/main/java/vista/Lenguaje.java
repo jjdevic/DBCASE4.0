@@ -559,6 +559,9 @@ public class Lenguaje {
     public static final int BASED5 = 4367;
     public static final int BASED5A1 = 4368;
     public static final int BASED5A2 = 4369;
+    public static final int BASED6 = 4370;
+    public static final int BASED6A1 = 4371;
+    public static final int BASED6A2 = 4372;
     public static final int AUTHOR = 4336;
     public static final int TABLES = 4337;
     public static final int NULLATTR = 4338;
@@ -2241,6 +2244,15 @@ public class Lenguaje {
                 break;
             case BASED5A2:
                 texto = _textos.get("based5a2");
+                break;
+            case BASED6:
+                texto = _textos.get("based6");
+                break;
+            case BASED6A1:
+                texto = _textos.get("based6a1");
+                break;
+            case BASED6A2:
+                texto = _textos.get("based6a2");
                 break;
             case AUTHOR:
                 texto = _textos.get("author");
