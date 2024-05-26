@@ -7,6 +7,8 @@ import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import org.w3c.dom.*;
 
+import config.Config;
+
 import java.awt.geom.Point2D;
 import java.util.Stack;
 import java.util.Vector;
@@ -114,8 +116,9 @@ public class DAOEntidades extends DAO{
         // Obtenemos el nodo del Entidad
         Node nodoEntidadBuscado = dameNodoEntidad(tc.getIdEntidad());
         // Lo transformamos a Entidad si es distinto de null
-        if (nodoEntidadBuscado != null)
+        if (nodoEntidadBuscado != null) {
             transfer = nodoEntidadATransferEntidad(nodoEntidadBuscado);
+        }
         // Lo devolvemos
         return transfer;
     }
@@ -231,7 +234,7 @@ public class DAOEntidades extends DAO{
         return borrado;
     }
 
-    public Vector<TransferEntidad> ListaDeEntidades() {
+    public Vector<TransferEntidad> ListaDeEntidades() throws ExceptionAp{
         // Vector que devolveremos
         Vector<TransferEntidad> vectorDeTransfers = new Vector<TransferEntidad>();
         TransferEntidad te = new TransferEntidad();

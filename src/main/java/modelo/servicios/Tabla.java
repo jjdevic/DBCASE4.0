@@ -6,8 +6,10 @@ import modelo.transfers.TipoDominio;
 import modelo.transfers.TransferConexion;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import config.Config;
@@ -361,6 +363,21 @@ public class Tabla {
      * @return Devuelve el vector v1 sin los valores de v2
      */
     private Vector<String[]> filtra(Vector<String[]> v1, Vector<String[]> v2) {
+    	//Mapa que se usa para comprobar que se filtre un elmento el numero exacto de veces.
+    	Map<String, Integer> estaba = new HashMap<String, Integer>(); 
+    	
+    	//Hacemos que en estaba aparezca el numero de veces que aparecía un atributo con mismos componentes.
+    	for(String[] p: v2) {
+    		//Convertimos a string concatenando componentes, para acceder al mapa.
+    		String repr_string = p[0]+p[1]+p[2];
+    		
+    		if(estaba.containsKey(repr_string)) {
+    			estaba.put(repr_string, estaba.get(repr_string) + 1); 
+    		} else {
+    			estaba.put(repr_string, 1);
+    		}
+    	}
+    	
         Vector<String[]> aux = new Vector<String[]>();
         for (int i = 0; i < v1.size(); i++) {
             String[] par1 = v1.elementAt(i);
@@ -371,7 +388,22 @@ public class Tabla {
                 if (par1[0].equals(par2[0]) && par1[1].equals(par2[1]) && par1[2].equals(par2[2])) esta = true;
                 j++;
             }
+            
+            //Si no hay un atributo igual, lo metemos en aux
             if (!esta) aux.add(par1);
+            //Si hay un atributo igual
+            else {
+            	String repr_string = par1[0]+par1[1]+par1[2];
+            	
+            	//Si aparece en el mapa con valor mayor a 0, disminuimos su valor en el mapa
+            	if(estaba.containsKey(repr_string) && estaba.get(repr_string) > 0) {
+            		estaba.put(repr_string, estaba.get(repr_string) - 1);
+            	} 
+            	//Si no aparece en el mapa con valor mayor a 0, lo metemos en aux
+            	else {
+            		aux.add(par1);
+            	}
+            }
         }
         return aux;
     }
