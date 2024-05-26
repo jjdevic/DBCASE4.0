@@ -127,28 +127,7 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
             //Iniciamos la GUI con los botones tal y como los habiamos dejado marcados
             EntidadYAridad eya = (EntidadYAridad) relacion.getListaEntidadesYAridades().get(comboEntidades.getSelectedIndex());
             
-            if (eya.getFinalRango() == 1) {
-                buttonMax1.setSelected(true);
-                buttonMaxN.setSelected(false);
-            } else {
-                buttonMax1.setSelected(false);
-                buttonMaxN.setSelected(true);
-            }
-            
-            if (eya.getMarcadaConMinMax()) {
-                buttonMinMax.setSelected(true);
-                cajaInicio.setText(v.get(0));
-                cajaFinal.setText(v.get(1));
-            }
-            
-            //System.out.println(eya.getPrincipioRango());
-            if (eya.getPrincipioRango() == 0) {
-                partialParticipation.setSelected(true);
-                totalParticipation.setSelected(false);
-            } else {
-                partialParticipation.setSelected(false);
-                totalParticipation.setSelected(true);
-            }
+            actualizarCampos(v);
             
             SwingUtilities.invokeLater(doFocus);
             this.centraEnPantalla();
@@ -162,14 +141,22 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
             comboEntidades.grabFocus();
         }
     };
+    
+    private TransferEntidad buscarEntidad(String nombre) {
+    	TransferEntidad resultado = null;
+    	for(TransferEntidad te : listaEntidades) {
+    		if(te.getNombre().equals(nombre)) resultado = te;
+    	}
+    	return resultado;
+    }
 
     private Vector<String> generaInicioFin(int vez) {
         int inicio = 0;
         int fin = 0;
         String rol = "";
-        int itemSeleccionado = this.comboEntidades.getSelectedIndex();
+        String nombre_seleccionado = this.comboEntidades.getItemAt(this.comboEntidades.getSelectedIndex()).toString();
         int rolSeleccionado = this.comboRoles.getSelectedIndex();
-        TransferEntidad te = this.listaEntidades.get(itemSeleccionado);
+        TransferEntidad te = buscarEntidad(nombre_seleccionado);
         int idEntidad = te.getIdEntidad();
         Vector veya = this.relacion.getListaEntidadesYAridades();
         int cont = 0;
@@ -293,30 +280,8 @@ public class GUI_EditarCardinalidadEntidad extends Parent_GUI {
         this.partialParticipation.setSelected(false);
         this.cajaInicio.setText("");
         this.cajaFinal.setText("");
-        EntidadYAridad eya = (EntidadYAridad) relacion.getListaEntidadesYAridades().get(comboEntidades.getSelectedIndex());
-
         
-        if (v.get(1).equals("1")) {
-            buttonMax1.setSelected(true);
-            buttonMaxN.setSelected(false);
-        } else {
-            buttonMax1.setSelected(false);
-            buttonMaxN.setSelected(true);
-        }
-        
-        if (eya.getMarcadaConMinMax()) {
-            cajaInicio.setText(v.get(0));
-            cajaFinal.setText(v.get(1));
-            buttonMinMax.setSelected(true);
-        }
-       
-        if (eya.getPrincipioRango() == 0) {
-            partialParticipation.setSelected(true);
-            totalParticipation.setSelected(false);
-        } else {
-            partialParticipation.setSelected(false);
-            totalParticipation.setSelected(true);
-        }
+        actualizarCampos(v);
         
         cajaRol.setText(v.get(2));
         rolViejo = v.get(2);
