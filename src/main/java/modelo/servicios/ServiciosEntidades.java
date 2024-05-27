@@ -1,17 +1,15 @@
 package modelo.servicios;
 
+import config.Config;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
-import modelo.transfers.EntidadYAridad;
-import modelo.transfers.TransferAgregacion;
-import modelo.transfers.TransferAtributo;
-import modelo.transfers.TransferEntidad;
-import modelo.transfers.TransferRelacion;
+import modelo.transfers.*;
 import org.w3c.dom.Document;
-
-import config.Config;
-import persistencia.*;
+import persistencia.DAOAgregaciones;
+import persistencia.DAOAtributos;
+import persistencia.DAOEntidades;
+import persistencia.DAORelaciones;
 
 import java.util.Iterator;
 import java.util.Stack;

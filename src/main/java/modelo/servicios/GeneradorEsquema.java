@@ -1,5 +1,6 @@
 package modelo.servicios;
 
+import config.Config;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
@@ -8,9 +9,10 @@ import modelo.conectorDBMS.FactoriaConectores;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import config.Config;
-import persistencia.*;
+import persistencia.DAOAtributos;
+import persistencia.DAODominios;
+import persistencia.DAOEntidades;
+import persistencia.DAORelaciones;
 import vista.Lenguaje;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,12 +25,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class GeneradorEsquema {

@@ -1,15 +1,17 @@
 package modelo.servicios;
 
+import config.Config;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
 import modelo.transfers.*;
-import persistencia.*;
+import persistencia.DAOAtributos;
+import persistencia.DAODominios;
+import persistencia.DAOEntidades;
+import persistencia.DAORelaciones;
 import vista.Lenguaje;
 
 import java.util.Vector;
-
-import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ValidadorBD{

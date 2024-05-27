@@ -1,10 +1,6 @@
 package controlador.comandos.Vistas;
 
-import controlador.Comando;
-import controlador.Contexto;
-import controlador.Controlador;
-import controlador.FactoriaTCCtrl;
-import controlador.TC;
+import controlador.*;
 import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;

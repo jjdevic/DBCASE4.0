@@ -1,5 +1,6 @@
 package modelo.servicios;
 
+import config.Config;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
@@ -14,8 +15,6 @@ import persistencia.DAORelaciones;
 
 import java.util.Iterator;
 import java.util.Vector;
-
-import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosAgregaciones {

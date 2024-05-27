@@ -7,8 +7,6 @@ import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import org.w3c.dom.*;
 
-import config.Config;
-
 import java.awt.geom.Point2D;
 import java.util.Stack;
 import java.util.Vector;
