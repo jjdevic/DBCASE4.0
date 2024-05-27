@@ -1,6 +1,7 @@
 package modelo.servicios;
 
 
+import config.Config;
 import controlador.Contexto;
 import controlador.TC;
 import excepciones.ExceptionAp;
@@ -14,8 +15,6 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import config.Config;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ServiciosDominios {

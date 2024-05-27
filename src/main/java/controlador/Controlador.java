@@ -1,13 +1,12 @@
 package controlador;
 
+import config.Config;
 import controlador.comandos.FactoriaComandos;
 import excepciones.ExceptionAp;
 import misc.UtilsFunc;
 import modelo.servicios.FactoriaServicios;
 import modelo.transfers.*;
 import org.w3c.dom.Document;
-
-import config.Config;
 import vista.Lenguaje;
 import vista.componentes.ArchivosRecientes;
 import vista.frames.FactoriaGUI;
@@ -15,7 +14,6 @@ import vista.frames.Parent_GUI;
 import vista.tema.Theme;
 
 import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.File;

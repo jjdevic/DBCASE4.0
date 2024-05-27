@@ -1,10 +1,6 @@
 package controlador.comandos.Entidad;
 
-import controlador.Comando;
-import controlador.Contexto;
-import controlador.Controlador;
-import controlador.FactoriaMsj;
-import controlador.TC;
+import controlador.*;
 import excepciones.ExceptionAp;
 import modelo.transfers.TransferEntidad;
 import vista.Lenguaje;

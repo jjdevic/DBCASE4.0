@@ -1,11 +1,11 @@
 package modelo.transfers;
 
+import config.Config;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Vector;
-
-import config.Config;
 
 @SuppressWarnings("rawtypes")
 public class TransferAtributo extends Transfer {
