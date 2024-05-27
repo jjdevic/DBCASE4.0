@@ -205,7 +205,7 @@
                        <configuration>
                            <archive>
                                <manifest>
-                                   <mainClass>controlador.Controlador</mainClass>
+                                   <mainClass>controlador.Main</mainClass>
                                </manifest>
                            </archive>
                            <descriptorRefs>
